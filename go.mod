@@ -19,6 +19,7 @@ require (
 	github.com/google/go-cmp v0.4.0
 	github.com/google/gopacket v1.1.17
 	github.com/google/uuid v1.1.1
+	github.com/ishidawataru/sctp v0.0.0-20191218070446-00ab2ac2db07
 	github.com/jinzhu/copier v0.0.0-20190625015134-976e0346caa8
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/mattn/go-isatty v0.0.8 // indirect
