@@ -6,7 +6,6 @@ import (
 	"free5gc/lib/MongoDBLibrary"
 	"free5gc/lib/nas/security"
 	"free5gc/lib/ngap"
-	"free5gc/lib/ngap/ngapSctp"
 	"free5gc/lib/path_util"
 	amf_service "free5gc/src/amf/service"
 	"free5gc/src/app"
@@ -25,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"git.cs.nctu.edu.tw/calee/sctp"
+	"github.com/ishidawataru/sctp"
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli"
 )
@@ -41,6 +40,8 @@ var NFs = []app.NetworkFunction{
 	&ausf_service.AUSF{},
 	//&n3iwf_service.N3IWF{},
 }
+
+const NGAP_PPID uint32 = 0x3c000000
 
 func init() {
 	var init bool = true
@@ -110,7 +111,7 @@ func conntectToAmf(amfIP, ranIP string, amfPort, ranPort int) (*sctp.SCTPConn, e
 		return nil, err
 	}
 	info, _ := conn.GetDefaultSentParam()
-	info.PPID = ngapSctp.NGAP_PPID
+	info.PPID = NGAP_PPID
 	err = conn.SetDefaultSentParam(info)
 	if err != nil {
 		return nil, err
