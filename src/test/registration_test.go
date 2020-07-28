@@ -75,25 +75,6 @@ func getAuthSubscription() (authSubs models.AuthenticationSubscription) {
 	return
 }
 
-func getAuthSubscription20() (authSubs models.AuthenticationSubscription) {
-	authSubs.PermanentKey = &models.PermanentKey{
-		PermanentKeyValue: TestGenAuthData.MilenageTestSet19.K,
-	}
-	authSubs.Opc = &models.Opc{
-		OpcValue: TestGenAuthData.MilenageTestSet19.OPC,
-	}
-	authSubs.Milenage = &models.Milenage{
-		Op: &models.Op{
-			OpValue: TestGenAuthData.MilenageTestSet19.OP,
-		},
-	}
-	authSubs.AuthenticationManagementField = "8000"
-
-	authSubs.SequenceNumber = TestGenAuthData.MilenageTestSet20.SQN
-	authSubs.AuthenticationMethod = models.AuthMethod__5_G_AKA
-	return
-}
-
 func getAccessAndMobilitySubscriptionData() (amData models.AccessAndMobilitySubscriptionData) {
 	return TestRegistrationProcedure.TestAmDataTable[TestRegistrationProcedure.FREE5GC_CASE]
 }
