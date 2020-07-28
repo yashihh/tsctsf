@@ -28,3 +28,18 @@ ueRoutingInfo:
         UPF: !!seq
           - BranchingUPF
           - AnchorUPF2
+
+routeProfile:
+  MEC1:
+    upfIface: 60.60.0.50
+
+pfdDataForApp:
+  - applicationId: app001
+    pfds:
+      - pfdID: pfd1
+        flowDescriptions:
+          - permit in ip from 60.60.0.1 80 to any
+      - pfdID: pfd2
+        domainNames:
+          - www.google.com
+
