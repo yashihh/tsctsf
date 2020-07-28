@@ -40,6 +40,13 @@ func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool
 		// add sequece number
 		payload = append([]byte{sequenceNumber}, payload[:]...)
 		mac32 := make([]byte, 4)
+		// fmt.Println("sequenceNumber", sequenceNumber)
+		// fmt.Println("ue.IntegrityAlg", ue.IntegrityAlg)
+		// fmt.Println("ue.KnasInt", ue.KnasInt)
+		// fmt.Println("ue.ULCount.Get()", ue.ULCount.Get())
+		// fmt.Println("security.Bearer3GPP", security.Bearer3GPP)
+		// fmt.Println("security.DirectionUplink", security.DirectionUplink)
+		// fmt.Println("payload", payload)
 
 		mac32, err = security.NASMacCalculate(ue.IntegrityAlg, ue.KnasInt, ue.ULCount.Get(), security.Bearer3GPP, security.DirectionUplink, payload)
 		if err != nil {
