@@ -31,7 +31,7 @@ ueRoutingInfo:
 
 routeProfile:
   MEC1:
-    forwarding_policy_id: 10
+    forwardingPolicyID: 10
 
 pfdDataForApp:
   - applicationId: edge
