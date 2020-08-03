@@ -1,12 +1,15 @@
 package test_test
 
 import (
+	"bytes"
 	"context"
+	"encoding/binary"
 	"encoding/hex"
 	"free5gc/lib/CommonConsumerTestData/PCF/TestPolicyAuthorization"
 	"free5gc/lib/CommonConsumerTestData/UDM/TestGenAuthData"
 	"free5gc/lib/CommonConsumerTestData/UDR/TestRegistrationProcedure"
 	"free5gc/lib/http2_util"
+	"free5gc/lib/milenage"
 	"free5gc/lib/nas"
 	"free5gc/lib/nas/nasMessage"
 	"free5gc/lib/nas/nasTestpacket"
@@ -15,10 +18,9 @@ import (
 	"free5gc/lib/ngap"
 	"free5gc/lib/openapi/Npcf_PolicyAuthorization"
 	"free5gc/lib/openapi/models"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/mohae/deepcopy"
+	"net/http"
 
 	// ausf_context "free5gc/src/ausf/context"
 	"free5gc/src/test"
@@ -2119,4 +2121,300 @@ func setUESecurityCapability(ue *test.RanUeContext) (UESecurityCapability *nasTy
 	}
 
 	return
+}
+
+func TestReSynchronisation(t *testing.T) {
+	var n int
+	var sendMsg []byte
+	var recvMsg = make([]byte, 2048)
+
+	// RAN connect to AMF
+	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	assert.Nil(t, err)
+
+	// RAN connect to UPF
+	upfConn, err := connectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+	assert.Nil(t, err)
+
+	// send NGSetupRequest Msg
+	sendMsg, err = test.GetNGSetupRequest([]byte("\x00\x01\x02"), 24, "free5gc")
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
+	// receive NGSetupResponse Msg
+	n, err = conn.Read(recvMsg)
+	assert.Nil(t, err)
+	_, err = ngap.Decoder(recvMsg[:n])
+	assert.Nil(t, err)
+
+	// New UE
+	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
+	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
+	ue.AmfUeNgapId = 1
+	ue.AuthenticationSubs = getAuthSubscription()
+	// insert UE data to MongoDB
+
+	servingPlmnId := "20893"
+	test.InsertAuthSubscriptionToMongoDB(ue.Supi, ue.AuthenticationSubs)
+	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
+	assert.NotNil(t, getData)
+	{
+		amData := getAccessAndMobilitySubscriptionData()
+		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
+		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
+		assert.NotNil(t, getData)
+	}
+	{
+		smfSelData := getSmfSelectionSubscriptionData()
+		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
+		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
+		assert.NotNil(t, getData)
+	}
+	{
+		smSelData := getSessionManagementSubscriptionData()
+		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
+		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
+		assert.NotNil(t, getData)
+	}
+	{
+		amPolicyData := getAmPolicyData()
+		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
+		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
+		assert.NotNil(t, getData)
+	}
+	{
+		smPolicyData := getSmPolicyData()
+		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
+		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
+		assert.NotNil(t, getData)
+	}
+
+	// send InitialUeMessage(Registration Request)(imsi-2089300007487)
+	mobileIdentity5GS := nasType.MobileIdentity5GS{
+		Len:    12, // suci
+		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
+	}
+
+	ueSecurityCapability := setUESecurityCapability(ue)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
+	// receive NAS Authentication Request Msg
+	n, err = conn.Read(recvMsg)
+	assert.Nil(t, err)
+	ngapMsg, err := ngap.Decoder(recvMsg[:n])
+	assert.Nil(t, err)
+
+	nasPdu := test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	assert.NotNil(t, nasPdu)
+
+	// gen AK
+	K, OPC := make([]byte, 16), make([]byte, 16)
+	K, _ = hex.DecodeString(ue.AuthenticationSubs.PermanentKey.PermanentKeyValue)
+	OPC, _ = hex.DecodeString(ue.AuthenticationSubs.Opc.OpcValue)
+	SQN := make([]byte, 6)
+	AK := make([]byte, 6)
+
+	rand := nasPdu.AuthenticationRequest.GetRANDValue()
+	milenage.F2345_Test(OPC, K, rand[:], nil, nil, nil, AK, nil)
+	autn := nasPdu.AuthenticationRequest.GetAUTN()
+	SQNxorAK := autn[:6]
+	for i := 0; i < 6; i++ {
+		SQN[i] = AK[i] ^ SQNxorAK[i]
+	}
+	const SqnMAx int64 = 0x7FFFFFFFFFF
+	const SqnMs int64 = 0
+	const IND int64 = 32
+	var newSqnMsString string
+	SQNBuffer := make([]byte, 8)
+	copy(SQNBuffer[2:], SQN)
+	r := bytes.NewReader(SQNBuffer)
+	var retrieveSqn int64
+	if err := binary.Read(r, binary.BigEndian, &retrieveSqn); err != nil {
+		fmt.Println("err", err)
+		return
+	}
+
+	delita := retrieveSqn - SqnMs
+	if delita < 0x7FFFFFFFFFF {
+		newSqnMsString = "000000000000"
+	}
+
+	newSqnMs, _ := hex.DecodeString(newSqnMsString)
+	MAC_A, MAC_S := make([]byte, 8), make([]byte, 8)
+	CK, IK := make([]byte, 16), make([]byte, 16)
+	RES := make([]byte, 8)
+	AK, AKstar := make([]byte, 6), make([]byte, 6)
+	AMF, _ := hex.DecodeString("0000")
+	milenage.F1_Test(OPC, K, rand[:], newSqnMs, AMF, MAC_A, MAC_S)
+	milenage.F2345_Test(OPC, K, rand[:], RES, CK, IK, AK, AKstar)
+
+	SQNmsxorAK := make([]byte, 6)
+	for i := 0; i < len(SQN); i++ {
+		SQNxorAK[i] = SQN[i] ^ AK[i]
+	}
+	ColSQNmsxorAK := make([]byte, 6)
+	for i := 0; i < len(SQN); i++ {
+		ColSQNmsxorAK[i] = SQNmsxorAK[i] ^ AKstar[i]
+	}
+	AUTS := append(ColSQNmsxorAK, MAC_S...)
+	// compute SQN by AUTN, K, AK
+	// suppose
+	// send NAS Authentication Rejcet
+	// failureParam := []uint8{0x68, 0x58, 0x15, 0x86, 0x1f, 0xec, 0x0f, 0xa9, 0x48, 0xe8, 0xb2, 0x3a, 0x08, 0x62}
+	failureParam := AUTS
+	pdu := nasTestpacket.GetAuthenticationFailure(nasMessage.Cause5GMMSynchFailure, failureParam)
+	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
+	// receive NAS Authentication Request Msg
+	n, err = conn.Read(recvMsg)
+	assert.Nil(t, err)
+	ngapMsg, err = ngap.Decoder(recvMsg[:n])
+	assert.Nil(t, err)
+
+	// Calculate for RES*
+	nasPdu = test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	assert.NotNil(t, nasPdu)
+	rand = nasPdu.AuthenticationRequest.GetRANDValue()
+
+	milenage.F2345_Test(OPC, K, rand[:], nil, nil, nil, AK, nil)
+	autn = nasPdu.AuthenticationRequest.GetAUTN()
+	SQNxorAK = autn[:6]
+
+	for i := 0; i < 6; i++ {
+		SQN[i] = AK[i] ^ SQNxorAK[i]
+	}
+	fmt.Printf("retrieve SQN %x\n", SQN)
+	ue.AuthenticationSubs.SequenceNumber = hex.EncodeToString(SQN)
+	resStar := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
+
+	// send NAS Authentication Response
+	pdu = nasTestpacket.GetAuthenticationResponse(resStar, "")
+	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
+	// receive NAS Security Mode Command Msg
+	n, err = conn.Read(recvMsg)
+	assert.Nil(t, err)
+	_, err = ngap.Decoder(recvMsg[:n])
+	assert.Nil(t, err)
+
+	// send NAS Security Mode Complete Msg
+	pdu = nasTestpacket.GetSecurityModeComplete(registrationRequest)
+	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCipheredWithNew5gNasSecurityContext, true, true)
+	assert.Nil(t, err)
+	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
+	// receive ngap Initial Context Setup Request Msg
+	n, err = conn.Read(recvMsg)
+	assert.Nil(t, err)
+	_, err = ngap.Decoder(recvMsg[:n])
+	assert.Nil(t, err)
+
+	// send ngap Initial Context Setup Response Msg
+	sendMsg, err = test.GetInitialContextSetupResponse(ue.AmfUeNgapId, ue.RanUeNgapId)
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
+	// send NAS Registration Complete Msg
+	pdu = nasTestpacket.GetRegistrationComplete(nil)
+	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
+	assert.Nil(t, err)
+	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
+	time.Sleep(100 * time.Millisecond)
+	// send GetPduSessionEstablishmentRequest Msg
+
+	sNssai := models.Snssai{
+		Sst: 1,
+		Sd:  "010203",
+	}
+	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(10, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet", &sNssai)
+	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
+	assert.Nil(t, err)
+	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
+	// receive 12. NGAP-PDU Session Resource Setup Request(DL nas transport((NAS msg-PDU session setup Accept)))
+	n, err = conn.Read(recvMsg)
+	assert.Nil(t, err)
+	_, err = ngap.Decoder(recvMsg[:n])
+	assert.Nil(t, err)
+
+	// send 14. NGAP-PDU Session Resource Setup Response
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
+	// wait 1s
+	time.Sleep(1 * time.Second)
+
+	// Send the dummy packet
+	// ping IP(tunnel IP) from 60.60.0.2(127.0.0.1) to 60.60.0.20(127.0.0.8)
+	gtpHdr, err := hex.DecodeString("32ff00340000000100000000")
+	assert.Nil(t, err)
+	icmpData, err := hex.DecodeString("8c870d0000000000101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637")
+	assert.Nil(t, err)
+
+	ipv4hdr := ipv4.Header{
+		Version:  4,
+		Len:      20,
+		Protocol: 1,
+		Flags:    0,
+		TotalLen: 48,
+		TTL:      64,
+		Src:      net.ParseIP("60.60.0.1").To4(),
+		Dst:      net.ParseIP("60.60.0.101").To4(),
+		ID:       1,
+	}
+	checksum := ipv4HeaderChecksum(&ipv4hdr)
+	ipv4hdr.Checksum = int(checksum)
+
+	v4HdrBuf, err := ipv4hdr.Marshal()
+	assert.Nil(t, err)
+	tt := append(gtpHdr, v4HdrBuf...)
+	assert.Nil(t, err)
+
+	m := icmp.Message{
+		Type: ipv4.ICMPTypeEcho, Code: 0,
+		Body: &icmp.Echo{
+			ID: 12394, Seq: 1,
+			Data: icmpData,
+		},
+	}
+	b, err := m.Marshal(nil)
+	assert.Nil(t, err)
+	b[2] = 0xaf
+	b[3] = 0x88
+	_, err = upfConn.Write(append(tt, b...))
+	assert.Nil(t, err)
+
+	time.Sleep(1 * time.Second)
+
+	// delete test data
+	test.DelAuthSubscriptionToMongoDB(ue.Supi)
+	test.DelAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
+	test.DelSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
+
+	// close Connection
+	conn.Close()
 }
