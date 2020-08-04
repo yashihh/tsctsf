@@ -3,6 +3,7 @@ package test_test
 import (
 	"flag"
 	"fmt"
+	"free5gc/lib/CommonConsumerTestData/UDM/TestGenAuthData"
 	"free5gc/lib/MongoDBLibrary"
 	"free5gc/lib/nas/security"
 	"free5gc/lib/ngap"
@@ -17,16 +18,15 @@ import (
 	"free5gc/src/test"
 	udm_service "free5gc/src/udm/service"
 	udr_service "free5gc/src/udr/service"
+	"github.com/ishidawataru/sctp"
+	"github.com/stretchr/testify/assert"
+	"github.com/urfave/cli"
 	"log"
 	"net"
 	"os"
 	"sync"
 	"testing"
 	"time"
-
-	"github.com/ishidawataru/sctp"
-	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli"
 )
 
 var NFs = []app.NetworkFunction{
@@ -149,7 +149,9 @@ func TestCN(t *testing.T) {
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA0)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
