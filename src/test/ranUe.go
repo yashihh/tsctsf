@@ -32,33 +32,47 @@ func NewRanUeContext(supi string, ranUeNgapId int64, cipheringAlg, integrityAlg 
 	return &ue
 }
 
-func (ue *RanUeContext) DeriveRESstarAndSetKey(authSubs models.AuthenticationSubscription, RAND []byte, snNmae string) []byte {
+func (ue *RanUeContext) DeriveRESstarAndSetKey(authSubs models.AuthenticationSubscription, rand []byte, snNmae string) []byte {
 
-	SQN, _ := hex.DecodeString(authSubs.SequenceNumber)
+	sqn, _ := hex.DecodeString(authSubs.SequenceNumber)
 
-	AMF, _ := hex.DecodeString(authSubs.AuthenticationManagementField)
+	amf, _ := hex.DecodeString(authSubs.AuthenticationManagementField)
 
 	// Run milenage
-	MAC_A, MAC_S := make([]byte, 8), make([]byte, 8)
-	CK, IK := make([]byte, 16), make([]byte, 16)
-	RES := make([]byte, 8)
-	AK, AKstar := make([]byte, 6), make([]byte, 6)
-	OPC, _ := hex.DecodeString(authSubs.Opc.OpcValue)
-	K, _ := hex.DecodeString(authSubs.PermanentKey.PermanentKeyValue)
+	macA, macS := make([]byte, 8), make([]byte, 8)
+	ck, ik := make([]byte, 16), make([]byte, 16)
+	res := make([]byte, 8)
+	ak, akStar := make([]byte, 6), make([]byte, 6)
+
+	opc := make([]byte, 16)
+	k, _ := hex.DecodeString(authSubs.PermanentKey.PermanentKeyValue)
+
+	if authSubs.Opc.OpcValue == "" {
+		opStr := authSubs.Milenage.Op.OpValue
+		op, err := hex.DecodeString(opStr)
+		if err != nil {
+
+		}
+
+		milenage.GenerateOPC(k, op, opc)
+	} else {
+		opc, _ = hex.DecodeString(authSubs.Opc.OpcValue)
+	}
+
 	// Generate MAC_A, MAC_S
-	milenage.F1_Test(OPC, K, RAND, SQN, AMF, MAC_A, MAC_S)
+	milenage.F1_Test(opc, k, rand, sqn, amf, macA, macS)
 
 	// Generate RES, CK, IK, AK, AKstar
-	milenage.F2345_Test(OPC, K, RAND, RES, CK, IK, AK, AKstar)
+	milenage.F2345_Test(opc, k, rand, res, ck, ik, ak, akStar)
 
 	// derive RES*
-	key := append(CK, IK...)
+	key := append(ck, ik...)
 	FC := UeauCommon.FC_FOR_RES_STAR_XRES_STAR_DERIVATION
 	P0 := []byte(snNmae)
-	P1 := RAND
-	P2 := RES
+	P1 := rand
+	P2 := res
 
-	ue.DerivateKamf(key, snNmae, SQN, AK)
+	ue.DerivateKamf(key, snNmae, sqn, ak)
 	ue.DerivateAlgKey()
 	kdfVal_for_resStar := UeauCommon.GetKDFValue(key, FC, P0, UeauCommon.KDFLen(P0), P1, UeauCommon.KDFLen(P1), P2, UeauCommon.KDFLen(P2))
 	return kdfVal_for_resStar[len(kdfVal_for_resStar)/2:]

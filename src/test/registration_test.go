@@ -56,23 +56,24 @@ func ipv4HeaderChecksum(hdr *ipv4.Header) uint32 {
 	return ^(Checksum&0xffff0000>>16 + Checksum&0xffff)
 }
 
-func getAuthSubscription() (authSubs models.AuthenticationSubscription) {
+func getAuthSubscription(k, opc, op string) models.AuthenticationSubscription {
+	var authSubs models.AuthenticationSubscription
 	authSubs.PermanentKey = &models.PermanentKey{
-		PermanentKeyValue: TestGenAuthData.MilenageTestSet19.K,
+		PermanentKeyValue: k,
 	}
 	authSubs.Opc = &models.Opc{
-		OpcValue: TestGenAuthData.MilenageTestSet19.OPC,
+		OpcValue: opc,
 	}
 	authSubs.Milenage = &models.Milenage{
 		Op: &models.Op{
-			OpValue: TestGenAuthData.MilenageTestSet19.OP,
+			OpValue: op,
 		},
 	}
 	authSubs.AuthenticationManagementField = "8000"
 
 	authSubs.SequenceNumber = TestGenAuthData.MilenageTestSet19.SQN
 	authSubs.AuthenticationMethod = models.AuthMethod__5_G_AKA
-	return
+	return authSubs
 }
 
 func getAccessAndMobilitySubscriptionData() (amData models.AccessAndMobilitySubscriptionData) {
@@ -125,7 +126,9 @@ func TestRegistration(t *testing.T) {
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
@@ -337,7 +340,9 @@ func TestDeregistration(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
@@ -507,7 +512,9 @@ func TestServiceRequest(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
@@ -718,7 +725,9 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
@@ -931,7 +940,9 @@ func TestXnHandover(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
@@ -1112,7 +1123,9 @@ func TestPaging(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
@@ -1371,7 +1384,9 @@ func TestN2Handover(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
@@ -1688,7 +1703,9 @@ func TestDuplicateRegistration(t *testing.T) {
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA0)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
@@ -1938,7 +1955,9 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA0)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
@@ -2152,7 +2171,9 @@ func TestReSynchronisation(t *testing.T) {
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+		TestGenAuthData.MilenageTestSet19.OPC,
+		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
 
 	servingPlmnId := "20893"
