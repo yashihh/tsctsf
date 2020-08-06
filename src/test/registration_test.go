@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"free5gc/lib/CommonConsumerTestData/PCF/TestPolicyAuthorization"
 	"free5gc/lib/CommonConsumerTestData/UDM/TestGenAuthData"
-	"free5gc/lib/CommonConsumerTestData/UDR/TestRegistrationProcedure"
 	"free5gc/lib/http2_util"
 	"free5gc/lib/milenage"
 	"free5gc/lib/nas"
@@ -18,9 +17,10 @@ import (
 	"free5gc/lib/ngap"
 	"free5gc/lib/openapi/Npcf_PolicyAuthorization"
 	"free5gc/lib/openapi/models"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/mohae/deepcopy"
-	"net/http"
 
 	// ausf_context "free5gc/src/ausf/context"
 	"free5gc/src/test"
@@ -39,63 +39,6 @@ import (
 
 const ranIpAddr string = "10.200.200.1"
 
-func ipv4HeaderChecksum(hdr *ipv4.Header) uint32 {
-	var Checksum uint32
-	Checksum += uint32((hdr.Version<<4|(20>>2&0x0f))<<8 | hdr.TOS)
-	Checksum += uint32(hdr.TotalLen)
-	Checksum += uint32(hdr.ID)
-	Checksum += uint32((hdr.FragOff & 0x1fff) | (int(hdr.Flags) << 13))
-	Checksum += uint32((hdr.TTL << 8) | (hdr.Protocol))
-
-	src := hdr.Src.To4()
-	Checksum += uint32(src[0])<<8 | uint32(src[1])
-	Checksum += uint32(src[2])<<8 | uint32(src[3])
-	dst := hdr.Dst.To4()
-	Checksum += uint32(dst[0])<<8 | uint32(dst[1])
-	Checksum += uint32(dst[2])<<8 | uint32(dst[3])
-	return ^(Checksum&0xffff0000>>16 + Checksum&0xffff)
-}
-
-func getAuthSubscription(k, opc, op string) models.AuthenticationSubscription {
-	var authSubs models.AuthenticationSubscription
-	authSubs.PermanentKey = &models.PermanentKey{
-		PermanentKeyValue: k,
-	}
-	authSubs.Opc = &models.Opc{
-		OpcValue: opc,
-	}
-	authSubs.Milenage = &models.Milenage{
-		Op: &models.Op{
-			OpValue: op,
-		},
-	}
-	authSubs.AuthenticationManagementField = "8000"
-
-	authSubs.SequenceNumber = TestGenAuthData.MilenageTestSet19.SQN
-	authSubs.AuthenticationMethod = models.AuthMethod__5_G_AKA
-	return authSubs
-}
-
-func getAccessAndMobilitySubscriptionData() (amData models.AccessAndMobilitySubscriptionData) {
-	return TestRegistrationProcedure.TestAmDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func getSmfSelectionSubscriptionData() (smfSelData models.SmfSelectionSubscriptionData) {
-	return TestRegistrationProcedure.TestSmfSelDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func getSessionManagementSubscriptionData() (smfSelData models.SessionManagementSubscriptionData) {
-	return TestRegistrationProcedure.TestSmSelDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func getAmPolicyData() (amPolicyData models.AmPolicyData) {
-	return TestRegistrationProcedure.TestAmPolicyDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func getSmPolicyData() (smPolicyData models.SmPolicyData) {
-	return TestRegistrationProcedure.TestSmPolicyDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
 // Registration
 func TestRegistration(t *testing.T) {
 	var n int
@@ -103,11 +46,11 @@ func TestRegistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
-	upfConn, err := connectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -126,7 +69,7 @@ func TestRegistration(t *testing.T) {
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -136,31 +79,31 @@ func TestRegistration(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -172,7 +115,7 @@ func TestRegistration(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -282,13 +225,12 @@ func TestRegistration(t *testing.T) {
 		Dst:      net.ParseIP("60.60.0.101").To4(),
 		ID:       1,
 	}
-	checksum := ipv4HeaderChecksum(&ipv4hdr)
+	checksum := test.CalculateIpv4HeaderChecksum(&ipv4hdr)
 	ipv4hdr.Checksum = int(checksum)
 
 	v4HdrBuf, err := ipv4hdr.Marshal()
 	assert.Nil(t, err)
 	tt := append(gtpHdr, v4HdrBuf...)
-	assert.Nil(t, err)
 
 	m := icmp.Message{
 		Type: ipv4.ICMPTypeEcho, Code: 0,
@@ -322,7 +264,7 @@ func TestDeregistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -340,7 +282,7 @@ func TestDeregistration(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -350,31 +292,31 @@ func TestDeregistration(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -385,7 +327,7 @@ func TestDeregistration(t *testing.T) {
 		Len:    12, // suci
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -494,7 +436,7 @@ func TestServiceRequest(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -512,7 +454,7 @@ func TestServiceRequest(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -522,31 +464,31 @@ func TestServiceRequest(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -557,7 +499,7 @@ func TestServiceRequest(t *testing.T) {
 		Len:    12, // suci
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -707,7 +649,7 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -725,7 +667,7 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -735,31 +677,31 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -770,7 +712,7 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 		Len:    12, // suci
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -905,7 +847,7 @@ func TestXnHandover(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -922,7 +864,7 @@ func TestXnHandover(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	conn2, err1 := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
+	conn2, err1 := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
 	assert.Nil(t, err1)
 
 	// send Second NGSetupRequest Msg
@@ -940,7 +882,7 @@ func TestXnHandover(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -950,31 +892,31 @@ func TestXnHandover(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -985,7 +927,7 @@ func TestXnHandover(t *testing.T) {
 		Len:    12, // suci
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -1105,7 +1047,7 @@ func TestPaging(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMFcd
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1123,7 +1065,7 @@ func TestPaging(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -1133,31 +1075,31 @@ func TestPaging(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -1168,7 +1110,7 @@ func TestPaging(t *testing.T) {
 		Len:    12, // suci
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -1281,7 +1223,7 @@ func TestPaging(t *testing.T) {
 	// send downlink data
 	go func() {
 		// RAN connect to UPF
-		upfConn, err := connectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+		upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
 		assert.Nil(t, err)
 		_, _ = upfConn.Read(recvMsg)
 		// fmt.Println(string(recvMsg))
@@ -1340,11 +1282,11 @@ func TestN2Handover(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN1 connect to AMF
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN1 connect to UPF
-	upfConn, err := connectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
 	assert.Nil(t, err)
 
 	// RAN1 send NGSetupRequest Msg
@@ -1362,11 +1304,11 @@ func TestN2Handover(t *testing.T) {
 	time.Sleep(10 * time.Millisecond)
 
 	// RAN2 connect to AMF
-	conn2, err1 := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
+	conn2, err1 := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
 	assert.Nil(t, err1)
 
 	// RAN2 connect to UPF
-	upfConn2, err := connectToUpf("10.200.200.2", "10.200.200.102", 2152, 2152)
+	upfConn2, err := test.ConnectToUpf("10.200.200.2", "10.200.200.102", 2152, 2152)
 	assert.Nil(t, err)
 
 	// RAN2 send Second NGSetupRequest Msg
@@ -1384,7 +1326,7 @@ func TestN2Handover(t *testing.T) {
 	// New UE
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -1394,31 +1336,31 @@ func TestN2Handover(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -1429,7 +1371,7 @@ func TestN2Handover(t *testing.T) {
 		Len:    12, // suci
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -1536,7 +1478,7 @@ func TestN2Handover(t *testing.T) {
 		Dst:      net.ParseIP("60.60.0.101").To4(),
 		ID:       1,
 	}
-	checksum := ipv4HeaderChecksum(&ipv4hdr)
+	checksum := test.CalculateIpv4HeaderChecksum(&ipv4hdr)
 	ipv4hdr.Checksum = int(checksum)
 
 	v4HdrBuf, err := ipv4hdr.Marshal()
@@ -1624,7 +1566,7 @@ func TestN2Handover(t *testing.T) {
 	uplinkDataStatus := nasType.NewUplinkDataStatus(nasMessage.RegistrationRequestUplinkDataStatusType)
 	uplinkDataStatus.SetLen(2)
 	uplinkDataStatus.SetPSI10(1)
-	ueSecurityCapability = setUESecurityCapability(targetUe)
+	ueSecurityCapability = targetUe.GetUESecurityCapability()
 	pdu = nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSMobilityRegistrationUpdating, mobileIdentity5GS, nil, uplinkDataStatus, ueSecurityCapability)
 	pdu, err = test.EncodeNasPduWithSecurity(targetUe, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
 	assert.Nil(t, err)
@@ -1680,11 +1622,11 @@ func TestDuplicateRegistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
-	upfConn, err := connectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1703,7 +1645,7 @@ func TestDuplicateRegistration(t *testing.T) {
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA0)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -1713,31 +1655,31 @@ func TestDuplicateRegistration(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -1748,7 +1690,7 @@ func TestDuplicateRegistration(t *testing.T) {
 		Len:    12, // suci
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -1885,7 +1827,7 @@ func TestDuplicateRegistration(t *testing.T) {
 		Dst:      net.ParseIP("60.60.0.101").To4(),
 		ID:       1,
 	}
-	checksum := ipv4HeaderChecksum(&ipv4hdr)
+	checksum := test.CalculateIpv4HeaderChecksum(&ipv4hdr)
 	ipv4hdr.Checksum = int(checksum)
 
 	v4HdrBuf, err := ipv4hdr.Marshal()
@@ -1936,7 +1878,7 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	}()
 
 	// RAN connect to AMF
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1955,7 +1897,7 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA0)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -1965,31 +1907,31 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -2000,7 +1942,7 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 		Len:    12, // suci
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -2111,48 +2053,17 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	conn.Close()
 }
 
-func setUESecurityCapability(ue *test.RanUeContext) (UESecurityCapability *nasType.UESecurityCapability) {
-	UESecurityCapability = &nasType.UESecurityCapability{
-		Iei:    nasMessage.RegistrationRequestUESecurityCapabilityType,
-		Len:    8,
-		Buffer: []uint8{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-	}
-	switch ue.CipheringAlg {
-	case security.AlgCiphering128NEA0:
-		UESecurityCapability.SetEA0_5G(1)
-	case security.AlgCiphering128NEA1:
-		UESecurityCapability.SetEA1_128_5G(1)
-	case security.AlgCiphering128NEA2:
-		UESecurityCapability.SetEA2_128_5G(1)
-	case security.AlgCiphering128NEA3:
-		UESecurityCapability.SetEA3_128_5G(1)
-	}
-
-	switch ue.IntegrityAlg {
-	case security.AlgIntegrity128NIA0:
-		UESecurityCapability.SetIA0_5G(1)
-	case security.AlgIntegrity128NIA1:
-		UESecurityCapability.SetIA1_128_5G(1)
-	case security.AlgIntegrity128NIA2:
-		UESecurityCapability.SetIA2_128_5G(1)
-	case security.AlgIntegrity128NIA3:
-		UESecurityCapability.SetIA3_128_5G(1)
-	}
-
-	return
-}
-
 func TestReSynchronisation(t *testing.T) {
 	var n int
 	var sendMsg []byte
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := conntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
-	upfConn, err := connectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -2171,7 +2082,7 @@ func TestReSynchronisation(t *testing.T) {
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
 	ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
+	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
 		TestGenAuthData.MilenageTestSet19.OPC,
 		TestGenAuthData.MilenageTestSet19.OP)
 	// insert UE data to MongoDB
@@ -2181,31 +2092,31 @@ func TestReSynchronisation(t *testing.T) {
 	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
 	assert.NotNil(t, getData)
 	{
-		amData := getAccessAndMobilitySubscriptionData()
+		amData := test.GetAccessAndMobilitySubscriptionData()
 		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
 		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smfSelData := getSmfSelectionSubscriptionData()
+		smfSelData := test.GetSmfSelectionSubscriptionData()
 		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
 		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		smSelData := getSessionManagementSubscriptionData()
+		smSelData := test.GetSessionManagementSubscriptionData()
 		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
 		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
 		assert.NotNil(t, getData)
 	}
 	{
-		amPolicyData := getAmPolicyData()
+		amPolicyData := test.GetAmPolicyData()
 		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
 		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
 	}
 	{
-		smPolicyData := getSmPolicyData()
+		smPolicyData := test.GetSmPolicyData()
 		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
 		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
 		assert.NotNil(t, getData)
@@ -2217,7 +2128,7 @@ func TestReSynchronisation(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
@@ -2407,7 +2318,7 @@ func TestReSynchronisation(t *testing.T) {
 		Dst:      net.ParseIP("60.60.0.101").To4(),
 		ID:       1,
 	}
-	checksum := ipv4HeaderChecksum(&ipv4hdr)
+	checksum := test.CalculateIpv4HeaderChecksum(&ipv4hdr)
 	ipv4hdr.Checksum = int(checksum)
 
 	v4HdrBuf, err := ipv4hdr.Marshal()
