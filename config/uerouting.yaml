@@ -38,4 +38,4 @@ pfdDataForApp:
     pfds:
       - pfdID: pfd1
         flowDescriptions:
-          - permit in ip from 60.60.0.1 80 to any
+          - permit out ip from 60.60.0.1 8080 to any
