@@ -22,8 +22,11 @@ run:
     - release
     - lib/openapi
     - lib/ngap/ngapType
+    - ngapType
     - lib/nas/nasType
+    - nasType
     - lib/nas/nasMessage
+    - nasMessage
     - lib/CommonConsumerTestData
   # default is true. Enables skipping of directories:
   #   vendor$, third_party$, testdata$, examples$, Godeps$, builtin$
