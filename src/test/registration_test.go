@@ -2152,7 +2152,7 @@ func TestReSynchronisation(t *testing.T) {
 	AK := make([]byte, 6)
 
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
-	milenage.F2345_Test(OPC, K, rand[:], nil, nil, nil, AK, nil)
+	milenage.F2345(OPC, K, rand[:], nil, nil, nil, AK, nil)
 	autn := nasPdu.AuthenticationRequest.GetAUTN()
 	SQNxorAK := autn[:6]
 	for i := 0; i < 6; i++ {
@@ -2182,8 +2182,8 @@ func TestReSynchronisation(t *testing.T) {
 	RES := make([]byte, 8)
 	AK, AKstar := make([]byte, 6), make([]byte, 6)
 	AMF, _ := hex.DecodeString("0000")
-	milenage.F1_Test(OPC, K, rand[:], newSqnMs, AMF, MAC_A, MAC_S)
-	milenage.F2345_Test(OPC, K, rand[:], RES, CK, IK, AK, AKstar)
+	milenage.F1(OPC, K, rand[:], newSqnMs, AMF, MAC_A, MAC_S)
+	milenage.F2345(OPC, K, rand[:], RES, CK, IK, AK, AKstar)
 
 	SQNmsxorAK := make([]byte, 6)
 	for i := 0; i < len(SQN); i++ {
@@ -2216,7 +2216,7 @@ func TestReSynchronisation(t *testing.T) {
 	assert.NotNil(t, nasPdu)
 	rand = nasPdu.AuthenticationRequest.GetRANDValue()
 
-	milenage.F2345_Test(OPC, K, rand[:], nil, nil, nil, AK, nil)
+	milenage.F2345(OPC, K, rand[:], nil, nil, nil, AK, nil)
 	autn = nasPdu.AuthenticationRequest.GetAUTN()
 	SQNxorAK = autn[:6]
 
