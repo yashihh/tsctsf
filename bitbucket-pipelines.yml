@@ -8,25 +8,25 @@ image: golang:1.12.9
 pipelines:
   pull-requests:
     "**":
-      #- step:
-      #    name: Check coding style
-      #    size: 2x
-      #    script:
-      #      - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.19.0
-      #      - git remote -v
-      #      - git remote set-url origin git@bitbucket.org:free5gc-team/free5gc
-      #      - git submodule update --init --jobs `nproc`
-      #      - golangci-lint run ./...
-      - step:
-          name: Build Project
-          trigger: manual
-          caches:
-            - gopackage
-          script:
-            - git submodule update --init --jobs `nproc`
-            - go get -v
-            - go build ./... -v
-              #- go test ./... -v -cover -race
+      - parallel:
+          - step:
+              caches:
+                - gopackage
+              name: Check coding style
+              size: 2x
+              script:
+                - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.28.0
+                - git submodule update --init -j 30
+                - golangci-lint run ./...
+          - step:
+              caches:
+                - gopackage
+              name: Unit test
+              size: 2x
+              script:
+                - go get -u gotest.tools/gotestsum
+                - git submodule update --init -j 30
+                - gotestsum ./... -v -cover -race
   custom:
     schedule:
       - step:
