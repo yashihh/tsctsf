@@ -117,16 +117,16 @@ func (ue *RanUeContext) DeriveRESstarAndSetKey(authSubs models.AuthenticationSub
 
 		}
 
-		milenage.GenerateOPC(k, op, opc)
+		opc, _ = milenage.GenerateOPC(k, op)
 	} else {
 		opc, _ = hex.DecodeString(authSubs.Opc.OpcValue)
 	}
 
 	// Generate MAC_A, MAC_S
-	milenage.F1_Test(opc, k, rand, sqn, amf, macA, macS)
+	milenage.F1(opc, k, rand, sqn, amf, macA, macS)
 
 	// Generate RES, CK, IK, AK, AKstar
-	milenage.F2345_Test(opc, k, rand, res, ck, ik, ak, akStar)
+	milenage.F2345(opc, k, rand, res, ck, ik, ak, akStar)
 
 	// derive RES*
 	key := append(ck, ik...)
