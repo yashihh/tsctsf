@@ -149,11 +149,12 @@ You can use `go version` to check your current Go version.
 3. Compile network function services in `free5gc` individually, e.g. AMF (redo this step for each NF), or
     ```bash
     cd ~/free5gc
-    go build -o bin/amf -x src/amf/amf.go
+    make amf
     ```
     **To build all network functions in one command**
     ```bash
-    ./build.sh
+    cd ~/free5gc
+    make all
     ```
 
 
@@ -172,7 +173,13 @@ You can use `go version` to check your current Go version.
     make
     sudo make install
     ```
-2. Build from sources
+
+2. Build from sources (skip this step if you run make all previously) via make, or
+    ```bash
+    cd ~/free5gc
+    make upf
+    ```
+    build manually
     ```bash
     cd ~/free5gc/src/upf
     mkdir build
