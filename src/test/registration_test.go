@@ -116,7 +116,8 @@ func TestRegistration(t *testing.T) {
 	}
 
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -328,7 +329,8 @@ func TestDeregistration(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -500,7 +502,8 @@ func TestServiceRequest(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -713,7 +716,8 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -928,7 +932,8 @@ func TestXnHandover(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -1111,7 +1116,8 @@ func TestPaging(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -1372,7 +1378,8 @@ func TestN2Handover(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -1567,7 +1574,8 @@ func TestN2Handover(t *testing.T) {
 	uplinkDataStatus.SetLen(2)
 	uplinkDataStatus.SetPSI10(1)
 	ueSecurityCapability = targetUe.GetUESecurityCapability()
-	pdu = nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSMobilityRegistrationUpdating, mobileIdentity5GS, nil, uplinkDataStatus, ueSecurityCapability)
+	pdu = nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSMobilityRegistrationUpdating, mobileIdentity5GS, nil, uplinkDataStatus, ueSecurityCapability, nil)
 	pdu, err = test.EncodeNasPduWithSecurity(targetUe, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
 	assert.Nil(t, err)
 	sendMsg, err = test.GetInitialUEMessage(targetUe.RanUeNgapId, pdu, "")
@@ -1691,7 +1699,8 @@ func TestDuplicateRegistration(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -1943,7 +1952,8 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -2129,7 +2139,8 @@ func TestReSynchronisation(t *testing.T) {
 	}
 
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
