@@ -217,3 +217,11 @@ func (ue *RanUeContext) GetUESecurityCapability() (UESecurityCapability *nasType
 
 	return
 }
+
+func (ue *RanUeContext) Get5GMMCapability() (capability5GMM *nasType.Capability5GMM) {
+	return &nasType.Capability5GMM{
+		Iei:   nasMessage.RegistrationRequestCapability5GMMType,
+		Len:   1,
+		Octet: [13]uint8{0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+	}
+}
