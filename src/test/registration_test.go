@@ -934,6 +934,15 @@ func TestGUTIRegistration(t *testing.T) {
 	_, err = conn.Write(sendMsg)
 	require.Nil(t, err)
 
+	// send NAS Registration Complete Msg
+	pdu = nasTestpacket.GetRegistrationComplete(nil)
+	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
+	assert.Nil(t, err)
+	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
+
 	time.Sleep(1000 * time.Millisecond)
 
 	// delete test data
