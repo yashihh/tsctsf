@@ -752,7 +752,7 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Nil(t, err)
 
 	// Calculate for RES*
-	nasPdu := test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
@@ -827,7 +827,7 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, ngapType.NGAPPDUPresentInitiatingMessage, ngapMsg.Present)
 	require.Equal(t, ngapType.ProcedureCodeDownlinkNASTransport, ngapMsg.InitiatingMessage.ProcedureCode.Value)
 	require.Equal(t, ngapType.InitiatingMessagePresentDownlinkNASTransport, ngapMsg.InitiatingMessage.Value.Present)
-	nasPdu = test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
 	require.NotNil(t, nasPdu.GmmMessage)
 	require.Equal(t, nas.MsgTypeDeregistrationAcceptUEOriginatingDeregistration, nasPdu.GmmMessage.GmmHeader.GetMessageType())
@@ -869,7 +869,7 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, ngapType.NGAPPDUPresentInitiatingMessage, ngapMsg.Present)
 	require.Equal(t, ngapType.ProcedureCodeDownlinkNASTransport, ngapMsg.InitiatingMessage.ProcedureCode.Value)
 	require.Equal(t, ngapType.InitiatingMessagePresentDownlinkNASTransport, ngapMsg.InitiatingMessage.Value.Present)
-	nasPdu = test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
 	require.NotNil(t, nasPdu.GmmMessage)
 	require.Equal(t, nas.MsgTypeIdentityRequest, nasPdu.GmmMessage.GmmHeader.GetMessageType())
@@ -894,7 +894,7 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, ngapType.NGAPPDUPresentInitiatingMessage, ngapMsg.Present)
 	require.Equal(t, ngapType.ProcedureCodeDownlinkNASTransport, ngapMsg.InitiatingMessage.ProcedureCode.Value)
 	require.Equal(t, ngapType.InitiatingMessagePresentDownlinkNASTransport, ngapMsg.InitiatingMessage.Value.Present)
-	nasPdu = test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
 	require.NotNil(t, nasPdu.GmmMessage)
 	require.Equal(t, nas.MsgTypeAuthenticationRequest, nasPdu.GmmMessage.GmmHeader.GetMessageType())
@@ -921,10 +921,10 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, ngapType.NGAPPDUPresentInitiatingMessage, ngapMsg.Present)
 	require.Equal(t, ngapType.ProcedureCodeDownlinkNASTransport, ngapMsg.InitiatingMessage.ProcedureCode.Value)
 	require.Equal(t, ngapType.InitiatingMessagePresentDownlinkNASTransport, ngapMsg.InitiatingMessage.Value.Present)
-	// nasPdu = test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	// require.NotNil(t, nasPdu)
-	// require.NotNil(t, nasPdu.GmmMessage)
-	// require.Equal(t, nas.MsgTypeSecurityModeCommand, nasPdu.GmmMessage.GmmHeader.GetMessageType())
+	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage)
+	require.Equal(t, nas.MsgTypeSecurityModeCommand, nasPdu.GmmMessage.GmmHeader.GetMessageType())
 
 	// send NAS Security Mode Complete Msg
 	pdu = nasTestpacket.GetSecurityModeComplete(nil)
@@ -2486,7 +2486,7 @@ func TestReSynchronisation(t *testing.T) {
 	ngapMsg, err := ngap.Decoder(recvMsg[:n])
 	assert.Nil(t, err)
 
-	nasPdu := test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	assert.NotNil(t, nasPdu)
 
 	// gen AK
@@ -2557,7 +2557,7 @@ func TestReSynchronisation(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Calculate for RES*
-	nasPdu = test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	assert.NotNil(t, nasPdu)
 	rand = nasPdu.AuthenticationRequest.GetRANDValue()
 
