@@ -190,8 +190,8 @@ func (ue *RanUeContext) DerivateAlgKey() {
 func (ue *RanUeContext) GetUESecurityCapability() (UESecurityCapability *nasType.UESecurityCapability) {
 	UESecurityCapability = &nasType.UESecurityCapability{
 		Iei:    nasMessage.RegistrationRequestUESecurityCapabilityType,
-		Len:    8,
-		Buffer: []uint8{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+		Len:    2,
+		Buffer: []uint8{0x00, 0x00},
 	}
 	switch ue.CipheringAlg {
 	case security.AlgCiphering128NEA0:
