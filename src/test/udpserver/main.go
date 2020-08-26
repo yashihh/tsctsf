@@ -2,16 +2,45 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
+	"os"
+
+	"github.com/urfave/cli"
 )
 
-const cnPort string = "30000"
-
 func main() {
-	src := "0.0.0.0:" + cnPort
+	app := cli.NewApp()
+	app.Name = "UDP echo server"
+	app.Usage = "./udpecho"
+	app.Action = action
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "addr, a",
+			Value: "0.0.0.0",
+			Usage: "Set local UDP address to listen",
+		},
+		cli.StringFlag{
+			Name:  "port, p",
+			Value: "30000",
+			Usage: "Set local UDP port to listen",
+		},
+	}
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func serve(listener net.PacketConn, addr net.Addr, buf []byte) {
+	fmt.Printf("%s\t: %s\n", addr, buf)
+	listener.WriteTo(buf, addr)
+}
+
+func action(c *cli.Context) error {
+	src := c.String("addr") + ":" + c.String("port")
 	listener, err := net.ListenPacket("udp", src)
 	if err != nil {
-		fmt.Println(err.Error())
+		err = fmt.Errorf("ListenPacket: %v", err)
 	}
 	defer listener.Close()
 
@@ -19,16 +48,12 @@ func main() {
 
 	for {
 		buf := make([]byte, 1024)
-		n, addr, err := listener.ReadFrom(buf)
-		if err != nil {
-			continue
+		n, addr, err1 := listener.ReadFrom(buf)
+		if err1 != nil {
+			err = fmt.Errorf("ReadFrom: %v", err1)
+			return err
 		}
 		go serve(listener, addr, buf[:n])
 
 	}
-}
-
-func serve(listener net.PacketConn, addr net.Addr, buf []byte) {
-	fmt.Printf("%s\t: %s\n", addr, buf)
-	listener.WriteTo([]byte("message recived!\n"), addr)
 }

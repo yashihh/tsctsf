@@ -88,7 +88,7 @@ func (u *udphdr) checksum(ip *iphdr, payload []byte) {
 	u.csum = checksum(b.Bytes())
 }
 
-func BuildRawUdpIp(srcIP, dstIP string, srcPort, dstPort int, payload []byte) ([]byte, error) {
+func BuildRawUdpIp(srcIP, dstIP string, srcPort, dstPort uint16, payload []byte) ([]byte, error) {
 	var err error
 
 	ip := iphdr{
@@ -103,8 +103,8 @@ func BuildRawUdpIp(srcIP, dstIP string, srcPort, dstPort int, payload []byte) ([
 	// iplen and csum set later
 
 	udp := udphdr{
-		src: uint16(srcPort),
-		dst: uint16(dstPort),
+		src: srcPort,
+		dst: dstPort,
 	}
 	// ulen and csum set later
 
