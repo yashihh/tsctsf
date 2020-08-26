@@ -183,7 +183,9 @@ func ueRanEmulator() error {
 	mobileIdentity5GS := encodeSuci([]byte(strings.TrimPrefix(uerancfg.Supi, "imsi-")), len(uerancfg.Mnc))
 
 	ueSecurityCapability := ue.GetUESecurityCapability()
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, *mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(
+		nasMessage.RegistrationType5GSInitialRegistration,
+		*mobileIdentity5GS, nil, nil, ueSecurityCapability, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	if err != nil {
 		return err
@@ -204,7 +206,7 @@ func ueRanEmulator() error {
 	}
 
 	// Calculate for RES*
-	nasPdu := test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	if nasPdu == nil {
 		err = fmt.Errorf("GetNasPdu failed")
 		return err
