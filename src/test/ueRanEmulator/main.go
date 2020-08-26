@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"free5gc/lib/CommonConsumerTestData/UDM/TestGenAuthData"
-	"free5gc/lib/MongoDBLibrary"
 	"free5gc/lib/nas"
 	"free5gc/lib/nas/nasMessage"
 	"free5gc/lib/nas/nasTestpacket"
@@ -12,33 +10,124 @@ import (
 	"free5gc/lib/ngap"
 	"free5gc/lib/openapi/models"
 	"free5gc/src/test"
+	"io/ioutil"
 	"log"
 	"net"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/urfave/cli"
+	"gopkg.in/yaml.v2"
 )
 
-const n2AmfIP string = "127.0.0.1"
-const n2RanIP string = "127.0.0.1"
-const n2AmfPort int = 38412
-const n2RanPort int = 9487
-const n3RanIP string = "10.200.200.1"
-const n3UpfIP string = "10.200.200.102"
-const n3RanPort int = 2152
-const n3UpfPort int = 2152
-const ueIP string = "60.60.0.1"
-const cnIP string = "60.60.0.101"
-const uePort int = 30000
-const cnPort int = 30000
-const supi string = "imsi-2089300007487"
-const mcc string = "208"
-const mnc string = "93"
-const ngapID int64 = 1
-const teID int = 1
-const snssaiSST int32 = 1
-const snssaiSD string = "010203"
+type n2Amf struct {
+	Addr string `yaml:"addr,omitempty"`
+	Port uint16 `yaml:"port,omitempty"`
+}
+
+type n2Ran struct {
+	Addr string `yaml:"addr,omitempty"`
+	Port uint16 `yaml:"port,omitempty"`
+}
+
+type n3Upf struct {
+	Addr string `yaml:"addr,omitempty"`
+	Port uint16 `yaml:"port,omitempty"`
+}
+
+type n3Ran struct {
+	Addr string `yaml:"addr,omitempty"`
+	Port uint16 `yaml:"port,omitempty"`
+}
+
+type rawUDP struct {
+	SrcIP   string `yaml:"srcIP,omitempty"`
+	SrcPort uint16 `yaml:"srcPort,omitempty"`
+	DstIP   string `yaml:"dstIP,omitempty"`
+	DstPort uint16 `yaml:"dstPort,omitempty"`
+}
+
+type snssai struct {
+	Sst int32  `yaml:"sst,omitempty"`
+	Sd  string `yaml:"sd,omitempty"`
+}
+
+type Configuration struct {
+	N2Amf *n2Amf `yaml:"n2Amf,omitempty"`
+
+	N2Ran *n2Ran `yaml:"n2Ran,omitempty"`
+
+	N3Upf *n3Upf `yaml:"n3Upf,omitempty"`
+
+	N3Ran *n3Ran `yaml:"n3Ran,omitempty"`
+
+	RawUDP *rawUDP `yaml:"rawUDP,omitempty"`
+
+	Supi string `yaml:"supi,omitempty"`
+
+	Mcc string `yaml:"mcc,omitempty"`
+
+	Mnc string `yaml:"mnc,omitempty"`
+
+	K string `yaml:"k,omitempty"`
+
+	Opc string `yaml:"opc,omitempty"`
+
+	Op string `yaml:"op,omitempty"`
+
+	NgapID int64 `yaml:"ngapID,omitempty"`
+
+	TeID uint32 `yaml:"teID,omitempty"`
+
+	Snssai *snssai `yaml:"snssai,omitempty"`
+}
+
+var uerancfg Configuration
+
+func hexCharToByte(c byte) byte {
+	switch {
+	case '0' <= c && c <= '9':
+		return c - '0'
+	case 'a' <= c && c <= 'f':
+		return c - 'a' + 10
+	case 'A' <= c && c <= 'F':
+		return c - 'A' + 10
+	}
+
+	return 0
+}
+
+func encodeSuci(imsi []byte, mncLen int) *nasType.MobileIdentity5GS {
+	var msin []byte
+	suci := nasType.MobileIdentity5GS{
+		Buffer: []uint8{nasMessage.SupiFormatImsi<<4 | nasMessage.MobileIdentity5GSTypeSuci, 0x0, 0x0, 0x0, 0xf0, 0xff, 0x00, 0x00},
+	}
+
+	//mcc & mnc
+	suci.Buffer[1] = hexCharToByte(imsi[1])<<4 | hexCharToByte(imsi[0])
+	if mncLen > 2 {
+		suci.Buffer[2] = hexCharToByte(imsi[3])<<4 | hexCharToByte(imsi[2])
+		suci.Buffer[3] = hexCharToByte(imsi[5])<<4 | hexCharToByte(imsi[4])
+		msin = imsi[6:]
+	} else {
+		suci.Buffer[2] = 0xf<<4 | hexCharToByte(imsi[2])
+		suci.Buffer[3] = hexCharToByte(imsi[4])<<4 | hexCharToByte(imsi[3])
+		msin = imsi[5:]
+	}
+
+	for i := 0; i < len(msin); i += 2 {
+		suci.Buffer = append(suci.Buffer, 0x0)
+		j := len(suci.Buffer) - 1
+		if i+1 == len(msin) {
+			suci.Buffer[j] = 0xf<<4 | hexCharToByte(msin[i])
+		} else {
+			suci.Buffer[j] = hexCharToByte(msin[i+1])<<4 | hexCharToByte(msin[i])
+		}
+	}
+	suci.Len = uint16(len(suci.Buffer))
+	return &suci
+}
 
 func ueRanEmulator() error {
 	var n int
@@ -46,7 +135,7 @@ func ueRanEmulator() error {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf(n2AmfIP, n2RanIP, n2AmfPort, n2RanPort)
+	conn, err := test.ConntectToAmf(uerancfg.N2Amf.Addr, uerancfg.N2Ran.Addr, int(uerancfg.N2Amf.Port), int(uerancfg.N2Ran.Port))
 	if err != nil {
 		err = fmt.Errorf("ConntectToAmf: %v", err)
 		return err
@@ -55,7 +144,7 @@ func ueRanEmulator() error {
 	fmt.Printf("[UERANEM] Conntect to AMF successfully\n")
 
 	// RAN connect to UPF
-	upfConn, err := test.ConnectToUpf(n3RanIP, n3UpfIP, n3RanPort, n3UpfPort)
+	upfConn, err := test.ConnectToUpf(uerancfg.N3Ran.Addr, uerancfg.N3Upf.Addr, int(uerancfg.N3Ran.Port), int(uerancfg.N3Upf.Port))
 	if err != nil {
 		err = fmt.Errorf("ConnectToUpf: %v", err)
 		return err
@@ -87,76 +176,15 @@ func ueRanEmulator() error {
 
 	// New UE
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
-	ue := test.NewRanUeContext(supi, ngapID, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
-	ue.AmfUeNgapId = ngapID
-	ue.AuthenticationSubs = test.GetAuthSubscription(TestGenAuthData.MilenageTestSet19.K,
-		TestGenAuthData.MilenageTestSet19.OPC,
-		TestGenAuthData.MilenageTestSet19.OP)
-	// insert UE data to MongoDB
+	ue := test.NewRanUeContext(uerancfg.Supi, uerancfg.NgapID, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
+	ue.AmfUeNgapId = uerancfg.NgapID
+	ue.AuthenticationSubs = test.GetAuthSubscription(uerancfg.K, uerancfg.Opc, uerancfg.Op)
 
-	servingPlmnID := mcc + mnc
-	test.InsertAuthSubscriptionToMongoDB(ue.Supi, ue.AuthenticationSubs)
-	getData := test.GetAuthSubscriptionFromMongoDB(ue.Supi)
-	if getData == nil {
-		err = fmt.Errorf("GetAuthSubscriptionFromMongoDB failed")
-		return err
-	}
-	{
-		amData := test.GetAccessAndMobilitySubscriptionData()
-		test.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnID)
-		getData := test.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnID)
-		if getData == nil {
-			err = fmt.Errorf("GetAccessAndMobilitySubscriptionDataFromMongoDB failed")
-			return err
-		}
-	}
-	{
-		smfSelData := test.GetSmfSelectionSubscriptionData()
-		test.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnID)
-		getData := test.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnID)
-		if getData == nil {
-			err = fmt.Errorf("GetSmfSelectionSubscriptionDataFromMongoDB failed")
-			return err
-		}
-	}
-	{
-		smSelData := test.GetSessionManagementSubscriptionData()
-		test.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnID, smSelData)
-		getData := test.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnID)
-		if getData == nil {
-			err = fmt.Errorf("GetSessionManagementDataFromMongoDB failed")
-			return err
-		}
-	}
-	{
-		amPolicyData := test.GetAmPolicyData()
-		test.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
-		getData := test.GetAmPolicyDataFromMongoDB(ue.Supi)
-		if getData == nil {
-			err = fmt.Errorf("GetAmPolicyDataFromMongoDB failed")
-			return err
-		}
-	}
-	{
-		smPolicyData := test.GetSmPolicyData()
-		test.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
-		getData := test.GetSmPolicyDataFromMongoDB(ue.Supi)
-		if getData == nil {
-			err = fmt.Errorf("GetSmPolicyDataFromMongoDB failed")
-			return err
-		}
-	}
-	fmt.Printf("[UERANEM] Insert data to MongoDB successfully\n")
-
-	// send InitialUeMessage(Registration Request)(imsi-2089300007487)
-	mobileIdentity5GS := nasType.MobileIdentity5GS{
-		Len:    12, // suci
-		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
-	}
+	mobileIdentity5GS := encodeSuci([]byte(strings.TrimPrefix(uerancfg.Supi, "imsi-")), len(uerancfg.Mnc))
 
 	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
-		mobileIdentity5GS, nil, ueSecurityCapability, nil, nil, nil)
+		*mobileIdentity5GS, nil, ueSecurityCapability, nil, nil, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	if err != nil {
 		return err
@@ -177,7 +205,7 @@ func ueRanEmulator() error {
 	}
 
 	// Calculate for RES*
-	nasPdu := test.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	if nasPdu == nil {
 		err = fmt.Errorf("GetNasPdu failed")
 		return err
@@ -185,12 +213,12 @@ func ueRanEmulator() error {
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 
 	var mncPad string
-	if len(mnc) == 2 {
-		mncPad = "0" + mnc
+	if len(uerancfg.Mnc) == 2 {
+		mncPad = "0" + uerancfg.Mnc
 	} else {
-		mncPad = mnc
+		mncPad = uerancfg.Mnc
 	}
-	snName := "5G:mnc" + mncPad + ".mcc" + mcc + ".3gppnetwork.org"
+	snName := "5G:mnc" + mncPad + ".mcc" + uerancfg.Mcc + ".3gppnetwork.org"
 
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], snName)
 
@@ -217,7 +245,7 @@ func ueRanEmulator() error {
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
-		mobileIdentity5GS, nil, ueSecurityCapability, nil, nil, nil)
+		*mobileIdentity5GS, nil, ueSecurityCapability, nil, nil, nil)
 	pdu = nasTestpacket.GetSecurityModeComplete(registrationRequestWith5GMM)
 	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCipheredWithNew5gNasSecurityContext, true, true)
 	if err != nil {
@@ -272,8 +300,8 @@ func ueRanEmulator() error {
 	// send GetPduSessionEstablishmentRequest Msg
 
 	sNssai := models.Snssai{
-		Sst: snssaiSST,
-		Sd:  snssaiSD,
+		Sst: uerancfg.Snssai.Sst,
+		Sd:  uerancfg.Snssai.Sd,
 	}
 	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(10, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet", &sNssai)
 	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
@@ -300,7 +328,7 @@ func ueRanEmulator() error {
 	}
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(ue.AmfUeNgapId, ue.RanUeNgapId, n3RanIP)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(ue.AmfUeNgapId, ue.RanUeNgapId, uerancfg.N3Ran.Addr)
 	if err != nil {
 		return err
 	}
@@ -323,21 +351,17 @@ func ueRanEmulator() error {
 		time.Sleep(1 * time.Second)
 	}
 
-	// delete test data
-	test.DelAuthSubscriptionToMongoDB(ue.Supi)
-	test.DelAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnID)
-	test.DelSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnID)
 	return err
 }
 
 func sendGTP(conn *net.UDPConn, msg string) error {
-	pkt, err := test.BuildRawUdpIp(ueIP, cnIP, uePort, cnPort, []byte(msg))
+	pkt, err := test.BuildRawUdpIp(uerancfg.RawUDP.SrcIP, uerancfg.RawUDP.DstIP, uerancfg.RawUDP.SrcPort, uerancfg.RawUDP.DstPort, []byte(msg))
 	if err != nil {
 		return err
 	}
 
 	// build GTPv1 header
-	gtpHdr, err := test.BuildGTPv1Header(false, 0, false, 0, false, 0, uint16(len(pkt)), uint32(teID))
+	gtpHdr, err := test.BuildGTPv1Header(false, 0, false, 0, false, 0, uint16(len(pkt)), uerancfg.TeID)
 	if err != nil {
 		return err
 	}
@@ -354,15 +378,40 @@ func main() {
 	app.Name = "UE RAN Emulator"
 	app.Usage = "./ueranem"
 	app.Action = action
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "config, c",
+			Value: "./config/ueranem.conf",
+			Usage: "Load configuration from `FILE`",
+		},
+	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func action(c *cli.Context) error {
-	// Connect to MongoDB
-	MongoDBLibrary.SetMongoDB("free5gc", "mongodb://127.0.0.1:27017")
+func initConfigFactory(f string) error {
+	content, err := ioutil.ReadFile(f)
+	if err != nil {
+		err = fmt.Errorf("ReadFile: %v", err)
+		return err
+	}
 
+	uerancfg = Configuration{}
+
+	if err = yaml.Unmarshal([]byte(content), &uerancfg); err != nil {
+		err = fmt.Errorf("Unmarshal: %v", err)
+		return err
+	}
+
+	fmt.Printf("Load configuration %s successfully\n", f)
+	return nil
+}
+
+func action(c *cli.Context) error {
+	if err := initConfigFactory(c.String("config")); err != nil {
+		return err
+	}
 	err := ueRanEmulator()
 	return err
 }
