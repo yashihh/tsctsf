@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: golang:1.12.9
+image: golang:1.14.4
 
 pipelines:
   pull-requests:
@@ -33,7 +33,7 @@ pipelines:
           name: Check coding style
           size: 2x
           script:
-            - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.19.0
+            - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.28.0
             - golangci-lint run ./...
       - step:
           name: release patch and fork
