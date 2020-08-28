@@ -3,51 +3,31 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: golang:1.12.9
+image: golang:1.14.4
 
 pipelines:
   pull-requests:
     "**":
-      #- step:
-      #    name: Check coding style
-      #    size: 2x
-      #    script:
-      #      - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.19.0
-      #      - git remote -v
-      #      - git remote set-url origin git@bitbucket.org:free5gc-team/free5gc
-      #      - git submodule update --init --jobs `nproc`
-      #      - golangci-lint run ./...
-      - step:
-          name: Build Project
-          trigger: manual
-          caches:
-            - gopackage
-          script:
-            - git submodule update --init --jobs `nproc`
-            - go get -v
-            - go build ./... -v
-              #- go test ./... -v -cover -race
-  custom:
-    schedule:
-      - step:
-          name: Check coding style
-          size: 2x
-          script:
-            - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.19.0
-            - golangci-lint run ./...
-      - step:
-          name: release patch and fork
-          caches:
-            - gopackage
-            - aptpackage
-          script:
-            - apt-get update && apt-get install -y rsync gcc cmake autoconf libtool pkg-config libmnl-dev libyaml-dev
-            - ./release/release.sh -w
-            - cd "./release/src/free5gc"
-            - git add -A
-            - git config user.name "free5GC" && git config user.email "free5gc.org@gmail.com"
-            - git commit -m "`date` Patch"
-            - git push origin master
+      - parallel:
+        - step:
+            caches:
+              - gopackage
+            name: Check coding style
+            size: 2x
+            script:
+              - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.28.0
+              - git submodule update --init --jobs `nproc`
+              - golangci-lint run ./...
+        - step:
+            caches:
+              - gopackage
+            name: Unit test
+            size: 2x
+            script:
+              - go get -u gotest.tools/gotestsum
+              - git submodule update --init --jobs `nproc`
+              - gotestsum ./... -v -cover -race
+
 
 definitions:
   caches:
