@@ -1,105 +1,105 @@
 [submodule "src/amf"]
 	path = src/amf
-	url = ../amf.git
+	url = git@bitbucket.org:free5gc-team/amf.git
 [submodule "src/smf"]
 	path = src/smf
-	url = ../smf.git
+	url = git@bitbucket.org:free5gc-team/smf.git
 [submodule "src/upf"]
 	path = src/upf
-	url = ../upf.git
+	url = git@bitbucket.org:free5gc-team/upf.git
 [submodule "src/ausf"]
 	path = src/ausf
-	url = ../ausf.git
+	url = git@bitbucket.org:free5gc-team/ausf.git
 [submodule "src/n3iwf"]
 	path = src/n3iwf
-	url = ../n3iwf.git
+	url = git@bitbucket.org:free5gc-team/n3iwf.git
 [submodule "src/nrf"]
 	path = src/nrf
-	url = ../nrf.git
+	url = git@bitbucket.org:free5gc-team/nrf.git
 [submodule "src/nssf"]
 	path = src/nssf
-	url = ../nssf.git
+	url = git@bitbucket.org:free5gc-team/nssf.git
 [submodule "src/pcf"]
 	path = src/pcf
-	url = ../pcf.git
+	url = git@bitbucket.org:free5gc-team/pcf.git
 [submodule "src/udm"]
 	path = src/udm
-	url = ../udm.git
+	url = git@bitbucket.org:free5gc-team/udm.git
 [submodule "src/udr"]
 	path = src/udr
-	url = ../udr.git
+	url = git@bitbucket.org:free5gc-team/udr.git
 [submodule "asn1c-s1ap"]
 	path = asn1c-s1ap
-	url = ../asn1c-s1ap.git
+	url = git@bitbucket.org:free5gc-team/asn1c-s1ap.git
 [submodule "webconsole"]
 	path = webconsole
-	url = ../webconsole.git
+	url = git@bitbucket.org:free5gc-team/webconsole.git
 [submodule "lib/CommonConsumerTestData"]
 	path = lib/CommonConsumerTestData
-	url = ../CommonConsumerTestData.git
+	url = git@bitbucket.org:free5gc-team/CommonConsumerTestData.git
 [submodule "lib/MongoDBLibrary"]
 	path = lib/MongoDBLibrary
-	url = ../MongoDBLibrary.git
+	url = git@bitbucket.org:free5gc-team/MongoDBLibrary.git
 [submodule "lib/TimeDecode"]
 	path = lib/TimeDecode
-	url = ../TimeDecode.git
+	url = git@bitbucket.org:free5gc-team/TimeDecode.git
 [submodule "lib/UeauCommon"]
 	path = lib/UeauCommon
-	url = ../UeauCommon.git
+	url = git@bitbucket.org:free5gc-team/UeauCommon.git
 [submodule "lib/aes"]
 	path = lib/aes
-	url = ../aes.git
+	url = git@bitbucket.org:free5gc-team/aes.git
 [submodule "lib/aper"]
 	path = lib/aper
-	url = ../aper.git
+	url = git@bitbucket.org:free5gc-team/aper.git
 [submodule "lib/flowdesc"]
 	path = lib/flowdesc
-	url = ../flowdesc.git
+	url = git@bitbucket.org:free5gc-team/flowdesc.git
 [submodule "lib/fsm"]
 	path = lib/fsm
-	url = ../fsm.git
+	url = git@bitbucket.org:free5gc-team/fsm.git
 [submodule "lib/http2_util"]
 	path = lib/http2_util
-	url = ../http2_util.git
+	url = git@bitbucket.org:free5gc-team/http2_util.git
 [submodule "lib/http_wrapper"]
 	path = lib/http_wrapper
-	url = ../http_wrapper.git
+	url = git@bitbucket.org:free5gc-team/http_wrapper.git
 [submodule "lib/logger_util"]
 	path = lib/logger_util
-	url = ../logger_util.git
+	url = git@bitbucket.org:free5gc-team/logger_util.git
 [submodule "lib/milenage"]
 	path = lib/milenage
-	url = ../milenage.git
+	url = git@bitbucket.org:free5gc-team/milenage.git
 [submodule "lib/nas"]
 	path = lib/nas
-	url = ../nas.git
+	url = git@bitbucket.org:free5gc-team/nas.git
 [submodule "lib/ngap"]
 	path = lib/ngap
-	url = ../ngap.git
+	url = git@bitbucket.org:free5gc-team/ngap.git
 [submodule "lib/openapi"]
 	path = lib/openapi
-	url = ../openapi.git
+	url = git@bitbucket.org:free5gc-team/openapi.git
 [submodule "lib/path_util"]
 	path = lib/path_util
-	url = ../path_util.git
+	url = git@bitbucket.org:free5gc-team/path_util.git
 [submodule "lib/pfcp"]
 	path = lib/pfcp
-	url = ../pfcp.git
+	url = git@bitbucket.org:free5gc-team/pfcp.git
 [submodule "lib/timer"]
 	path = lib/timer
-	url = ../timer.git
+	url = git@bitbucket.org:free5gc-team/timer.git
 [submodule "lib/tlv"]
 	path = lib/tlv
-	url = ../tlv.git
+	url = git@bitbucket.org:free5gc-team/tlv.git
 [submodule "lib/util_3gpp"]
 	path = lib/util_3gpp
-	url = ../util_3gpp.git
+	url = git@bitbucket.org:free5gc-team/util_3gpp.git
 [submodule "lib/logger_conf"]
 	path = lib/logger_conf
-	url = ../logger_conf.git
+	url = git@bitbucket.org:free5gc-team/logger_conf.git
 [submodule "free5gc-compose"]
 	path = compose
-	url = ../free5gc-compose.git
+	url = git@bitbucket.org:free5gc-team/free5gc-compose.git
 [submodule "lib/idgenerator"]
 	path = lib/idgenerator
-	url = ../idgenerator.git
+	url = git@bitbucket.org:free5gc-team/idgenerator.git
