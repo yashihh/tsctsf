@@ -7,7 +7,8 @@ import (
 	"reflect"
 )
 
-func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool, newSecurityContext bool) (payload []byte, err error) {
+func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool, newSecurityContext bool) (
+	payload []byte, err error) {
 	var sequenceNumber uint8
 	if ue == nil {
 		err = fmt.Errorf("amfUe is nil")
@@ -40,6 +41,7 @@ func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool
 		// add sequece number
 		payload = append([]byte{sequenceNumber}, payload[:]...)
 		mac32 := make([]byte, 4)
+		_ = mac32
 		// fmt.Println("sequenceNumber", sequenceNumber)
 		// fmt.Println("ue.IntegrityAlg", ue.IntegrityAlg)
 		// fmt.Println("ue.KnasInt", ue.KnasInt)
@@ -48,7 +50,8 @@ func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool
 		// fmt.Println("security.DirectionUplink", security.DirectionUplink)
 		// fmt.Println("payload", payload)
 
-		mac32, err = security.NASMacCalculate(ue.IntegrityAlg, ue.KnasInt, ue.ULCount.Get(), security.Bearer3GPP, security.DirectionUplink, payload)
+		mac32, err = security.NASMacCalculate(ue.IntegrityAlg, ue.KnasInt, ue.ULCount.Get(),
+			security.Bearer3GPP, security.DirectionUplink, payload)
 		if err != nil {
 			return
 		}
@@ -62,7 +65,7 @@ func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool
 		// Increase UL Count
 		ue.ULCount.AddOne()
 	}
-	return
+	return payload, err
 }
 
 func NASDecode(ue *RanUeContext, securityHeaderType uint8, payload []byte) (msg *nas.Message, err error) {
@@ -93,7 +96,8 @@ func NASDecode(ue *RanUeContext, securityHeaderType uint8, payload []byte) (msg 
 		err = msg.PlainNasDecode(&payload)
 		return
 	} else {
-		if securityHeaderType == nas.SecurityHeaderTypeIntegrityProtectedWithNew5gNasSecurityContext || securityHeaderType == nas.SecurityHeaderTypeIntegrityProtectedAndCipheredWithNew5gNasSecurityContext {
+		if securityHeaderType == nas.SecurityHeaderTypeIntegrityProtectedWithNew5gNasSecurityContext ||
+			securityHeaderType == nas.SecurityHeaderTypeIntegrityProtectedAndCipheredWithNew5gNasSecurityContext {
 			ue.DLCount.Set(0, 0)
 		}
 
@@ -110,10 +114,10 @@ func NASDecode(ue *RanUeContext, securityHeaderType uint8, payload []byte) (msg 
 		ue.DLCount.SetSQN(sequenceNumber)
 
 		if ue.IntegrityAlg != security.AlgIntegrity128NIA0 {
-			mac32, err := security.NASMacCalculate(ue.IntegrityAlg, ue.KnasInt, ue.DLCount.Get(), security.Bearer3GPP,
+			mac32, errNas := security.NASMacCalculate(ue.IntegrityAlg, ue.KnasInt, ue.DLCount.Get(), security.Bearer3GPP,
 				security.DirectionDownlink, payload)
-			if err != nil {
-				return nil, err
+			if errNas != nil {
+				return nil, errNas
 			}
 			if !reflect.DeepEqual(mac32, receivedMac32) {
 				fmt.Printf("NAS MAC verification failed(0x%x != 0x%x)", mac32, receivedMac32)
@@ -133,6 +137,5 @@ func NASDecode(ue *RanUeContext, securityHeaderType uint8, payload []byte) (msg 
 	}
 	err = msg.PlainNasDecode(&payload)
 	fmt.Println("err", err)
-	return
-
+	return msg, err
 }

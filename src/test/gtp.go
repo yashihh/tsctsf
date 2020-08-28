@@ -6,7 +6,8 @@ import (
 )
 
 type gtphdr struct {
-	flags uint8  //Version(3-bits), Protocal Type(1-bit), Extension Header flag(1-bit), Sequence Number flag(1-bit), N-PDU number flag(1-bit)
+	flags uint8 //Version(3-bits), Protocal Type(1-bit), Extension Header flag(1-bit),
+	// Sequence Number flag(1-bit), N-PDU number flag(1-bit)
 	mtype uint8  //Message Type
 	len   uint16 //Total Length
 	teid  uint32 //Tunnel Endpoint Identifier
