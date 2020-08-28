@@ -97,9 +97,6 @@
 [submodule "lib/logger_conf"]
 	path = lib/logger_conf
 	url = git@bitbucket.org:free5gc-team/logger_conf.git
-[submodule "free5gc-compose"]
-	path = compose
-	url = git@bitbucket.org:free5gc-team/free5gc-compose.git
 [submodule "lib/idgenerator"]
 	path = lib/idgenerator
 	url = git@bitbucket.org:free5gc-team/idgenerator.git

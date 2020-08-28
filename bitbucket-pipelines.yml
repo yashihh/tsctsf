@@ -9,25 +9,45 @@ pipelines:
   pull-requests:
     "**":
       - parallel:
-        - step:
-            caches:
-              - gopackage
-            name: Check coding style
-            size: 2x
-            script:
-              - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.28.0
-              - git submodule update --init --jobs `nproc`
-              - golangci-lint run ./...
-        - step:
-            caches:
-              - gopackage
-            name: Unit test
-            size: 2x
-            script:
-              - go get -u gotest.tools/gotestsum
-              - git submodule update --init --jobs `nproc`
-              - gotestsum ./... -v -cover -race
-
+          - step:
+              caches:
+                - gopackage
+              name: Check coding style
+              size: 2x
+              script:
+                - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.28.0
+                - git submodule update --init -j 30
+                - golangci-lint run ./...
+          - step:
+              caches:
+                - gopackage
+              name: Unit test
+              size: 2x
+              script:
+                - go get -u gotest.tools/gotestsum
+                - git submodule update --init -j 30
+                - gotestsum ./... -v -cover -race
+  custom:
+    schedule:
+      - step:
+          name: Check coding style
+          size: 2x
+          script:
+            - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.28.0
+            - golangci-lint run ./...
+      - step:
+          name: release patch and fork
+          caches:
+            - gopackage
+            - aptpackage
+          script:
+            - apt-get update && apt-get install -y rsync gcc cmake autoconf libtool pkg-config libmnl-dev libyaml-dev
+            - ./release/release.sh -w
+            - cd "./release/src/free5gc"
+            - git add -A
+            - git config user.name "free5GC" && git config user.email "free5gc.org@gmail.com"
+            - git commit -m "`date` Patch"
+            - git push origin master
 
 definitions:
   caches:
