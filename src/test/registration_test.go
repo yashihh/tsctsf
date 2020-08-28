@@ -350,66 +350,66 @@ func TestDeregistration(t *testing.T) {
 	registrationRequest := nasTestpacket.GetRegistrationRequest(
 		nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, ueSecurityCapability, nil, nil, nil)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	_, err = conn.Write(sendMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// receive NAS Authentication Request Msg
 	n, err = conn.Read(recvMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	ngapMsg, err := ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
 	// send NAS Authentication Response
 	pdu := nasTestpacket.GetAuthenticationResponse(resStat, "")
 	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	_, err = conn.Write(sendMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
 		mobileIdentity5GS, nil, ueSecurityCapability, ue.Get5GMMCapability(), nil, nil)
 	pdu = nasTestpacket.GetSecurityModeComplete(registrationRequestWith5GMM)
 	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCipheredWithNew5gNasSecurityContext, true, true)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	_, err = conn.Write(sendMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// receive ngap Initial Context Setup Request Msg
 	n, err = conn.Read(recvMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// send ngap Initial Context Setup Response Msg
 	sendMsg, err = test.GetInitialContextSetupResponse(ue.AmfUeNgapId, ue.RanUeNgapId)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	_, err = conn.Write(sendMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// send NAS Registration Complete Msg
 	pdu = nasTestpacket.GetRegistrationComplete(nil)
 	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	_, err = conn.Write(sendMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	time.Sleep(500 * time.Millisecond)
 
@@ -420,25 +420,42 @@ func TestDeregistration(t *testing.T) {
 	}
 	pdu = nasTestpacket.GetDeregistrationRequest(nasMessage.AccessType3GPP, 0, 0x04, mobileIdentity5GS)
 	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	_, err = conn.Write(sendMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	time.Sleep(500 * time.Millisecond)
 
+	// receive Deregistration Accept
+	n, err = conn.Read(recvMsg)
+	require.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.True(t, ngapPdu.Present == ngapType.NGAPPDUPresentInitiatingMessage &&
+		ngapPdu.InitiatingMessage.ProcedureCode.Value == ngapType.ProcedureCodeDownlinkNASTransport,
+		"No DownlinkNASTransport received.")
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu, "NAS PDU is nil")
+	require.NotNil(t, nasPdu.GmmMessage, "GMM Message is nil")
+	require.True(t, nasPdu.GmmHeader.GetMessageType() == nas.MsgTypeDeregistrationAcceptUEOriginatingDeregistration,
+		"Received wrong GMM message")
+
 	// receive ngap UE Context Release Command
 	n, err = conn.Read(recvMsg)
-	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	require.Nil(t, err)
+	ngapPdu, err = ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.True(t, ngapPdu.Present == ngapType.NGAPPDUPresentInitiatingMessage &&
+		ngapPdu.InitiatingMessage.ProcedureCode.Value == ngapType.ProcedureCodeUEContextRelease,
+		"No UEContextReleaseCommand received.")
 
 	// send ngap UE Context Release Complete
 	sendMsg, err = test.GetUEContextReleaseComplete(ue.AmfUeNgapId, ue.RanUeNgapId, nil)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	_, err = conn.Write(sendMsg)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	time.Sleep(100 * time.Millisecond)
 
