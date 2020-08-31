@@ -7,6 +7,7 @@ import (
 	"net"
 	"runtime"
 
+	"github.com/calee0219/fatal"
 	"golang.org/x/sys/unix"
 )
 
@@ -14,7 +15,7 @@ type iphdr struct {
 	vhl   uint8
 	tos   uint8
 	iplen uint16
-	id    uint16
+	// id    uint16
 	off   uint16
 	ttl   uint8
 	proto uint8
@@ -68,7 +69,10 @@ func checksum(buf []byte) uint16 {
 func (h *iphdr) checksum() {
 	h.csum = 0
 	var b bytes.Buffer
-	binary.Write(&b, binary.BigEndian, h)
+	err := binary.Write(&b, binary.BigEndian, h)
+	if err != nil {
+		fatal.Fatalf("binary Write error in checksum: %+v", err)
+	}
 	h.csum = checksum(b.Bytes())
 }
 
@@ -82,9 +86,18 @@ func (u *udphdr) checksum(ip *iphdr, payload []byte) {
 		plen:    u.ulen,
 	}
 	var b bytes.Buffer
-	binary.Write(&b, binary.BigEndian, &phdr)
-	binary.Write(&b, binary.BigEndian, u)
-	binary.Write(&b, binary.BigEndian, &payload)
+	err := binary.Write(&b, binary.BigEndian, &phdr)
+	if err != nil {
+		fatal.Fatalf("binary Write error in checksum: %+v", err)
+	}
+	err = binary.Write(&b, binary.BigEndian, u)
+	if err != nil {
+		fatal.Fatalf("binary Write error in checksum: %+v", err)
+	}
+	err = binary.Write(&b, binary.BigEndian, &payload)
+	if err != nil {
+		fatal.Fatalf("binary Write error in checksum: %+v", err)
+	}
 	u.csum = checksum(b.Bytes())
 }
 

@@ -26,7 +26,7 @@ pipelines:
               script:
                 - go get -u gotest.tools/gotestsum
                 - git submodule update --init -j 30
-                - gotestsum ./... -v -cover -race
+                - gotestsum `go list ./... | grep -v src/test` -v -race -cover -failfast -parallel 10 -short
   custom:
     schedule:
       - step:

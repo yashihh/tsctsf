@@ -17,6 +17,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/calee0219/fatal"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 )
@@ -101,7 +102,8 @@ func hexCharToByte(c byte) byte {
 func encodeSuci(imsi []byte, mncLen int) *nasType.MobileIdentity5GS {
 	var msin []byte
 	suci := nasType.MobileIdentity5GS{
-		Buffer: []uint8{nasMessage.SupiFormatImsi<<4 | nasMessage.MobileIdentity5GSTypeSuci, 0x0, 0x0, 0x0, 0xf0, 0xff, 0x00, 0x00},
+		Buffer: []uint8{nasMessage.SupiFormatImsi<<4 |
+			nasMessage.MobileIdentity5GSTypeSuci, 0x0, 0x0, 0x0, 0xf0, 0xff, 0x00, 0x00},
 	}
 
 	//mcc & mnc
@@ -135,21 +137,33 @@ func ueRanEmulator() error {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf(uerancfg.N2Amf.Addr, uerancfg.N2Ran.Addr, int(uerancfg.N2Amf.Port), int(uerancfg.N2Ran.Port))
+	conn, err := test.ConntectToAmf(
+		uerancfg.N2Amf.Addr, uerancfg.N2Ran.Addr, int(uerancfg.N2Amf.Port), int(uerancfg.N2Ran.Port))
 	if err != nil {
 		err = fmt.Errorf("ConntectToAmf: %v", err)
 		return err
 	}
-	defer conn.Close()
+	defer func() {
+		errConn := conn.Close()
+		if errConn != nil {
+			fatal.Fatalf("conn Close error in ueRanEmulator: %+v", errConn)
+		}
+	}()
 	fmt.Printf("[UERANEM] Conntect to AMF successfully\n")
 
 	// RAN connect to UPF
-	upfConn, err := test.ConnectToUpf(uerancfg.N3Ran.Addr, uerancfg.N3Upf.Addr, int(uerancfg.N3Ran.Port), int(uerancfg.N3Upf.Port))
+	upfConn, err := test.ConnectToUpf(
+		uerancfg.N3Ran.Addr, uerancfg.N3Upf.Addr, int(uerancfg.N3Ran.Port), int(uerancfg.N3Upf.Port))
 	if err != nil {
 		err = fmt.Errorf("ConnectToUpf: %v", err)
 		return err
 	}
-	defer upfConn.Close()
+	defer func() {
+		errConn := upfConn.Close()
+		if errConn != nil {
+			fatal.Fatalf("upfConn Close error in ueRanEmulator: %+v", errConn)
+		}
+	}()
 	fmt.Printf("[UERANEM] Conntect to UPF successfully\n")
 
 	// send NGSetupRequest Msg
@@ -247,7 +261,8 @@ func ueRanEmulator() error {
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
 		*mobileIdentity5GS, nil, ueSecurityCapability, nil, nil, nil)
 	pdu = nasTestpacket.GetSecurityModeComplete(registrationRequestWith5GMM)
-	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCipheredWithNew5gNasSecurityContext, true, true)
+	pdu, err = test.EncodeNasPduWithSecurity(
+		ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCipheredWithNew5gNasSecurityContext, true, true)
 	if err != nil {
 		return err
 	}
@@ -303,7 +318,8 @@ func ueRanEmulator() error {
 		Sst: uerancfg.Snssai.Sst,
 		Sd:  uerancfg.Snssai.Sd,
 	}
-	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(10, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet", &sNssai)
+	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(
+		10, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet", &sNssai)
 	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
 	if err != nil {
 		return err
@@ -355,7 +371,8 @@ func ueRanEmulator() error {
 }
 
 func sendGTP(conn *net.UDPConn, msg string) error {
-	pkt, err := test.BuildRawUdpIp(uerancfg.RawUDP.SrcIP, uerancfg.RawUDP.DstIP, uerancfg.RawUDP.SrcPort, uerancfg.RawUDP.DstPort, []byte(msg))
+	pkt, err := test.BuildRawUdpIp(
+		uerancfg.RawUDP.SrcIP, uerancfg.RawUDP.DstIP, uerancfg.RawUDP.SrcPort, uerancfg.RawUDP.DstPort, []byte(msg))
 	if err != nil {
 		return err
 	}

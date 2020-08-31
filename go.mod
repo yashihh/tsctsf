@@ -7,15 +7,14 @@ require (
 	github.com/aead/cmac v0.0.0-20160719120800-7af84192f0b1
 	github.com/antihax/optional v1.0.0
 	github.com/bronze1man/radius v0.0.0-20190516032554-afd8baec892d
+	github.com/calee0219/fatal v0.0.1
 	github.com/cydev/zero v0.0.0-20160322155811-4a4535dd56e7
-	github.com/davecgh/go-spew v1.1.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/evanphx/json-patch v4.5.0+incompatible
 	github.com/gin-contrib/cors v1.3.0
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/google/go-cmp v0.4.0
 	github.com/google/gopacket v1.1.17
 	github.com/google/uuid v1.1.1
 	github.com/ishidawataru/sctp v0.0.0-20191218070446-00ab2ac2db07

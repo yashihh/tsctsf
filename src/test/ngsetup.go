@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/calee0219/fatal"
 	"github.com/ishidawataru/sctp"
 )
 
@@ -44,7 +45,10 @@ func ConntectToAmf(amfIP, ranIP string, amfPort, ranPort int) (*sctp.SCTPConn, e
 	if err != nil {
 		return nil, err
 	}
-	info, _ := conn.GetDefaultSentParam()
+	info, err := conn.GetDefaultSentParam()
+	if err != nil {
+		fatal.Fatalf("conn GetDefaultSentParam error in ConntectToAmf: %+v", err)
+	}
 	info.PPID = ngapPPID
 	err = conn.SetDefaultSentParam(info)
 	if err != nil {

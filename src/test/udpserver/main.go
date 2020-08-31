@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/calee0219/fatal"
 	"github.com/urfave/cli"
 )
 
@@ -33,16 +34,24 @@ func main() {
 
 func serve(listener net.PacketConn, addr net.Addr, buf []byte) {
 	fmt.Printf("%s\t: %s\n", addr, buf)
-	listener.WriteTo(buf, addr)
+	_, err := listener.WriteTo(buf, addr)
+	if err != nil {
+		fatal.Fatalf("listener WriteTo error in serve: %+v", err)
+	}
 }
 
 func action(c *cli.Context) error {
 	src := c.String("addr") + ":" + c.String("port")
 	listener, err := net.ListenPacket("udp", src)
 	if err != nil {
-		err = fmt.Errorf("ListenPacket: %v", err)
+		fatal.Fatalf("ListenPacket: %v", err)
 	}
-	defer listener.Close()
+	defer func() {
+		errLis := listener.Close()
+		if errLis != nil {
+			fatal.Fatalf("listener Close error in action: %+v", errLis)
+		}
+	}()
 
 	fmt.Printf("UDP server start and listening on %s.\n", src)
 

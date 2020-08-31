@@ -12,6 +12,7 @@ import (
 	"free5gc/lib/openapi/models"
 	"regexp"
 
+	"github.com/calee0219/fatal"
 	"golang.org/x/net/ipv4"
 )
 
@@ -95,11 +96,18 @@ func NewRanUeContext(supi string, ranUeNgapId int64, cipheringAlg, integrityAlg 
 	return &ue
 }
 
-func (ue *RanUeContext) DeriveRESstarAndSetKey(authSubs models.AuthenticationSubscription, rand []byte, snName string) []byte {
+func (ue *RanUeContext) DeriveRESstarAndSetKey(
+	authSubs models.AuthenticationSubscription, rand []byte, snName string) []byte {
 
-	sqn, _ := hex.DecodeString(authSubs.SequenceNumber)
+	sqn, err := hex.DecodeString(authSubs.SequenceNumber)
+	if err != nil {
+		fatal.Fatalf("DecodeString error: %+v", err)
+	}
 
-	amf, _ := hex.DecodeString(authSubs.AuthenticationManagementField)
+	amf, err := hex.DecodeString(authSubs.AuthenticationManagementField)
+	if err != nil {
+		fatal.Fatalf("DecodeString error: %+v", err)
+	}
 
 	// Run milenage
 	macA, macS := make([]byte, 8), make([]byte, 8)
@@ -108,25 +116,42 @@ func (ue *RanUeContext) DeriveRESstarAndSetKey(authSubs models.AuthenticationSub
 	ak, akStar := make([]byte, 6), make([]byte, 6)
 
 	opc := make([]byte, 16)
-	k, _ := hex.DecodeString(authSubs.PermanentKey.PermanentKeyValue)
+	_ = opc
+	k, err := hex.DecodeString(authSubs.PermanentKey.PermanentKeyValue)
+	if err != nil {
+		fatal.Fatalf("DecodeString error: %+v", err)
+	}
 
 	if authSubs.Opc.OpcValue == "" {
 		opStr := authSubs.Milenage.Op.OpValue
-		op, err := hex.DecodeString(opStr)
+		var op []byte
+		op, err = hex.DecodeString(opStr)
 		if err != nil {
-
+			fatal.Fatalf("DecodeString error: %+v", err)
 		}
 
-		opc, _ = milenage.GenerateOPC(k, op)
+		opc, err = milenage.GenerateOPC(k, op)
+		if err != nil {
+			fatal.Fatalf("milenage GenerateOPC error: %+v", err)
+		}
 	} else {
-		opc, _ = hex.DecodeString(authSubs.Opc.OpcValue)
+		opc, err = hex.DecodeString(authSubs.Opc.OpcValue)
+		if err != nil {
+			fatal.Fatalf("DecodeString error: %+v", err)
+		}
 	}
 
 	// Generate MAC_A, MAC_S
-	milenage.F1(opc, k, rand, sqn, amf, macA, macS)
+	err = milenage.F1(opc, k, rand, sqn, amf, macA, macS)
+	if err != nil {
+		fatal.Fatalf("regexp Compile error: %+v", err)
+	}
 
 	// Generate RES, CK, IK, AK, AKstar
-	milenage.F2345(opc, k, rand, res, ck, ik, ak, akStar)
+	err = milenage.F2345(opc, k, rand, res, ck, ik, ak, akStar)
+	if err != nil {
+		fatal.Fatalf("regexp Compile error: %+v", err)
+	}
 
 	// derive RES*
 	key := append(ck, ik...)
@@ -137,7 +162,8 @@ func (ue *RanUeContext) DeriveRESstarAndSetKey(authSubs models.AuthenticationSub
 
 	ue.DerivateKamf(key, snName, sqn, ak)
 	ue.DerivateAlgKey()
-	kdfVal_for_resStar := UeauCommon.GetKDFValue(key, FC, P0, UeauCommon.KDFLen(P0), P1, UeauCommon.KDFLen(P1), P2, UeauCommon.KDFLen(P2))
+	kdfVal_for_resStar :=
+		UeauCommon.GetKDFValue(key, FC, P0, UeauCommon.KDFLen(P0), P1, UeauCommon.KDFLen(P1), P2, UeauCommon.KDFLen(P2))
 	return kdfVal_for_resStar[len(kdfVal_for_resStar)/2:]
 
 }
@@ -155,7 +181,10 @@ func (ue *RanUeContext) DerivateKamf(key []byte, snName string, SQN, AK []byte) 
 	P0 = []byte(snName)
 	Kseaf := UeauCommon.GetKDFValue(Kausf, UeauCommon.FC_FOR_KSEAF_DERIVATION, P0, UeauCommon.KDFLen(P0))
 
-	supiRegexp, _ := regexp.Compile("(?:imsi|supi)-([0-9]{5,15})")
+	supiRegexp, err := regexp.Compile("(?:imsi|supi)-([0-9]{5,15})")
+	if err != nil {
+		fatal.Fatalf("regexp Compile error: %+v", err)
+	}
 	groups := supiRegexp.FindStringSubmatch(ue.Supi)
 
 	P0 = []byte(groups[1])
