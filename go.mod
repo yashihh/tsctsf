@@ -6,6 +6,7 @@ require (
 	git.cs.nctu.edu.tw/calee/sctp v1.0.0
 	github.com/aead/cmac v0.0.0-20160719120800-7af84192f0b1
 	github.com/antihax/optional v1.0.0
+	github.com/antonfisher/nested-logrus-formatter v1.2.0
 	github.com/bronze1man/radius v0.0.0-20190516032554-afd8baec892d
 	github.com/calee0219/fatal v0.0.1
 	github.com/cydev/zero v0.0.0-20160322155811-4a4535dd56e7
