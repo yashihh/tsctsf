@@ -48,8 +48,8 @@ for bug reports and feature requests.
     - gcc 7.3.0
     - Go 1.14.4 linux/amd64
     - kernel version 5.0.0-23-generic (MUST for UPF)
-    
-**Note: Please use Ubuntu 18.04 and kernel version 5.0.0-23-generic** 
+
+**Note: Please use Ubuntu 18.04 and kernel version 5.0.0-23-generic**
 
 
 You can use `go version` to check your current Go version.
@@ -123,11 +123,11 @@ You can use `go version` to check your current Go version.
     ```
 
 ### B. Install Control Plane Entities
-    
+
 1. Clone free5GC project
     ```bash
     cd ~
-    git clone --recursive -b v3.0.3 -j `nproc` https://github.com/free5gc/free5gc.git
+    git clone --recursive -b v3.0.4 -j `nproc` https://github.com/free5gc/free5gc.git
     cd free5gc
     ```
 
@@ -161,7 +161,7 @@ You can use `go version` to check your current Go version.
 
 
 ### C. Install User Plane Function (UPF)
-    
+
 1. Please check Linux kernel version if it is `5.0.0-23-generic`
     ```bash
     uname -r
@@ -170,7 +170,7 @@ You can use `go version` to check your current Go version.
 
     Get Linux kernel module 5G GTP-U
     ```bash
-    git clone -b v0.1.0 https://github.com/PrinzOwO/gtp5g.git
+    git clone -b v0.2.0 https://github.com/PrinzOwO/gtp5g.git
     cd gtp5g
     make
     sudo make install
@@ -189,7 +189,7 @@ You can use `go version` to check your current Go version.
     cmake ..
     make -j`nproc`
     ```
-    
+
 **Note: UPF's config is located at** `free5gc/src/upf/build/config/upfcfg.yaml
    `
 
@@ -202,7 +202,7 @@ cd ~/free5gc
 ./bin/amf
 ```
 
-**Note: For N3IWF needs specific configuration in section B** 
+**Note: For N3IWF needs specific configuration in section B**
 
 Option 2. Run whole core network with command
 ```
