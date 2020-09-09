@@ -190,8 +190,7 @@ You can use `go version` to check your current Go version.
     make -j`nproc`
     ```
 
-**Note: UPF's config is located at** `free5gc/src/upf/build/config/upfcfg.yaml
-   `
+**Note: UPF's config is located at** `free5gc/src/upf/build/config/upfcfg.yaml`
 
 ## Run
 
@@ -251,39 +250,53 @@ a. TestRegistration
 (In directory: ~/free5gc)
 ./test.sh TestRegistration
 ```
-b. TestServiceRequest
+
+b. TestGUTIRegistration
+```bash
+./test.sh TestGUTIRegistration
+```
+
+c. TestServiceRequest
 ```bash
 ./test.sh TestServiceRequest
 ```
-c. TestXnHandover
+
+d. TestXnHandover
 ```bash
 ./test.sh TestXnHandover
 ```
-d. TestDeregistration
+
+e. TestDeregistration
 ```bash
 ./test.sh TestDeregistration
 ```
-e. TestPDUSessionReleaseRequest
+
+f. TestPDUSessionReleaseRequest
 ```bash
 ./test.sh TestPDUSessionReleaseRequest
 ```
 
-f. TestPaging
+g. TestPaging
 ```!
 ./test.sh TestPaging
 ```
 
-g. TestN2Handover
+h. TestN2Handover
 ```!
 ./test.sh TestN2Handover
 ```
 
-h. TestNon3GPP
+i. TestNon3GPP
 ```bash
 ./test.sh TestNon3GPP
 ```
 
-i. TestULCL
+j. TestReSynchronisation
+```bash
+./test.sh TestReSynchronisation
+```
+
+k. TestULCL
 ```bash
 ./test_ulcl.sh -om 3 TestRegistration
 ```
