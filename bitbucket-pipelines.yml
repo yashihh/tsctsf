@@ -26,9 +26,9 @@ pipelines:
               name: Unit test
               size: 2x
               script:
-                - go get -u gotest.tools/gotestsum
                 - git config --global url."git@bitbucket.org:free5gc-team".insteadOf https://bitbucket.org/free5gc-team
                 - go env -w GOPRIVATE=bitbucket.org/free5gc-team/*
+                - go get -u gotest.tools/gotestsum
                 - git submodule update --init -j 30
                 - gotestsum `go list ./... | grep -v src/test` -v -race -cover -failfast -parallel 10 -short
   custom:
