@@ -1692,8 +1692,8 @@ func BuildPDUSessionResourceModifyResponse(amfUeNgapID, ranUeNgapID int64) (pdu 
 	pDUSessionResourceModifyResponseItem := ngapType.PDUSessionResourceModifyItemModRes{}
 	pDUSessionResourceModifyResponseItem.PDUSessionID.Value = 10
 	// transfer := GetPDUSessionResourceModifyResponseTransfer()
-	pDUSessionResourceModifyResponseItem.PDUSessionResourceModifyResponseTransfer = new(aper.OctetString)
-	*pDUSessionResourceModifyResponseItem.PDUSessionResourceModifyResponseTransfer =
+
+	pDUSessionResourceModifyResponseItem.PDUSessionResourceModifyResponseTransfer =
 		GetPDUSessionResourceModifyResponseTransfer()
 
 	pDUSessionResourceModifyListModRes.List =
@@ -2505,8 +2505,8 @@ func BuildUplinkRanConfigurationTransfer() (pdu ngapType.NGAPPDU) {
 	// xnTNLConfigurationInfo := sONInformation.SONInformationReply.XnTNLConfigurationInfo
 
 	// Xn TNL Configuration Info [C-ifSONInformationRequest]
-	xnTNLConfigurationInfo := &sONConfigurationTransferUL.XnTNLConfigurationInfo
-	xnTransportLayerAddresses := &xnTNLConfigurationInfo.XnTransportLayerAddresses
+	xnTNLConfigurationInfo := sONConfigurationTransferUL.XnTNLConfigurationInfo
+	xnTransportLayerAddresses := xnTNLConfigurationInfo.XnTransportLayerAddresses
 
 	TLA := ngapType.TransportLayerAddress{}
 	TLA.Value = aper.BitString{
@@ -3229,7 +3229,7 @@ func BuildCellTrafficTrace(amfUeNgapID, ranUeNgapID int64) (pdu ngapType.NGAPPDU
 func buildPDUSessionResourceSetupResponseTransfer(ipv4 string) (data ngapType.PDUSessionResourceSetupResponseTransfer) {
 
 	// QoS Flow per TNL Information
-	qosFlowPerTNLInformation := &data.QosFlowPerTNLInformation
+	qosFlowPerTNLInformation := &data.DLQosFlowPerTNLInformation
 	qosFlowPerTNLInformation.UPTransportLayerInformation.Present = ngapType.UPTransportLayerInformationPresentGTPTunnel
 
 	// UP Transport Layer Information in QoS Flow per TNL Information
@@ -3302,7 +3302,7 @@ func buildPDUSessionResourceNotifyTransfer(
 		data.QosFlowNotifyList = new(ngapType.QosFlowNotifyList)
 	}
 	if len(relQfis) > 0 {
-		data.QosFlowReleasedList = new(ngapType.QosFlowList)
+		data.QosFlowReleasedList = new(ngapType.QosFlowListWithCause)
 	}
 	for i, qfi := range qfis {
 		item := ngapType.QosFlowNotifyItem{
@@ -3316,7 +3316,7 @@ func buildPDUSessionResourceNotifyTransfer(
 		data.QosFlowNotifyList.List = append(data.QosFlowNotifyList.List, item)
 	}
 	for _, qfi := range relQfis {
-		item := ngapType.QosFlowItem{
+		item := ngapType.QosFlowWithCauseItem{
 			QosFlowIdentifier: ngapType.QosFlowIdentifier{
 				Value: qfi,
 			},
@@ -3368,16 +3368,13 @@ func buildPDUSessionResourceModifyIndicationTransfer() (
 	data ngapType.PDUSessionResourceModifyIndicationTransfer) {
 
 	// DL UP TNL Information
-	data.DLUPTNLInformation = &ngapType.UPTNLInformation{
-		Present: ngapType.UPTNLInformationPresentSingleTNLInformation,
-		SingleTNLInformation: &ngapType.SingleTNLInformation{
-			UPTransportLayerInformation: ngapType.UPTransportLayerInformation{
-				Present: ngapType.UPTransportLayerInformationPresentGTPTunnel,
-				GTPTunnel: &ngapType.GTPTunnel{
-					TransportLayerAddress: ngapConvert.IPAddressToNgap("127.0.0.1", ""),
-					GTPTEID: ngapType.GTPTEID{
-						Value: aper.OctetString("\x00\x00\x00\x01"),
-					},
+	data.DLQosFlowPerTNLInformation = ngapType.QosFlowPerTNLInformation{
+		UPTransportLayerInformation: ngapType.UPTransportLayerInformation{
+			Present: ngapType.UPTransportLayerInformationPresentGTPTunnel,
+			GTPTunnel: &ngapType.GTPTunnel{
+				TransportLayerAddress: ngapConvert.IPAddressToNgap("127.0.0.1", ""),
+				GTPTEID: ngapType.GTPTEID{
+					Value: aper.OctetString("\x00\x00\x00\x01"),
 				},
 			},
 		},
@@ -3445,7 +3442,7 @@ func buildHandoverRequestAcknowledgeTransfer() (data ngapType.HandoverRequestAck
 	upTransportLayerInformation.GTPTunnel.TransportLayerAddress = ngapConvert.IPAddressToNgap("10.200.200.2", "")
 
 	// Qos Flow Setup Response List
-	qosFlowSetupResponseItem := ngapType.QosFlowSetupResponseItemHOReqAck{
+	qosFlowSetupResponseItem := ngapType.QosFlowItemWithDataForwarding{
 		QosFlowIdentifier: ngapType.QosFlowIdentifier{
 			Value: 1,
 		},
