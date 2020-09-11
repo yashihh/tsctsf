@@ -100,3 +100,6 @@
 [submodule "lib/idgenerator"]
 	path = lib/idgenerator
 	url = git@bitbucket.org:free5gc-team/idgenerator.git
+[submodule "lib/version"]
+	path = lib/version
+	url = git@bitbucket.org:free5gc-team/version.git

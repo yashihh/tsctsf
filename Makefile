@@ -15,17 +15,17 @@ VERSION = $(shell git describe --tags)
 BUILD_TIME = $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 COMMIT_HASH = $(shell git submodule status | grep $(GO_SRC_PATH)/$(@F) | awk '{print $$(1)}' | cut -c1-8)
 COMMIT_TIME = $(shell cd $(GO_SRC_PATH)/$(@F) && git log --pretty="%ai" -1 | awk '{time=$$(1)"T"$$(2)"Z"; print time}')
-LDFLAGS = -X free5gc/src/$(@F)/version.VERSION=$(VERSION) \
-          -X free5gc/src/$(@F)/version.BUILD_TIME=$(BUILD_TIME) \
-          -X free5gc/src/$(@F)/version.COMMIT_HASH=$(COMMIT_HASH) \
-          -X free5gc/src/$(@F)/version.COMMIT_TIME=$(COMMIT_TIME)
+LDFLAGS = -X bitbucket.org/free5gc-team/version.VERSION=$(VERSION) \
+          -X bitbucket.org/free5gc-team/version.BUILD_TIME=$(BUILD_TIME) \
+          -X bitbucket.org/free5gc-team/version.COMMIT_HASH=$(COMMIT_HASH) \
+          -X bitbucket.org/free5gc-team/version.COMMIT_TIME=$(COMMIT_TIME)
 
 WEBCONSOLE_COMMIT_HASH = $(shell git submodule status | grep $(WEBCONSOLE) | awk '{print $$(1)}' | cut -c1-8)
 WEBCONSOLE_COMMIT_TIME = $(shell cd $(WEBCONSOLE) && git log --pretty="%ai" -1 | awk '{time=$$(1)"T"$$(2)"Z"; print time}')
-WEBCONSOLE_LDFLAGS = -X free5gc/$(@F)/version.VERSION=$(VERSION) \
-                     -X free5gc/$(@F)/version.BUILD_TIME=$(BUILD_TIME) \
-                     -X free5gc/$(@F)/version.COMMIT_HASH=$(WEBCONSOLE_COMMIT_HASH) \
-                     -X free5gc/$(@F)/version.COMMIT_TIME=$(WEBCONSOLE_COMMIT_TIME)
+WEBCONSOLE_LDFLAGS = -X bitbucket.org/free5gc-team/version.VERSION=$(VERSION) \
+                     -X bitbucket.org/free5gc-team/version.BUILD_TIME=$(BUILD_TIME) \
+                     -X bitbucket.org/free5gc-team/version.COMMIT_HASH=$(WEBCONSOLE_COMMIT_HASH) \
+                     -X bitbucket.org/free5gc-team/version.COMMIT_TIME=$(WEBCONSOLE_COMMIT_TIME)
 
 .PHONY: $(NF) $(WEBCONSOLE) clean
 
