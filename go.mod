@@ -3,6 +3,7 @@ module free5gc
 go 1.14
 
 require (
+	bitbucket.org/free5gc-team/version v0.0.0-20200911073357-c90f1d56d60a
 	git.cs.nctu.edu.tw/calee/sctp v1.0.0
 	github.com/aead/cmac v0.0.0-20160719120800-7af84192f0b1
 	github.com/antihax/optional v1.0.0
