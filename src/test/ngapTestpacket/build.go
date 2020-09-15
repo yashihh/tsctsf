@@ -2,9 +2,9 @@ package ngapTestpacket
 
 import (
 	"encoding/hex"
-	"free5gc/lib/aper"
-	"free5gc/lib/ngap/ngapConvert"
-	"free5gc/lib/ngap/ngapType"
+	"bitbucket.org/free5gc-team/aper"
+	"bitbucket.org/free5gc-team/ngap/ngapConvert"
+	"bitbucket.org/free5gc-team/ngap/ngapType"
 
 	"github.com/calee0219/fatal"
 )

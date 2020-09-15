@@ -2,14 +2,14 @@ package test
 
 import (
 	"encoding/hex"
-	"free5gc/lib/CommonConsumerTestData/UDM/TestGenAuthData"
-	"free5gc/lib/CommonConsumerTestData/UDR/TestRegistrationProcedure"
-	"free5gc/lib/UeauCommon"
-	"free5gc/lib/milenage"
-	"free5gc/lib/nas/nasMessage"
-	"free5gc/lib/nas/nasType"
-	"free5gc/lib/nas/security"
-	"free5gc/lib/openapi/models"
+	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
+	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDR/TestRegistrationProcedure"
+	"bitbucket.org/free5gc-team/UeauCommon"
+	"bitbucket.org/free5gc-team/milenage"
+	"bitbucket.org/free5gc-team/nas/nasMessage"
+	"bitbucket.org/free5gc-team/nas/nasType"
+	"bitbucket.org/free5gc-team/nas/security"
+	"bitbucket.org/free5gc-team/openapi/models"
 	"regexp"
 
 	"github.com/calee0219/fatal"
