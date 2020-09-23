@@ -22,6 +22,7 @@ type NetworkFunction interface {
 	Initialize(c *cli.Context)
 	GetCliCmd() (flags []cli.Flag)
 	FilterCli(c *cli.Context) (args []string)
+	setLogLevel() error
 	Exec(*cli.Context) error
 	Start()
 }

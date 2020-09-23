@@ -34,6 +34,3 @@
 [submodule "webconsole"]
 	path = webconsole
 	url = git@bitbucket.org:free5gc-team/webconsole.git
-[submodule "lib/aes"]
-	path = lib/aes
-	url = git@bitbucket.org:free5gc-team/aes.git
