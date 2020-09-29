@@ -2,8 +2,8 @@ package test
 
 import (
 	"fmt"
-	"free5gc/lib/nas"
-	"free5gc/lib/nas/security"
+	"bitbucket.org/free5gc-team/nas"
+	"bitbucket.org/free5gc-team/nas/security"
 	"reflect"
 )
 
