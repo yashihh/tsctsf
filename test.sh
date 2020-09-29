@@ -76,7 +76,7 @@ then
     LOCALDUMP=$!
 fi
 
-cd src/upf/build && ${EXEC_UPFNS} ./bin/free5gc-upfd -f config/upfcfg.test.yaml &
+cd NFs/upf/build && ${EXEC_UPFNS} ./bin/free5gc-upfd -f config/upfcfg.test.yaml &
 sleep 2
 
 if [[ "$1" == "TestNon3GPP" ]]
@@ -106,19 +106,29 @@ then
     cp -f config/amfcfg.n3test.conf config/amfcfg.conf
 
     # Run CN
-    cd src/test && $GOROOT/bin/go test -v -vet=off -timeout 0 -run TestCN &
+    cd test && $GOROOT/bin/go test -v -vet=off -timeout 0 -run TestCN &
     sleep 10
 
     # Run N3IWF
-    cd src/n3iwf && sudo -E $GOROOT/bin/go run n3iwf.go &
+    cd NFs/n3iwf && sudo -E $GOROOT/bin/go run n3iwf.go &
     sleep 5
 
     # Run Test UE
-    cd src/test
+    cd test
     ${EXEC_UENS} $GOROOT/bin/go test -v -vet=off -timeout 0 -run TestNon3GPPUE -args noinit
 
 else
-    cd src/test
+    #NF_PATH=`pwd`/NFs
+    #./bin/nrf &
+    #sleep 1
+    #./bin/amf &
+    #./bin/ausf &
+    #./bin/nssf &
+    #./bin/smf -smfcfg ./config/test/smfcfg.test.conf&
+    #./bin/udm &
+    #./bin/udr &
+    #sleep 4
+    cd test
     $GOROOT/bin/go test -v -vet=off -run $1
 fi
 

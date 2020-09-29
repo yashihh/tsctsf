@@ -2,11 +2,12 @@ package test
 
 import (
 	"encoding/json"
-	"bitbucket.org/free5gc-team/MongoDBLibrary"
-	"bitbucket.org/free5gc-team/openapi/models"
 
 	"github.com/calee0219/fatal"
 	"go.mongodb.org/mongo-driver/bson"
+
+	"bitbucket.org/free5gc-team/MongoDBLibrary"
+	"bitbucket.org/free5gc-team/openapi/models"
 )
 
 func toBsonM(data interface{}) bson.M {

@@ -2,12 +2,12 @@ package test_test
 
 import (
 	"encoding/hex"
-	"golang.org/x/net/icmp"
-	"golang.org/x/net/ipv4"
 	"net"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/icmp"
+	"golang.org/x/net/ipv4"
 )
 
 func TestICMP(t *testing.T) {
