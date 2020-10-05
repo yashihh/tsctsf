@@ -5,6 +5,23 @@ import (
 	"context"
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
+	"net"
+	"net/http"
+	"os/exec"
+	"strconv"
+	"test"
+	"testing"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/mohae/deepcopy"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/net/icmp"
+	"golang.org/x/net/ipv4"
+
+	// ausf_context "bitbucket.org/free5gc-team/ausf/context"
 	"bitbucket.org/free5gc-team/CommonConsumerTestData/PCF/TestPolicyAuthorization"
 	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
 	"bitbucket.org/free5gc-team/http2_util"
@@ -18,26 +35,6 @@ import (
 	"bitbucket.org/free5gc-team/ngap/ngapType"
 	"bitbucket.org/free5gc-team/openapi/Npcf_PolicyAuthorization"
 	"bitbucket.org/free5gc-team/openapi/models"
-	"net/http"
-	"strconv"
-
-	"github.com/gin-gonic/gin"
-	"github.com/mohae/deepcopy"
-
-	// ausf_context "free5gc/src/ausf/context"
-	"free5gc/src/test"
-	"net"
-	"testing"
-	"time"
-
-	"golang.org/x/net/icmp"
-	"golang.org/x/net/ipv4"
-
-	"fmt"
-	"os/exec"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 const ranIpAddr string = "10.200.200.1"

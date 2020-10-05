@@ -2,6 +2,11 @@ package test
 
 import (
 	"encoding/hex"
+	"regexp"
+
+	"github.com/calee0219/fatal"
+	"golang.org/x/net/ipv4"
+
 	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
 	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDR/TestRegistrationProcedure"
 	"bitbucket.org/free5gc-team/UeauCommon"
@@ -10,10 +15,6 @@ import (
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/openapi/models"
-	"regexp"
-
-	"github.com/calee0219/fatal"
-	"golang.org/x/net/ipv4"
 )
 
 type RanUeContext struct {

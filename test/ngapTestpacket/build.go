@@ -2,11 +2,12 @@ package ngapTestpacket
 
 import (
 	"encoding/hex"
+
+	"github.com/calee0219/fatal"
+
 	"bitbucket.org/free5gc-team/aper"
 	"bitbucket.org/free5gc-team/ngap/ngapConvert"
 	"bitbucket.org/free5gc-team/ngap/ngapType"
-
-	"github.com/calee0219/fatal"
 )
 
 // TODO: check test data
