@@ -142,7 +142,7 @@ then
     sudo -E kill -SIGINT ${LOCALDUMP}
 fi
 
-cd ../..
+cd ..
 mkdir -p testkeylog
 for KEYLOG in $(ls *sslkey.log); do
     mv $KEYLOG testkeylog
