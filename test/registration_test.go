@@ -133,8 +133,10 @@ func TestRegistration(t *testing.T) {
 
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
-	assert.True(t, nasPdu.GmmHeader.GetMessageType() == nas.MsgTypeAuthenticationRequest, "No Authentication Request received.")
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -152,8 +154,10 @@ func TestRegistration(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, ngapPdu)
 	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
-	assert.True(t, nasPdu.GmmHeader.GetMessageType() == nas.MsgTypeSecurityModeCommand, "No Security Mode Command received. Message: "+strconv.Itoa(int(nasPdu.GmmHeader.GetMessageType())))
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -360,6 +364,9 @@ func TestDeregistration(t *testing.T) {
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -373,8 +380,14 @@ func TestDeregistration(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	require.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	require.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	assert.Nil(t, err)
+	assert.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -428,16 +441,16 @@ func TestDeregistration(t *testing.T) {
 	// receive Deregistration Accept
 	n, err = conn.Read(recvMsg)
 	require.Nil(t, err)
-	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	ngapPdu, err = ngap.Decoder(recvMsg[:n])
 	require.Nil(t, err)
 	require.True(t, ngapPdu.Present == ngapType.NGAPPDUPresentInitiatingMessage &&
 		ngapPdu.InitiatingMessage.ProcedureCode.Value == ngapType.ProcedureCodeDownlinkNASTransport,
 		"No DownlinkNASTransport received.")
 	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu, "NAS PDU is nil")
-	require.NotNil(t, nasPdu.GmmMessage, "GMM Message is nil")
-	require.True(t, nasPdu.GmmHeader.GetMessageType() == nas.MsgTypeDeregistrationAcceptUEOriginatingDeregistration,
-		"Received wrong GMM message")
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeDeregistrationAcceptUEOriginatingDeregistration,
+		"Received wrong GMM message. Expected Deregistration Accept.")
 
 	// receive ngap UE Context Release Command
 	n, err = conn.Read(recvMsg)
@@ -551,7 +564,10 @@ func TestServiceRequest(t *testing.T) {
 
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -565,8 +581,14 @@ func TestServiceRequest(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -768,6 +790,9 @@ func TestGUTIRegistration(t *testing.T) {
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -781,8 +806,14 @@ func TestGUTIRegistration(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	require.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
 	require.Nil(t, err)
+	require.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -843,8 +874,9 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, ngapType.InitiatingMessagePresentDownlinkNASTransport, ngapMsg.InitiatingMessage.Value.Present)
 	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
-	require.NotNil(t, nasPdu.GmmMessage)
-	require.Equal(t, nas.MsgTypeDeregistrationAcceptUEOriginatingDeregistration, nasPdu.GmmMessage.GmmHeader.GetMessageType())
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeDeregistrationAcceptUEOriginatingDeregistration,
+		"Received wrong GMM message. Expected Deregistration Accept.")
 
 	// receive ngap UE Context Release Command
 	n, err = conn.Read(recvMsg)
@@ -885,8 +917,9 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, ngapType.InitiatingMessagePresentDownlinkNASTransport, ngapMsg.InitiatingMessage.Value.Present)
 	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
-	require.NotNil(t, nasPdu.GmmMessage)
-	require.Equal(t, nas.MsgTypeIdentityRequest, nasPdu.GmmMessage.GmmHeader.GetMessageType())
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeIdentityRequest,
+		"Received wrong GMM message. Expected Identity Request.")
 
 	// send NAS Identity Response
 	mobileIdentity := nasType.MobileIdentity{
@@ -910,8 +943,9 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, ngapType.InitiatingMessagePresentDownlinkNASTransport, ngapMsg.InitiatingMessage.Value.Present)
 	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
-	require.NotNil(t, nasPdu.GmmMessage)
-	require.Equal(t, nas.MsgTypeAuthenticationRequest, nasPdu.GmmMessage.GmmHeader.GetMessageType())
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 
 	// Calculate for RES*
 	rand = nasPdu.AuthenticationRequest.GetRANDValue()
@@ -937,8 +971,9 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, ngapType.InitiatingMessagePresentDownlinkNASTransport, ngapMsg.InitiatingMessage.Value.Present)
 	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
 	require.NotNil(t, nasPdu)
-	require.NotNil(t, nasPdu.GmmMessage)
-	require.Equal(t, nas.MsgTypeSecurityModeCommand, nasPdu.GmmMessage.GmmHeader.GetMessageType())
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	pdu = nasTestpacket.GetSecurityModeComplete(nil)
@@ -1067,7 +1102,10 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -1081,8 +1119,14 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -1285,7 +1329,10 @@ func TestXnHandover(t *testing.T) {
 
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -1299,8 +1346,14 @@ func TestXnHandover(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -1471,7 +1524,10 @@ func TestPaging(t *testing.T) {
 
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -1485,8 +1541,14 @@ func TestPaging(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -1735,7 +1797,10 @@ func TestN2Handover(t *testing.T) {
 
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -1749,8 +1814,14 @@ func TestN2Handover(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -2058,7 +2129,10 @@ func TestDuplicateRegistration(t *testing.T) {
 
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -2072,8 +2146,14 @@ func TestDuplicateRegistration(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -2313,7 +2393,10 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 
 	// Calculate for RES*
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
 	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
 
@@ -2327,8 +2410,14 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
@@ -2501,7 +2590,10 @@ func TestReSynchronisation(t *testing.T) {
 	assert.Nil(t, err)
 
 	nasPdu := test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 
 	// gen AK
 	K, OPC := make([]byte, 16), make([]byte, 16)
@@ -2572,7 +2664,10 @@ func TestReSynchronisation(t *testing.T) {
 
 	// Calculate for RES*
 	nasPdu = test.GetNasPdu(ue, ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
-	assert.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeAuthenticationRequest,
+		"Received wrong GMM message. Expected Authentication Request.")
 	rand = nasPdu.AuthenticationRequest.GetRANDValue()
 
 	milenage.F2345(OPC, K, rand[:], nil, nil, nil, AK, nil)
@@ -2596,8 +2691,14 @@ func TestReSynchronisation(t *testing.T) {
 	// receive NAS Security Mode Command Msg
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
-	assert.Nil(t, err)
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
+	require.Nil(t, err)
+	require.NotNil(t, ngapPdu)
+	nasPdu = test.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
+	require.NotNil(t, nasPdu)
+	require.NotNil(t, nasPdu.GmmMessage, "GMM message is nil")
+	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeSecurityModeCommand,
+		"Received wrong GMM message. Expected Security Mode Command.")
 
 	// send NAS Security Mode Complete Msg
 	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration,
