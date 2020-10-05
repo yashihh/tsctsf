@@ -3,21 +3,6 @@ package test_test
 import (
 	"flag"
 	"fmt"
-	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
-	"bitbucket.org/free5gc-team/MongoDBLibrary"
-	"bitbucket.org/free5gc-team/nas/security"
-	"bitbucket.org/free5gc-team/ngap"
-	"bitbucket.org/free5gc-team/path_util"
-	amf_service "free5gc/src/amf/service"
-	"free5gc/src/app"
-	ausf_service "free5gc/src/ausf/service"
-	nrf_service "free5gc/src/nrf/service"
-	nssf_service "free5gc/src/nssf/service"
-	pcf_service "free5gc/src/pcf/service"
-	smf_service "free5gc/src/smf/service"
-	"free5gc/src/test"
-	udm_service "free5gc/src/udm/service"
-	udr_service "free5gc/src/udr/service"
 	"log"
 	"os"
 	"sync"
@@ -26,6 +11,23 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli"
+
+	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
+	"bitbucket.org/free5gc-team/MongoDBLibrary"
+	amf_service "bitbucket.org/free5gc-team/amf/service"
+	ausf_service "bitbucket.org/free5gc-team/ausf/service"
+	"bitbucket.org/free5gc-team/nas/security"
+	"bitbucket.org/free5gc-team/ngap"
+	nrf_service "bitbucket.org/free5gc-team/nrf/service"
+	nssf_service "bitbucket.org/free5gc-team/nssf/service"
+	"bitbucket.org/free5gc-team/path_util"
+	pcf_service "bitbucket.org/free5gc-team/pcf/service"
+	smf_service "bitbucket.org/free5gc-team/smf/service"
+	udm_service "bitbucket.org/free5gc-team/udm/service"
+	udr_service "bitbucket.org/free5gc-team/udr/service"
+
+	"test"
+	"test/app"
 )
 
 var NFs = []app.NetworkFunction{
@@ -50,11 +52,11 @@ func init() {
 	}
 
 	if init {
-		app.AppInitializeWillInitialize("")
+		//app.AppInitializeWillInitialize("")
 		flagSet := flag.NewFlagSet("free5gc", 0)
 		flagSet.String("smfcfg", "", "SMF Config Path")
 		cli := cli.NewContext(nil, flagSet, nil)
-		err := cli.Set("smfcfg", path_util.Gofree5gcPath("free5gc/config/test/smfcfg.test.conf"))
+		err := cli.Set("smfcfg", path_util.Free5gcPath("free5gc/config/test/smfcfg.test.conf"))
 		if err != nil {
 			log.Fatal("SMF test config error")
 			return

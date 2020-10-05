@@ -2,6 +2,18 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
+	"net"
+	"os"
+	"strings"
+	"test"
+	"time"
+
+	"github.com/calee0219/fatal"
+	"github.com/urfave/cli"
+	"gopkg.in/yaml.v2"
+
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
 	"bitbucket.org/free5gc-team/nas/nasTestpacket"
@@ -9,17 +21,6 @@ import (
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/ngap"
 	"bitbucket.org/free5gc-team/openapi/models"
-	"free5gc/src/test"
-	"io/ioutil"
-	"log"
-	"net"
-	"os"
-	"strings"
-	"time"
-
-	"github.com/calee0219/fatal"
-	"github.com/urfave/cli"
-	"gopkg.in/yaml.v2"
 )
 
 type n2Amf struct {

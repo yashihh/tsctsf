@@ -2,9 +2,10 @@ package test
 
 import (
 	"fmt"
+	"reflect"
+
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/security"
-	"reflect"
 )
 
 func NASEncode(ue *RanUeContext, msg *nas.Message, securityContextAvailable bool, newSecurityContext bool) (

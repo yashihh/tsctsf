@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	"reflect"
+	"testing"
+
 	"bitbucket.org/free5gc-team/aper"
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
@@ -11,9 +14,8 @@ import (
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/ngap"
 	"bitbucket.org/free5gc-team/ngap/ngapType"
-	"free5gc/src/test/ngapTestpacket"
-	"reflect"
-	"testing"
+
+	"test/ngapTestpacket"
 )
 
 type testEncodeData struct {
