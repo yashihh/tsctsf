@@ -1,6 +1,7 @@
 GO_BIN_PATH = bin
-GO_SRC_PATH = src
+GO_SRC_PATH = NFs
 C_BUILD_PATH = build
+ROOT_PATH = $(shell pwd)
 
 NF = $(GO_NF) $(C_NF)
 GO_NF = amf ausf nrf nssf pcf smf udm udr n3iwf
@@ -40,7 +41,8 @@ $(GO_NF): % : $(GO_BIN_PATH)/%
 $(GO_BIN_PATH)/%: %.go $(NF_GO_FILES)
 # $(@F): The file-within-directory part of the file name of the target.
 	@echo "Start building $(@F)...."
-	go build -ldflags "$(LDFLAGS)" -o $@ $<
+	cd $(GO_SRC_PATH)/$(@F) && \
+	go build -ldflags "$(LDFLAGS)" -o $(ROOT_PATH)/$@ $(@F).go
 
 vpath %.go $(addprefix $(GO_SRC_PATH)/, $(GO_NF))
 
@@ -62,7 +64,8 @@ $(WEBCONSOLE)/$(GO_BIN_PATH)/$(WEBCONSOLE): $(WEBCONSOLE)/server.go  $(WEBCONSOL
 	yarn build && \
 	rm -rf ../public && \
 	cp -R build ../public
-	go build -ldflags "$(WEBCONSOLE_LDFLAGS)" -o  $@ $<
+	cd $(WEBCONSOLE) && \
+	go build -ldflags "$(WEBCONSOLE_LDFLAGS)" -o $(ROOT_PATH)/$@ ./server.go
 
 clean:
 	rm -rf $(addprefix $(GO_BIN_PATH)/, $(GO_NF))
