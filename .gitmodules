@@ -1,33 +1,33 @@
 [submodule "amf"]
 	path = NFs/amf
-	url = git@bitbucket.org:free5gc-team/amf.git
+	url = https://bitbucket.org/free5gc-team/amf.git
 [submodule "ausf"]
 	path = NFs/ausf
-	url = git@bitbucket.org:free5gc-team/ausf.git
+	url = https://bitbucket.org/free5gc-team/ausf.git
 [submodule "n3iwf"]
 	path = NFs/n3iwf
-	url = git@bitbucket.org:free5gc-team/n3iwf.git
+	url = https://bitbucket.org/free5gc-team/n3iwf.git
 [submodule "nrf"]
 	path = NFs/nrf
-	url = git@bitbucket.org:free5gc-team/nrf.git
+	url = https://bitbucket.org/free5gc-team/nrf.git
 [submodule "nssf"]
 	path = NFs/nssf
-	url = git@bitbucket.org:free5gc-team/nssf.git
+	url = https://bitbucket.org/free5gc-team/nssf.git
 [submodule "pcf"]
 	path = NFs/pcf
-	url = git@bitbucket.org:free5gc-team/pcf.git
+	url = https://bitbucket.org/free5gc-team/pcf.git
 [submodule "smf"]
 	path = NFs/smf
-	url = git@bitbucket.org:free5gc-team/smf.git
+	url = https://bitbucket.org/free5gc-team/smf.git
 [submodule "udm"]
 	path = NFs/udm
-	url = git@bitbucket.org:free5gc-team/udm.git
+	url = https://bitbucket.org/free5gc-team/udm.git
 [submodule "udr"]
 	path = NFs/udr
-	url = git@bitbucket.org:free5gc-team/udr.git
+	url = https://bitbucket.org/free5gc-team/udr.git
 [submodule "upf"]
 	path = NFs/upf
-	url = git@bitbucket.org:free5gc-team/upf.git
+	url = https://bitbucket.org/free5gc-team/upf.git
 [submodule "webconsole"]
 	path = webconsole
-	url = git@bitbucket.org:free5gc-team/webconsole.git
+	url = https://bitbucket.org/free5gc-team/webconsole.git
