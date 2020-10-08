@@ -12,7 +12,7 @@ require (
 	bitbucket.org/free5gc-team/http2_util v0.0.0-20200915033753-44c1ee32f9a4
 	bitbucket.org/free5gc-team/milenage v0.0.0-20200915034446-e87f555990e5
 	bitbucket.org/free5gc-team/n3iwf v0.0.0-20200925114718-7907d9fd6d82
-	bitbucket.org/free5gc-team/nas v0.0.0-20200916194209-0698dd234d50
+	bitbucket.org/free5gc-team/nas v0.0.0-20201008065117-fa581c1b3560
 	bitbucket.org/free5gc-team/ngap v0.0.0-20200925072202-7227dc6531bc
 	bitbucket.org/free5gc-team/nrf v0.0.0-20200925091603-b57652724aec
 	bitbucket.org/free5gc-team/nssf v0.0.0-20200925092222-8e2fd96f1025
@@ -37,13 +37,13 @@ require (
 )
 
 replace (
-    bitbucket.org/free5gc-team/amf => ../NFs/amf
-    bitbucket.org/free5gc-team/ausf => ../NFs/ausf
-    bitbucket.org/free5gc-team/n3iwf => ../NFs/n3iwf
-    bitbucket.org/free5gc-team/nrf => ../NFs/nrf
-    bitbucket.org/free5gc-team/nssf => ../NFs/nssf
-    bitbucket.org/free5gc-team/pcf => ../NFs/pcf
-    bitbucket.org/free5gc-team/smf => ../NFs/smf
-    bitbucket.org/free5gc-team/udm => ../NFs/udm
-    bitbucket.org/free5gc-team/udr => ../NFs/udr
+	bitbucket.org/free5gc-team/amf => ../NFs/amf
+	bitbucket.org/free5gc-team/ausf => ../NFs/ausf
+	bitbucket.org/free5gc-team/n3iwf => ../NFs/n3iwf
+	bitbucket.org/free5gc-team/nrf => ../NFs/nrf
+	bitbucket.org/free5gc-team/nssf => ../NFs/nssf
+	bitbucket.org/free5gc-team/pcf => ../NFs/pcf
+	bitbucket.org/free5gc-team/smf => ../NFs/smf
+	bitbucket.org/free5gc-team/udm => ../NFs/udm
+	bitbucket.org/free5gc-team/udr => ../NFs/udr
 )
