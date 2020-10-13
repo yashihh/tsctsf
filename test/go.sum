@@ -3,6 +3,8 @@ bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20200925083925-d0880a9f
 bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20200925083925-d0880a9fc38c/go.mod h1:g8H8LUbu8WCQtd/f6c3sBeKFGqbqW0tK30W1Q/qMk0c=
 bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201012162653-e78e0779f074 h1:Ozy0wDe4cwFFQ5GXJae/WEGmAjRk4JPDSkbeLmze3Qg=
 bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201012162653-e78e0779f074/go.mod h1:g8H8LUbu8WCQtd/f6c3sBeKFGqbqW0tK30W1Q/qMk0c=
+bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201013105703-13d28aee5807 h1:4ayEsBOVRKWk11jWcs0A1yCezMJd7jUG5lqqj3CX478=
+bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201013105703-13d28aee5807/go.mod h1:g8H8LUbu8WCQtd/f6c3sBeKFGqbqW0tK30W1Q/qMk0c=
 bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20200915034734-df7bd383fceb h1:cA8kKoXxD+FykSXgMyrTUWhKV46iB6HSnmY45XZmSVA=
 bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20200915034734-df7bd383fceb/go.mod h1:adqA4fj7zr2b/HgIgf6AJgFmTLmd2jaMS3Msgk+NyYQ=
 bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20201006104319-757aa8fdf0d1 h1:CHauMkbZneauldGkznQaOqeB/TM9hT1ZDP00zD9D53Y=
