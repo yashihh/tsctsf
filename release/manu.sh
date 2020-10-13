@@ -11,10 +11,26 @@ BITBUCKET_ROOT='.'
 #find ${GITHUB_ROOT} -type f -not -name '.git' -not -name '.gitmodules' -delete
 # delete all files in GitHub except .git
 #rsync -a --delete --exclude '.git' --exclude '.gitmodules' ./ ${GITHUB_ROOT}/
+
 # Copy all files
-rsync -atvz --delete --exclude '.git' --exclude '.gitmodules' --exclude '*.log' --exclude 'bitbucket-pipelines.yml' --exclude 'infra' --exclude 'log' --exclude 'release' --exclude 'bin' --exclude 'test_debug.sh' --exclude 'upf_release.sh' ${BITBUCKET_ROOT}/ ${GITHUB_ROOT}/
-# Delete *_test.go
-find ${GITHUB_ROOT} -name *_test.go -not -path "${GITHUB_ROOT}/src/test/*" -type f -delete
+rsync -atvz --delete \
+--exclude '.git' \
+--exclude '.gitmodules' \
+--exclude '*.log' \
+--exclude 'bitbucket-pipelines.yml' \
+--exclude 'infra' \
+--exclude 'log' \
+--exclude 'release' \
+--exclude 'bin' \
+--exclude 'src/upf/build' \
+--exclude 'webconsole/frontend/build' \
+--exclude 'webconsole/frontend/node_modules' \
+--exclude 'test_debug.sh' \
+--exclude 'upf_release.sh' \
+${BITBUCKET_ROOT}/ ${GITHUB_ROOT}/
+
+# Delete *_test.go.old
+find ${GITHUB_ROOT} -name *_test.go.old -type f -delete
 #rsync -atvz --exclude .git/ --exclude .gitmodules ${BITBUCKET_ROOT}/ ${GITHUB_ROOT}/
 
 #for module in ${modules};
