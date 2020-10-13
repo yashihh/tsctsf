@@ -21,7 +21,7 @@ then
     exit 1
 fi
 
-UPF_NUM=3
+UPF_NUM=2
 
 while getopts 'om:' OPT;
 do
@@ -44,7 +44,7 @@ do
 done
 shift $(($OPTIND - 1))
 
-TEST_POOL="TestRegistration"
+TEST_POOL="TestRequestTwoPDUSessoins"
 if [[ ! "$1" =~ $TEST_POOL ]]
 then
     echo "Usage: $0 [ ${TEST_POOL//|/ | } ]"
@@ -59,7 +59,7 @@ elif [ $OS == "Fedora" ]; then
 fi
 PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
-cp config/test/smfcfg.ulcl.test.conf config/test/smfcfg.test.conf
+cp config/test/smfcfg.pdusessions.test.conf config/test/smfcfg.test.conf
 
 UPFNS="UPFns"
 
@@ -102,12 +102,13 @@ for i in $(seq -f "%02g" 1 $UPF_NUM); do
 
     sed -i -e "s/10.200.200.10./10.200.200.1${i}/g" ./NFs/upf/build/config/upfcfg.ulcl.yaml
     if [ ${i} -eq 02 ]; then
-        sed -i -e "s/internet/intranet/g" ./NFs/upf/build/config/upfcfg.ulcl.yaml
+        sed -i -e "s/internet/internet2/g" ./NFs/upf/build/config/upfcfg.ulcl.yaml
     else
-        sed -i -e "s/intranet/internet/g" ./NFs/upf/build/config/upfcfg.ulcl.yaml
+        sed -i -e "s/internet2/internet/g" ./NFs/upf/build/config/upfcfg.ulcl.yaml
     fi
     cd NFs/upf/build && sudo -E ip netns exec "${UPFNS}${i}" ./bin/free5gc-upfd -f config/upfcfg.ulcl.yaml &
     sleep 1
+    sed -i -e "s/internet2/internet/g" ./NFs/upf/build/config/upfcfg.ulcl.yaml
 done
 
 cd test

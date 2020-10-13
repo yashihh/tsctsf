@@ -3713,7 +3713,7 @@ func BuildInitialContextSetupResponseForRegistraionTest(amfUeNgapID, ranUeNgapID
 }
 
 func BuildPDUSessionResourceSetupResponseForRegistrationTest(
-	amfUeNgapID, ranUeNgapID int64, ipv4 string) (pdu ngapType.NGAPPDU) {
+	pduSessionId int64, amfUeNgapID, ranUeNgapID int64, ipv4 string) (pdu ngapType.NGAPPDU) {
 
 	pdu.Present = ngapType.NGAPPDUPresentSuccessfulOutcome
 	pdu.SuccessfulOutcome = new(ngapType.SuccessfulOutcome)
@@ -3763,7 +3763,7 @@ func BuildPDUSessionResourceSetupResponseForRegistrationTest(
 
 	// PDU Session Resource Setup Response Item in PDU Session Resource Setup Response List
 	pDUSessionResourceSetupItemSURes := ngapType.PDUSessionResourceSetupItemSURes{}
-	pDUSessionResourceSetupItemSURes.PDUSessionID.Value = 10
+	pDUSessionResourceSetupItemSURes.PDUSessionID.Value = pduSessionId
 
 	pDUSessionResourceSetupItemSURes.PDUSessionResourceSetupResponseTransfer =
 		GetPDUSessionResourceSetupResponseTransfer(ipv4)

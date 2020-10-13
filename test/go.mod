@@ -3,8 +3,8 @@ module test
 go 1.14
 
 require (
-	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20200925083925-d0880a9fc38c
-	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20200915034734-df7bd383fceb
+	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201013105703-13d28aee5807
+	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20201006104319-757aa8fdf0d1
 	bitbucket.org/free5gc-team/UeauCommon v0.0.0-20200915045754-fc6808262820
 	bitbucket.org/free5gc-team/amf v0.0.0
 	bitbucket.org/free5gc-team/aper v0.0.0-20200915033117-0dcacc1cf3c7
