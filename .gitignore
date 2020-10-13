@@ -20,6 +20,7 @@ testkeylog/
 log/
 *.log
 *.pcap
+config/test/smfcfg.test.conf
 
 # build
 bin/
