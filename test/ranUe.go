@@ -76,7 +76,7 @@ func GetSmfSelectionSubscriptionData() (smfSelData models.SmfSelectionSubscripti
 	return TestRegistrationProcedure.TestSmfSelDataTable[TestRegistrationProcedure.FREE5GC_CASE]
 }
 
-func GetSessionManagementSubscriptionData() (smfSelData models.SessionManagementSubscriptionData) {
+func GetSessionManagementSubscriptionData() (smfSelData []models.SessionManagementSubscriptionData) {
 	return TestRegistrationProcedure.TestSmSelDataTable[TestRegistrationProcedure.FREE5GC_CASE]
 }
 
