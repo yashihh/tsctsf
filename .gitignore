@@ -1,4 +1,6 @@
 # Toolchain
+# Go vendor
+vendor/
 # Goland project folder
 .idea/
 # Visual Studio Code
@@ -28,3 +30,4 @@ release/src
 # webconsole
 webconsole/bin
 webconsole/public
+
