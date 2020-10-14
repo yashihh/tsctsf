@@ -2823,7 +2823,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
-	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.101", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.101", 3001, 2152)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -3028,6 +3028,24 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
 
+	udpServer := ranIpAddr + ":2152"
+	udpListener, err := net.ListenPacket("udp", udpServer)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer udpListener.Close()
+
+	fmt.Printf("UDP server start and listening on %s.\n", udpServer)
+	go func() {
+		for {
+			buf := make([]byte, 1024)
+			_, _, err := udpListener.ReadFrom(buf)
+			if err != nil {
+				continue
+			}
+		}
+	}()
+
 	// wait 1s
 	time.Sleep(1 * time.Second)
 
@@ -3072,7 +3090,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 
 	time.Sleep(1 * time.Second)
 
-	upfConn2, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 3000, 2152)
+	upfConn2, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 3002, 2152)
 	assert.Nil(t, err, err)
 	//
 	// Send the dummy packet
