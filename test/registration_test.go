@@ -3002,10 +3002,10 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 
 	sNssai = models.Snssai{
 		Sst: 1,
-		Sd:  "010203",
+		Sd:  "112233",
 	}
-	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(11, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet", &sNssai)
-	// pdu = nasTestpacket.GetUlNasTransport_PduSessionModificationRequest(1, nasMessage.ULNASTransportRequestTypeExistingPduSession, "internet2", &sNssai)
+	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(11, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet2", &sNssai)
+
 	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
 	assert.Nil(t, err)
 	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
@@ -3089,7 +3089,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 		Flags:    0,
 		TotalLen: 48,
 		TTL:      64,
-		Src:      net.ParseIP("60.60.0.1").To4(),
+		Src:      net.ParseIP("60.60.0.2").To4(),
 		Dst:      net.ParseIP("60.60.0.102").To4(),
 		ID:       1,
 	}
