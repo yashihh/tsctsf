@@ -2823,7 +2823,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
-	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.101", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.101", 3001, 2152)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -3002,10 +3002,10 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 
 	sNssai = models.Snssai{
 		Sst: 1,
-		Sd:  "010203",
+		Sd:  "112233",
 	}
-	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(11, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet", &sNssai)
-	// pdu = nasTestpacket.GetUlNasTransport_PduSessionModificationRequest(1, nasMessage.ULNASTransportRequestTypeExistingPduSession, "internet2", &sNssai)
+	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(11, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet2", &sNssai)
+
 	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
 	assert.Nil(t, err)
 	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
@@ -3027,6 +3027,24 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
+
+	udpServer := ranIpAddr + ":2152"
+	udpListener, err := net.ListenPacket("udp", udpServer)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer udpListener.Close()
+
+	fmt.Printf("UDP server start and listening on %s.\n", udpServer)
+	go func() {
+		for {
+			buf := make([]byte, 1024)
+			_, _, err := udpListener.ReadFrom(buf)
+			if err != nil {
+				continue
+			}
+		}
+	}()
 
 	// wait 1s
 	time.Sleep(1 * time.Second)
@@ -3072,7 +3090,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 
 	time.Sleep(1 * time.Second)
 
-	upfConn2, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 3000, 2152)
+	upfConn2, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 3002, 2152)
 	assert.Nil(t, err, err)
 	//
 	// Send the dummy packet
@@ -3089,7 +3107,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 		Flags:    0,
 		TotalLen: 48,
 		TTL:      64,
-		Src:      net.ParseIP("60.60.0.1").To4(),
+		Src:      net.ParseIP("60.60.0.2").To4(),
 		Dst:      net.ParseIP("60.60.0.102").To4(),
 		ID:       1,
 	}
