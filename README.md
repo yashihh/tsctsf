@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
 <a href="https://free5gc.org"><img width="40%" src="https://forum.free5gc.org/uploads/default/original/1X/324695bfc6481bd556c11018f2834086cf5ec645.png" alt="free5GC"/></a>
 </p>
 
@@ -84,20 +84,9 @@ This guide assumes that you will run all 5GC elements on a single machine.
 
 You will not be able to run most of the tests in [Test](#test) section unless you deploy a UPF.
 
-<<<<<<< HEAD
-### B. Install Control Plane Entities
-
-1. Clone free5GC project
-    ```bash
-    cd ~
-    git clone --recursive -b v3.0.4 -j `nproc` https://github.com/free5gc/free5gc.git
-    cd free5gc
-    ```
-=======
 2. Golang Version
     * As noted above, free5gc is built and tested with Go 1.14.4
     * To check the version of Go on your system, from a command prompt:
->>>>>>> Normalized layout, corrected grammar, standardized idiomatic English
 
     ```bash
         go version
@@ -127,11 +116,6 @@ You will not be able to run most of the tests in [Test](#test) section unless yo
 
     * Further information and installation instructions for `golang` are available at the [official golang site](https://golang.org/doc/install).
 
-<<<<<<< HEAD
-### C. Install User Plane Function (UPF)
-
-1. Please check Linux kernel version if it is `5.0.0-23-generic`
-=======
 3. Control-plane Supporting Pacakges
 
 ```bash
@@ -161,7 +145,6 @@ sudo systemctl stop ufw
 1. Clone the free5GC repository
     * To install the latest stable build (v3.0.4):
 
->>>>>>> Normalized layout, corrected grammar, standardized idiomatic English
     ```bash
         cd ~
         git clone --recursive -b v3.0.4 -j `nproc` https://github.com/free5gc/free5gc.git
@@ -171,19 +154,12 @@ sudo systemctl stop ufw
     * Alternatively, if you wish to install the latest nightly build:
 
     ```bash
-<<<<<<< HEAD
-    git clone -b v0.2.0 https://github.com/PrinzOwO/gtp5g.git
-    cd gtp5g
-    make
-    sudo make install
-=======
         cd ~/free5gc
         git checkout master
         git submodule sync
         git submodule update --init --jobs `nproc`
         git submodule foreach git checkout master
         git submodule foreach git pull --jobs `nproc`
->>>>>>> Normalized layout, corrected grammar, standardized idiomatic English
     ```
 
 2. Install all Go module dependencies
@@ -209,9 +185,6 @@ go mod download
         make all
     ```
 
-<<<<<<< HEAD
-**Note: UPF's config is located at** `free5gc/src/upf/build/config/upfcfg.yaml`
-=======
 ### C. Install User Plane Function (UPF)
     
 1. As noted above, the GTP kernel module used by the UPF requires that you use Linux kernel version `5.0.0-23-generic`.  To verify your version:
@@ -249,7 +222,6 @@ sudo make install
    ```
 
 4. Customize the UPF as desired.  The UPF configuration file is `free5gc/src/upf/build/config/upfcfg.yaml`.
->>>>>>> Normalized layout, corrected grammar, standardized idiomatic English
 
 ## Run
 
@@ -321,7 +293,6 @@ chmod +x ./test.sh
 The tests are all run from within `~/free5gc`.
 
 a. TestRegistration
-
 ```bash
 ./test.sh TestRegistration
 ```
