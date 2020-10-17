@@ -128,7 +128,7 @@ sudo systemctl start mongodb
 
 ```bash
 sudo apt -y update
-sudo apt -y install git gcc cmake autoconf libtool pkg-config libmnl-dev libyaml-dev
+sudo apt -y install git gcc g++ cmake autoconf libtool pkg-config libmnl-dev libyaml-dev
 go get -u github.com/sirupsen/logrus
 ```
 
