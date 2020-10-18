@@ -75,7 +75,7 @@ This guide assumes that you will run all 5GC elements on a single machine.
 ### A. Prerequisites
 
 1. Linux Kernel Version
-    * In order to use the UPF element, you must use the `5.0.0-23-generic` version  or version >= `5.4` of the Linux kernel.  free5gc uses the [gtp5g kernel module](https://github.com/PrinzOwO/gtp5g), which has been tested and compiled against these kernel version only.  To determine the version of the Linux kernel you are using:
+    * In order to use the UPF element, you must use the `5.0.0-23-generic` version or version >= `5.4` of the Linux kernel.  free5gc uses the [gtp5g kernel module](https://github.com/PrinzOwO/gtp5g), which has been tested and compiled against these kernel version only.  To determine the version of the Linux kernel you are using:
 
     ```bash
         $ uname -r
