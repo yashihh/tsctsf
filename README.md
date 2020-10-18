@@ -49,10 +49,10 @@ For questions and support please use the [official forum](https://forum.free5gc.
 free5gc has been tested against the following environment:
 
 - Software
-    - OS: Ubuntu 18.04
+    - OS: Ubuntu 18.04 or 20.04
     - gcc 7.3.0
     - Go 1.14.4 linux/amd64
-    - kernel version 5.0.0-23-generic
+    - kernel version 5.0.0-23-generic or version >= 5.4 (MUST for UPF)
 
 The listed kernel version is required for the UPF element.
 
@@ -75,11 +75,10 @@ This guide assumes that you will run all 5GC elements on a single machine.
 ### A. Prerequisites
 
 1. Linux Kernel Version
-    * In order to use the UPF element, you must use the `5.0.0-23-generic` version of the Linux kernel.  free5gc uses the [gtp5g kernel module](https://github.com/PrinzOwO/gtp5g), which has been tested and compiled against that kernel version only.  To determine the version of the Linux kernel you are using:
+    * In order to use the UPF element, you must use the `5.0.0-23-generic` version or version >= `5.4` of the Linux kernel.  free5gc uses the [gtp5g kernel module](https://github.com/PrinzOwO/gtp5g), which has been tested and compiled against these kernel version only.  To determine the version of the Linux kernel you are using:
 
     ```bash
         $ uname -r
-        5.0.0-23-generic
     ```
 
 You will not be able to run most of the tests in [Test](#test) section unless you deploy a UPF.
@@ -128,7 +127,7 @@ sudo systemctl start mongodb
 
 ```bash
 sudo apt -y update
-sudo apt -y install git gcc cmake autoconf libtool pkg-config libmnl-dev libyaml-dev
+sudo apt -y install git gcc g++ cmake autoconf libtool pkg-config libmnl-dev libyaml-dev
 go get -u github.com/sirupsen/logrus
 ```
 
@@ -187,7 +186,7 @@ go mod download
 
 ### C. Install User Plane Function (UPF)
     
-1. As noted above, the GTP kernel module used by the UPF requires that you use Linux kernel version `5.0.0-23-generic`.  To verify your version:
+1. As noted above, the GTP kernel module used by the UPF requires that you use Linux kernel version `5.0.0-23-generic` or version >= `5.4`.  To verify your version:
 
 ```bash
 uname -r
