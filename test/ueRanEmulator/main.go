@@ -345,7 +345,7 @@ func ueRanEmulator() error {
 	}
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(ue.AmfUeNgapId, ue.RanUeNgapId, uerancfg.N3Ran.Addr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, uerancfg.N3Ran.Addr)
 	if err != nil {
 		return err
 	}
