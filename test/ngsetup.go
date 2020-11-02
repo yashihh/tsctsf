@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net"
 
+	"git.cs.nctu.edu.tw/calee/sctp"
 	"github.com/calee0219/fatal"
-	"github.com/ishidawataru/sctp"
 )
 
 const ngapPPID uint32 = 0x3c000000

@@ -22,11 +22,11 @@ require (
 	bitbucket.org/free5gc-team/smf v0.0.0
 	bitbucket.org/free5gc-team/udm v0.0.0
 	bitbucket.org/free5gc-team/udr v0.0.0
+	git.cs.nctu.edu.tw/calee/sctp v1.1.0
 	github.com/calee0219/fatal v0.0.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-ping/ping v0.0.0-20200918120429-e8ae07c3cec8
 	github.com/golangci/golangci-lint v1.31.0
-	github.com/ishidawataru/sctp v0.0.0-20191218070446-00ab2ac2db07
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826
 	github.com/stretchr/testify v1.6.1
 	github.com/urfave/cli v1.22.4
