@@ -1,8 +1,4 @@
 bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20200915043355-a64a571128d3/go.mod h1:8MXXNY6RebfsQmRclhpjf3HvynTS8+cvbp3m6L0R36E=
-bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20200925083925-d0880a9fc38c h1:8vls10veGQWwPH6QwDT07A+W2+yZK5zhvoSfkbS6wE0=
-bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20200925083925-d0880a9fc38c/go.mod h1:g8H8LUbu8WCQtd/f6c3sBeKFGqbqW0tK30W1Q/qMk0c=
-bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201012162653-e78e0779f074 h1:Ozy0wDe4cwFFQ5GXJae/WEGmAjRk4JPDSkbeLmze3Qg=
-bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201012162653-e78e0779f074/go.mod h1:g8H8LUbu8WCQtd/f6c3sBeKFGqbqW0tK30W1Q/qMk0c=
 bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201013105703-13d28aee5807 h1:4ayEsBOVRKWk11jWcs0A1yCezMJd7jUG5lqqj3CX478=
 bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201013105703-13d28aee5807/go.mod h1:g8H8LUbu8WCQtd/f6c3sBeKFGqbqW0tK30W1Q/qMk0c=
 bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20200915034734-df7bd383fceb h1:cA8kKoXxD+FykSXgMyrTUWhKV46iB6HSnmY45XZmSVA=
@@ -90,6 +86,8 @@ cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 git.cs.nctu.edu.tw/calee/sctp v1.0.0 h1:dgSYfa4NS2UF5E2By9Tzf5HxKWBmaJZ2UgmPHieQYeA=
 git.cs.nctu.edu.tw/calee/sctp v1.0.0/go.mod h1:apczyZt1aXMdJ1qOeK8DN+WMQ66KOmtPkvkv0ngj4XM=
+git.cs.nctu.edu.tw/calee/sctp v1.1.0 h1:caiPJ0g2sH1QmDkC7x2yklKrc01Fuo1rqYW68Tq4mU0=
+git.cs.nctu.edu.tw/calee/sctp v1.1.0/go.mod h1:NeOuBXO1iJBtldmNhkfSH8yFbnxlhI8eEJdUd7DZvws=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
@@ -384,8 +382,6 @@ github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpO
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
-github.com/ishidawataru/sctp v0.0.0-20191218070446-00ab2ac2db07 h1:rw3IAne6CDuVFlZbPOkA7bhxlqawFh7RJJ+CejfMaxE=
-github.com/ishidawataru/sctp v0.0.0-20191218070446-00ab2ac2db07/go.mod h1:co9pwDoBCm1kGxawmb4sPq0cSIOOWNPT4KnHotMP1Zg=
 github.com/jingyugao/rowserrcheck v0.0.0-20191204022205-72ab7603b68a h1:GmsqmapfzSJkm28dhRoHz2tLRbJmqhU86IPgBtN3mmk=
 github.com/jingyugao/rowserrcheck v0.0.0-20191204022205-72ab7603b68a/go.mod h1:xRskid8CManxVta/ALEhJha/pweKBaVG6fWgc0yH25s=
 github.com/jirfag/go-printf-func-name v0.0.0-20191110105641-45db9963cdd3 h1:jNYPNLe3d8smommaoQlK7LOA5ESyUJJ+Wf79ZtA7Vp4=
