@@ -16,7 +16,7 @@ require (
 	bitbucket.org/free5gc-team/ngap v0.0.0-20200925072202-7227dc6531bc
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
-	bitbucket.org/free5gc-team/openapi v0.0.0-20200915035203-9fc3f0e748b4
+	bitbucket.org/free5gc-team/openapi v0.0.0-20201107101320-b56742e74e07
 	bitbucket.org/free5gc-team/path_util v0.0.0-20200925075253-6a41479bd567
 	bitbucket.org/free5gc-team/pcf v0.0.0
 	bitbucket.org/free5gc-team/smf v0.0.0
