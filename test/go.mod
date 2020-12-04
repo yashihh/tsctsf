@@ -12,11 +12,11 @@ require (
 	bitbucket.org/free5gc-team/http2_util v0.0.0-20200915033753-44c1ee32f9a4
 	bitbucket.org/free5gc-team/milenage v0.0.0-20200915034446-e87f555990e5
 	bitbucket.org/free5gc-team/n3iwf v0.0.0
-	bitbucket.org/free5gc-team/nas v0.0.0-20201008065117-fa581c1b3560
+	bitbucket.org/free5gc-team/nas v0.0.0-20201124100346-bc3015e754ec
 	bitbucket.org/free5gc-team/ngap v0.0.0-20200925072202-7227dc6531bc
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
-	bitbucket.org/free5gc-team/openapi v0.0.0-20201107101320-b56742e74e07
+	bitbucket.org/free5gc-team/openapi v0.0.0-20201128031102-279accd8c2be
 	bitbucket.org/free5gc-team/path_util v0.0.0-20200925075253-6a41479bd567
 	bitbucket.org/free5gc-team/pcf v0.0.0
 	bitbucket.org/free5gc-team/smf v0.0.0
@@ -33,8 +33,8 @@ require (
 	github.com/vishvananda/netlink v1.1.0
 	go.mongodb.org/mongo-driver v1.4.1
 	golang.org/x/net v0.0.0-20200927032502-5d4f70055728
-	golang.org/x/sys v0.0.0-20200926100807-9d91bd62050c
-	gopkg.in/yaml.v2 v2.3.0
+	golang.org/x/sys v0.0.0-20201130171929-760e229fe7c5
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 replace (
