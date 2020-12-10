@@ -29,7 +29,7 @@ do
 done
 shift $(($OPTIND - 1))
 
-cp ../../../../config/test/smfcfg.single.test.conf ../../../../config/test/smfcfg.test.conf
+cp ../../../../config/test/smfcfg.single.test.yaml ../../../../config/test/smfcfg.test.yaml
 
 GOPATH=$HOME/go
 if [ $OS == "Ubuntu" ]; then

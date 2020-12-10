@@ -59,7 +59,7 @@ elif [ $OS == "Fedora" ]; then
 fi
 PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
-cp config/test/smfcfg.ulcl.test.conf config/test/smfcfg.test.conf
+cp config/test/smfcfg.ulcl.test.yaml config/test/smfcfg.test.yaml
 
 UPFNS="UPFns"
 
@@ -137,4 +137,3 @@ for i in $(seq -f "%02g" 1 $UPF_NUM); do
   sudo ip netns del "${UPFNS}${i}"
   sudo ip link del "br-veth${i}"
 done
-
