@@ -399,7 +399,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config, c",
-			Value: "./config/ueranem.conf",
+			Value: "./config/ueranem.yaml",
 			Usage: "Load configuration from `FILE`",
 		},
 	}

@@ -36,7 +36,7 @@ then
     exit 1
 fi
 
-cp config/test/smfcfg.single.test.conf config/test/smfcfg.test.conf
+cp config/test/smfcfg.single.test.yaml config/test/smfcfg.test.yaml
 
 GOPATH=$HOME/go
 if [ $OS == "Ubuntu" ]; then
@@ -102,8 +102,8 @@ then
     sudo ip link set ipsec0 up
 
     # Configuration
-    cp -f config/amfcfg.conf config/amfcfg.conf.bak
-    cp -f config/amfcfg.n3test.conf config/amfcfg.conf
+    cp -f config/amfcfg.yaml config/amfcfg.yaml.bak
+    cp -f config/amfcfg.n3test.yaml config/amfcfg.yaml
 
     # Run CN
     cd test && $GOROOT/bin/go test -v -vet=off -timeout 0 -run TestCN &
@@ -124,7 +124,7 @@ else
     #./bin/amf &
     #./bin/ausf &
     #./bin/nssf &
-    #./bin/smf -smfcfg ./config/test/smfcfg.test.conf&
+    #./bin/smf -smfcfg ./config/test/smfcfg.test.yaml&
     #./bin/udm &
     #./bin/udr &
     #sleep 4
@@ -162,8 +162,8 @@ then
     sudo ip netns del ${UENS}
     sudo killall n3iwf
     killall test.test
-    cp -f config/amfcfg.conf.bak config/amfcfg.conf
-    rm -f config/amfcfg.conf.bak
+    cp -f config/amfcfg.yaml.bak config/amfcfg.yaml
+    rm -f config/amfcfg.yaml.bak
 fi
 
 sleep 2
