@@ -24,17 +24,11 @@ SUDO_N3IWF_PID=$!
 sleep 1
 N3IWF_PID=$(pgrep -P $SUDO_N3IWF_PID)
 PID_LIST+=($SUDO_N3IWF_PID $N3IWF_PID)
-
+ 
 function terminate()
 {
-    # kill amf first
-    while $(sudo kill -SIGINT ${PID_LIST[2]} 2>/dev/null); do
-        sleep 2
-    done
-
-    for ((idx=${#PID_LIST[@]}-1;idx>=0;idx--)); do
-        sudo kill -SIGKILL ${PID_LIST[$idx]}
-    done
+    sudo kill -SIGTERM ${PID_LIST[${#PID_LIST[@]}-2]} ${PID_LIST[${#PID_LIST[@]}-1]}
+    sleep 2
 }
 
 trap terminate SIGINT
