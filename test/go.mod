@@ -12,7 +12,7 @@ require (
 	bitbucket.org/free5gc-team/http2_util v0.0.0-20201212235925-bd3a307d110a
 	bitbucket.org/free5gc-team/milenage v0.0.0-20201211040256-1f9245345719
 	bitbucket.org/free5gc-team/n3iwf v0.0.0
-	bitbucket.org/free5gc-team/nas v0.0.0-20201213001844-18595c2c9b47
+	bitbucket.org/free5gc-team/nas v0.0.0-20201216145657-8bfbf6fcfac7
 	bitbucket.org/free5gc-team/ngap v0.0.0-20201213001141-924cc2f2b303
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
@@ -22,7 +22,6 @@ require (
 	bitbucket.org/free5gc-team/smf v0.0.0
 	bitbucket.org/free5gc-team/udm v0.0.0
 	bitbucket.org/free5gc-team/udr v0.0.0
-	bitbucket.org/free5gc-team/util_3gpp v0.0.0-20201214054453-4de051964b7c // indirect
 	git.cs.nctu.edu.tw/calee/sctp v1.1.0
 	github.com/Djarvur/go-err113 v0.1.0 // indirect
 	github.com/calee0219/fatal v0.0.1
@@ -56,7 +55,7 @@ require (
 	go.mongodb.org/mongo-driver v1.4.4
 	golang.org/x/mod v0.4.0 // indirect
 	golang.org/x/net v0.0.0-20201209123823-ac852fbbde11
-	golang.org/x/sys v0.0.0-20201211090839-8ad439b19e0f
+	golang.org/x/sys v0.0.0-20201214210602-f9fddec55a1e
 	golang.org/x/tools v0.0.0-20201211185031-d93e913c1a58 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
