@@ -43,6 +43,8 @@ bitbucket.org/free5gc-team/nas v0.0.0-20201124100346-bc3015e754ec h1:hoeih47N4rz
 bitbucket.org/free5gc-team/nas v0.0.0-20201124100346-bc3015e754ec/go.mod h1:J8JxP5TcEltr/sOSKeOYDvo71uBVio22MUsKeSRVDtw=
 bitbucket.org/free5gc-team/nas v0.0.0-20201213001844-18595c2c9b47 h1:IZDyyfMZtxtR4EJ8gfZg6C4HtdYF7JOFC5lZtL+Yu3o=
 bitbucket.org/free5gc-team/nas v0.0.0-20201213001844-18595c2c9b47/go.mod h1:Uf8YaL4qvo0o3Qk8CYfBf/J6DgtX8lYbjVEN7WbE/AM=
+bitbucket.org/free5gc-team/nas v0.0.0-20201216145657-8bfbf6fcfac7 h1:PjT5P3SY/cMqhUR5z6y//kkfS/twXDsNdXR12jLohvs=
+bitbucket.org/free5gc-team/nas v0.0.0-20201216145657-8bfbf6fcfac7/go.mod h1:Uf8YaL4qvo0o3Qk8CYfBf/J6DgtX8lYbjVEN7WbE/AM=
 bitbucket.org/free5gc-team/ngap v0.0.0-20200915042202-2cf700b6cfe5/go.mod h1:SS2wgYuOLbU109qmeLyn1P9pI/QP4Bg/9k7cG24I2Hs=
 bitbucket.org/free5gc-team/ngap v0.0.0-20201213001141-924cc2f2b303 h1:VgJD6nSQDCi2Ueye5MQXPoqiLTuVIpke0brfnm/rdT4=
 bitbucket.org/free5gc-team/ngap v0.0.0-20201213001141-924cc2f2b303/go.mod h1:io8hGes5X7tehqFx+V3vEBykfsFG+fns2n6hvzhLKOk=
@@ -927,6 +929,8 @@ golang.org/x/sys v0.0.0-20201130171929-760e229fe7c5 h1:dMDtAap8F/+vsyXblqK90iTzY
 golang.org/x/sys v0.0.0-20201130171929-760e229fe7c5/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20201211090839-8ad439b19e0f h1:QdHQnPce6K4XQewki9WNbG5KOROuDzqO3NaYjI1cXJ0=
 golang.org/x/sys v0.0.0-20201211090839-8ad439b19e0f/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20201214210602-f9fddec55a1e h1:AyodaIpKjppX+cBfTASF2E1US3H2JFBj920Ot3rtDjs=
+golang.org/x/sys v0.0.0-20201214210602-f9fddec55a1e/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/term v0.0.0-20201117132131-f5c789dd3221/go.mod h1:Nr5EML6q2oocZ2LXRh80K7BxOlk5/8JxuGnuhpl+muw=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
