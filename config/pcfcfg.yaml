@@ -21,6 +21,9 @@ configuration:
       suppFeat: 3
     - serviceName: npcf-eventexposure
     - serviceName: npcf-ue-policy-control
+  mongodb:
+    name: free5gc
+    url: mongodb://localhost:27017
 
 logger:
   PCF:
