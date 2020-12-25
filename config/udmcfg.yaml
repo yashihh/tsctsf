@@ -18,16 +18,6 @@ configuration:
       log: free5gc/udmsslkey.log
       pem: free5gc/support/TLS/udm.pem
       key: free5gc/support/TLS/udm.key
-
-  udrclient:
-    scheme: http
-    ipv4Addr: 127.0.0.1
-    port: 29504
-
-  nrfclient:
-    scheme: http
-    ipv4Addr: 127.0.0.1
-    port: 29510
   nrfUri: http://localhost:29510
 
   # test data set from TS33501-f60 Annex C.4
