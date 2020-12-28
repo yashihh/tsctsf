@@ -8,9 +8,9 @@ configuration:
     - 127.0.0.1
   sbi:
     scheme: http # http or https
-    registerIPv4: 127.0.0.1 # IP used to register to NRF
-    bindingIPv4: 127.0.0.1  # IP used to bind the service
-    port: 29518
+    registerIPv4: 127.0.0.18 # IP used to register to NRF
+    bindingIPv4: 127.0.0.18  # IP used to bind the service
+    port: 8000
   serviceNameList: # the SBI services provided by this AMF
     - namf-comm # Namf_Communication service
     - namf-evts # Namf_EventExposure service
@@ -38,7 +38,7 @@ configuration:
           sd: 112233
   supportDnnList:  # DNN(Data Network Name), the DNN list supported by this AMF
     - internet
-  nrfUri: http://localhost:29510 # a valid URI of NRF
+  nrfUri: http://127.0.0.10:8000 # a valid URI of NRF
   security:  # NAS security parameters
     integrityOrder: # the priority of integrity algorithms
       - NIA2
