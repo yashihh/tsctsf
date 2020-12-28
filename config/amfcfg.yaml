@@ -57,7 +57,7 @@ configuration:
     enable: true     # true or false
     expireTime: 6s   # default is 6 seconds
     maxRetryTimes: 4 # the max number of retransmission
-  # retransmission timer for NAS Registration Accept message
+  # retransmission timer for NAS Deregistration Request message
   t3522:
     enable: true     # true or false
     expireTime: 6s   # default is 6 seconds
