@@ -12,7 +12,7 @@ require (
 	bitbucket.org/free5gc-team/http2_util v0.0.0-20201212235925-bd3a307d110a
 	bitbucket.org/free5gc-team/milenage v0.0.0-20201211040256-1f9245345719
 	bitbucket.org/free5gc-team/n3iwf v0.0.0
-	bitbucket.org/free5gc-team/nas v0.0.0-20201216145657-8bfbf6fcfac7
+	bitbucket.org/free5gc-team/nas v0.0.0-20201228084809-72542b50e771
 	bitbucket.org/free5gc-team/ngap v0.0.0-20201213001141-924cc2f2b303
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
