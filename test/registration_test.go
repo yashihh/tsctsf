@@ -278,6 +278,9 @@ func TestRegistration(t *testing.T) {
 
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 // Registration -> DeRegistration(UE Originating)
@@ -479,6 +482,9 @@ func TestDeregistration(t *testing.T) {
 
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 // Registration -> Pdu Session Establishment -> AN Release due to UE Idle -> UE trigger Service Request Procedure
@@ -704,6 +710,9 @@ func TestServiceRequest(t *testing.T) {
 
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 // Registration -> DeRegistration(UE Originating)
@@ -1017,6 +1026,9 @@ func TestGUTIRegistration(t *testing.T) {
 
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 // Registration -> Pdu Session Establishment -> Pdu Session Release
@@ -1227,6 +1239,9 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 // Registration -> Pdu Session Establishment -> Path Switch(Xn Handover)
@@ -1439,6 +1454,9 @@ func TestXnHandover(t *testing.T) {
 	// close Connection
 	conn.Close()
 	conn2.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 // Registration -> Pdu Session Establishment -> AN Release due to UE Idle -> Send downlink data
@@ -1686,6 +1704,9 @@ func TestPaging(t *testing.T) {
 
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 // Registration -> PDU Session Establishment -> Source RAN Send Handover Required -> N2 Handover (Preparation Phase -> Execution Phase)
@@ -2040,6 +2061,9 @@ func TestN2Handover(t *testing.T) {
 	// close Connection
 	conn.Close()
 	conn2.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 func TestDuplicateRegistration(t *testing.T) {
@@ -2294,6 +2318,9 @@ func TestDuplicateRegistration(t *testing.T) {
 	time.Sleep(1 * time.Second)
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 func TestAFInfluenceOnTrafficRouting(t *testing.T) {
@@ -2501,6 +2528,9 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 func TestReSynchronisation(t *testing.T) {
@@ -2814,6 +2844,9 @@ func TestReSynchronisation(t *testing.T) {
 
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }
 
 func TestRequestTwoPDUSessoins(t *testing.T) {
@@ -3145,4 +3178,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 
 	// close Connection
 	conn.Close()
+
+	// terminate all NF
+	NfTerminate()
 }

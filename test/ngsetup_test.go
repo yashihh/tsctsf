@@ -30,6 +30,7 @@ import (
 	"test/app"
 )
 
+var initFlag bool = true
 var NFs = []app.NetworkFunction{
 	&nrf_service.NRF{},
 	&amf_service.AMF{},
@@ -43,15 +44,15 @@ var NFs = []app.NetworkFunction{
 }
 
 func init() {
-	var init bool = true
 
 	for _, arg := range os.Args {
 		if arg == "noinit" {
-			init = false
+			initFlag = false
+			break
 		}
 	}
 
-	if init {
+	if initFlag {
 		//app.AppInitializeWillInitialize("")
 		flagSet := flag.NewFlagSet("free5gc", 0)
 		flagSet.String("smfcfg", "", "SMF Config Path")
@@ -72,6 +73,14 @@ func init() {
 		fmt.Println("MongoDB Set")
 	}
 
+}
+
+func NfTerminate() {
+	if initFlag {
+		for _, service := range NFs {
+			service.Terminate()
+		}
+	}
 }
 
 func TestNGSetup(t *testing.T) {
