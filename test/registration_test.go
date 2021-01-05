@@ -37,7 +37,10 @@ import (
 	"bitbucket.org/free5gc-team/openapi/models"
 )
 
-const ranIpAddr string = "10.200.200.1"
+const ranN2Ipv4Addr string = "127.0.0.1"
+const amfN2Ipv4Addr string = "127.0.0.1"
+const ranN3Ipv4Addr string = "10.200.200.1"
+const upfN3Ipv4Addr string = "10.200.200.102"
 
 // Registration
 func TestRegistration(t *testing.T) {
@@ -46,11 +49,11 @@ func TestRegistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConntectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
-	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranN3Ipv4Addr, upfN3Ipv4Addr, 2152, 2152)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -219,7 +222,7 @@ func TestRegistration(t *testing.T) {
 		"No PDUSessionResourceSetup received.")
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -643,7 +646,7 @@ func TestServiceRequest(t *testing.T) {
 	assert.Nil(t, err)
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -687,7 +690,7 @@ func TestServiceRequest(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Send Initial Context Setup Response
-	sendMsg, err = test.GetInitialContextSetupResponseForServiceRequest(ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetInitialContextSetupResponseForServiceRequest(ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -1181,7 +1184,7 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 	assert.Nil(t, err)
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -1408,7 +1411,7 @@ func TestXnHandover(t *testing.T) {
 	assert.Nil(t, err)
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -1602,7 +1605,7 @@ func TestPaging(t *testing.T) {
 	assert.Nil(t, err)
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -1633,7 +1636,7 @@ func TestPaging(t *testing.T) {
 	// send downlink data
 	go func() {
 		// RAN connect to UPF
-		upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+		upfConn, err := test.ConnectToUpf(ranN3Ipv4Addr, "10.200.200.102", 2152, 2152)
 		assert.Nil(t, err)
 		_, _ = upfConn.Read(recvMsg)
 		// fmt.Println(string(recvMsg))
@@ -1670,7 +1673,7 @@ func TestPaging(t *testing.T) {
 	assert.Nil(t, err)
 
 	//send Initial Context Setup Response
-	sendMsg, err = test.GetInitialContextSetupResponseForServiceRequest(ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetInitialContextSetupResponseForServiceRequest(ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -1696,7 +1699,7 @@ func TestN2Handover(t *testing.T) {
 	assert.Nil(t, err)
 
 	// RAN1 connect to UPF
-	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranN3Ipv4Addr, "10.200.200.102", 2152, 2152)
 	assert.Nil(t, err)
 
 	// RAN1 send NGSetupRequest Msg
@@ -1875,7 +1878,7 @@ func TestN2Handover(t *testing.T) {
 	assert.Nil(t, err)
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -2049,7 +2052,7 @@ func TestDuplicateRegistration(t *testing.T) {
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
-	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranN3Ipv4Addr, "10.200.200.102", 2152, 2152)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -2209,7 +2212,7 @@ func TestDuplicateRegistration(t *testing.T) {
 	assert.Nil(t, err)
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -2236,7 +2239,7 @@ func TestDuplicateRegistration(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -2470,7 +2473,7 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	assert.Nil(t, err)
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -2510,7 +2513,7 @@ func TestReSynchronisation(t *testing.T) {
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
-	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 2152, 2152)
+	upfConn, err := test.ConnectToUpf(ranN3Ipv4Addr, "10.200.200.102", 2152, 2152)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -2754,7 +2757,7 @@ func TestReSynchronisation(t *testing.T) {
 	assert.Nil(t, err)
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -2823,7 +2826,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
-	upfConn, err := test.ConnectToUpf(ranIpAddr, "10.200.200.101", 3001, 2152)
+	upfConn, err := test.ConnectToUpf(ranN3Ipv4Addr, "10.200.200.101", 3001, 2152)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -2992,7 +2995,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 		"No PDUSessionResourceSetup received.")
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(10, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
@@ -3023,12 +3026,12 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 		"No PDUSessionResourceSetup received.")
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = test.GetPDUSessionResourceSetupResponse(11, ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = test.GetPDUSessionResourceSetupResponse(11, ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
 	assert.Nil(t, err)
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
 
-	udpServer := ranIpAddr + ":2152"
+	udpServer := ranN3Ipv4Addr + ":2152"
 	udpListener, err := net.ListenPacket("udp", udpServer)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -3090,7 +3093,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 
 	time.Sleep(1 * time.Second)
 
-	upfConn2, err := test.ConnectToUpf(ranIpAddr, "10.200.200.102", 3002, 2152)
+	upfConn2, err := test.ConnectToUpf(ranN3Ipv4Addr, "10.200.200.102", 3002, 2152)
 	assert.Nil(t, err, err)
 	//
 	// Send the dummy packet
