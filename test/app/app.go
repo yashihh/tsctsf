@@ -11,4 +11,5 @@ type NetworkFunction interface {
 	//setLogLevel()
 	Exec(*cli.Context) error
 	Start()
+	Terminate()
 }
