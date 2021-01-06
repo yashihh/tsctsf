@@ -22,12 +22,12 @@ configuration:
         mcc: 208
         mnc: 93
       amfId: cafe00
-  supportTaiList:  # TAI(Tracking Area Identifier), the TAI list which is supported by this AMF
+  supportTaiList:  # TAI(Tracking Area Identifier), the TAI list supported by this AMF
     - plmnId:
         mcc: 208
         mnc: 93
       tac: 1
-  plmnSupportList: # PLMN(Public land mobile network), the PLMNs which is supported by this AMF
+  plmnSupportList: # PLMN(Public land mobile network), the PLMNs supported by this AMF
     - plmnId:
         mcc: 208
         mnc: 93
@@ -36,7 +36,7 @@ configuration:
           sd: 010203
         - sst: 1
           sd: 112233
-  supportDnnList:  # DNN(Data Network Name), the DNN list which is supported by this AMF
+  supportDnnList:  # DNN(Data Network Name), the DNN list supported by this AMF
     - internet
   nrfUri: http://localhost:29510 # a valid URI of NRF
   security:  # NAS security parameters
