@@ -2511,7 +2511,7 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	// Send the dummy packet
 
 	cfg := Npcf_PolicyAuthorization.NewConfiguration()
-	cfg.SetBasePath("http://127.0.0.1:29507")
+	cfg.SetBasePath("http://127.0.0.7:8000")
 	client := Npcf_PolicyAuthorization.NewAPIClient(cfg)
 
 	appSessCtx := TestPolicyAuthorization.GetPostAppSessionsData_AFInfluenceOnTrafficRouting()

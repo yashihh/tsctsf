@@ -18,7 +18,7 @@ configuration:
       log: free5gc/udmsslkey.log
       pem: free5gc/support/TLS/udm.pem
       key: free5gc/support/TLS/udm.key
-  nrfUri: http://127.0.0.3:8000
+  nrfUri: http://127.0.0.10:8000
 
   # test data set from TS33501-f60 Annex C.4
   # udmProfileAHNPublicKey: 5a8d38864820197c3394b92613b20b91633cbd897119273bf8e4a6f4eec0a650
