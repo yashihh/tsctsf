@@ -11,7 +11,7 @@ configuration:
     registerIPv4: 127.0.0.1 # IP used to register to NRF
     bindingIPv4: 127.0.0.1  # IP used to bind the service
     port: 29518
-  serviceNameList: # the services provided by this AMF
+  serviceNameList: # the SBI services provided by this AMF
     - namf-comm # Namf_Communication service
     - namf-evts # Namf_EventExposure service
     - namf-mt   # Namf_MT service
@@ -40,10 +40,10 @@ configuration:
     - internet
   nrfUri: http://localhost:29510 # a valid URI of NRF
   security:  # NAS security parameters
-    integrityOrder: # the algorithm for integrity check
+    integrityOrder: # the priority of integrity algorithms
       - NIA2
       # - NIA0
-    cipheringOrder: # the algorithm for ciphering check
+    cipheringOrder: # the priority of ciphering algorithms
       - NEA0
       # - NEA2
   networkName:  # the name of this core network
@@ -79,7 +79,7 @@ configuration:
     maxRetryTimes: 4 # the max number of retransmission
 
 # the kind of log output
-  # debugLevel: how detialed to output, value: trace, debug, fatal, panic, error, warn, info
+  # debugLevel: how detialed to output, value: trace, debug, info, warn, error, fatal, panic
   # ReportCaller: enable the caller report or not, value: true or false
 logger:
   AMF:
