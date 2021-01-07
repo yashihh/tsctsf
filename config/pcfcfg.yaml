@@ -8,22 +8,22 @@ configuration:
     scheme: http # http or https
     registerIPv4: 127.0.0.7 # IP used to register to NRF
     bindingIPv4: 127.0.0.7  # IP used to bind the service
-    port: 8000
-  timeFormat: 2019-01-02 15:04:05
+    port: 8000              # port used to bind the service
+  timeFormat: 2019-01-02 15:04:05 # time format of this PCF
   defaultBdtRefId: BdtPolicyId-   # bdtRefId(BDT Reference ID), indicating transfer policies of background data transfer.
   nrfUri: http://127.0.0.10:8000  # a valid URI of NRF
   serviceList:   # the SBI services provided by this PCF
     - serviceName: npcf-am-policy-control
     - serviceName: npcf-smpolicycontrol
-      suppFeat: 3fff # the features supported by Npcf_SMPolicyControl, name defined in TS 29.512 5.8-1, value defined in TS 29.571 5.2.2
+      suppFeat: 3fff # the features supported by Npcf_SMPolicyControl
     - serviceName: npcf-bdtpolicycontrol
     - serviceName: npcf-policyauthorization
-      suppFeat: 3    # the features supported by Npcf_PolicyAuthorization, name defined in TS 29.514 5.8-1, value defined in TS 29.571 5.2.2
+      suppFeat: 3    # the features supported by Npcf_PolicyAuthorization
     - serviceName: npcf-eventexposure
     - serviceName: npcf-ue-policy-control
   mongodb:       # the mongodb connected by this PCF
-    name: free5gc
-    url: mongodb://localhost:27017
+    name: free5gc                  # name of the mongodb
+    url: mongodb://localhost:27017 # a valid URL of the mongodb
 
 # the kind of log output
   # debugLevel: how detialed to output, value: trace, debug, info, warn, error, fatal, panic
