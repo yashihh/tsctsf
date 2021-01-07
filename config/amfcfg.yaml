@@ -3,31 +3,31 @@ info:
   description: AMF initial local configuration
 
 configuration:
-  amfName: AMF
-  ngapIpList:
+  amfName: AMF # the name of this AMF
+  ngapIpList:  # the IP that AMF listening on N2 interface (connent to RAN)
     - 127.0.0.1
   sbi:
-    scheme: http
+    scheme: http # http or https
     registerIPv4: 127.0.0.1 # IP used to register to NRF
     bindingIPv4: 127.0.0.1  # IP used to bind the service
     port: 29518
-  serviceNameList:
-    - namf-comm
-    - namf-evts
-    - namf-mt
-    - namf-loc
-    - namf-oam
-  servedGuamiList:
+  serviceNameList: # the SBI services provided by this AMF
+    - namf-comm # Namf_Communication service
+    - namf-evts # Namf_EventExposure service
+    - namf-mt   # Namf_MT service
+    - namf-loc  # Namf_Location service
+    - namf-oam  # OAM service
+  servedGuamiList: # Guami(the Globally Unique AMF ID), an AMF can be configured with one or more GUAMIs.
     - plmnId:
         mcc: 208
         mnc: 93
       amfId: cafe00
-  supportTaiList:
+  supportTaiList:  # TAI(Tracking Area Identifier), the TAI list supported by this AMF
     - plmnId:
         mcc: 208
         mnc: 93
       tac: 1
-  plmnSupportList:
+  plmnSupportList: # PLMN(Public land mobile network), the PLMNs supported by this AMF
     - plmnId:
         mcc: 208
         mnc: 93
@@ -36,17 +36,17 @@ configuration:
           sd: 010203
         - sst: 1
           sd: 112233
-  supportDnnList:
+  supportDnnList:  # DNN(Data Network Name), the DNN list supported by this AMF
     - internet
-  nrfUri: http://localhost:29510
-  security:
-    integrityOrder:
+  nrfUri: http://localhost:29510 # a valid URI of NRF
+  security:  # NAS security parameters
+    integrityOrder: # the priority of integrity algorithms
       - NIA2
       # - NIA0
-    cipheringOrder:
+    cipheringOrder: # the priority of ciphering algorithms
       - NEA0
       # - NEA2
-  networkName:
+  networkName:  # the name of this core network
     full: free5GC
     short: free
   t3502Value: 720  # timer value at UE side, unit is seconds
@@ -78,6 +78,9 @@ configuration:
     expireTime: 6s   # default is 6 seconds
     maxRetryTimes: 4 # the max number of retransmission
 
+# the kind of log output
+  # debugLevel: how detialed to output, value: trace, debug, info, warn, error, fatal, panic
+  # ReportCaller: enable the caller report or not, value: true or false
 logger:
   AMF:
     debugLevel: info
