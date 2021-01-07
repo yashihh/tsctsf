@@ -7,9 +7,9 @@ configuration:
   MongoDBUrl: mongodb://127.0.0.1:27017
   sbi:
     scheme: http
-    registerIPv4: 127.0.0.1 # IP used to serve NFs or register to another NRF
-    bindingIPv4: 127.0.0.1  # IP used to bind the service
-    port: 29510
+    registerIPv4: 127.0.0.10 # IP used to serve NFs or register to another NRF
+    bindingIPv4: 127.0.0.10  # IP used to bind the service
+    port: 8000
   DefaultPlmnId:
     mcc: 208
     mnc: 93
