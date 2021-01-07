@@ -3,28 +3,31 @@ info:
   description: PCF initial local configuration
 
 configuration:
-  pcfName: PCF
+  pcfName: PCF # the name of this PCF
   sbi:
-    scheme: http
+    scheme: http # http or https
     registerIPv4: 127.0.0.7 # IP used to register to NRF
     bindingIPv4: 127.0.0.7  # IP used to bind the service
     port: 8000
   timeFormat: 2019-01-02 15:04:05
-  defaultBdtRefId: BdtPolicyId-
-  nrfUri: http://127.0.0.10:8000
-  serviceList:
+  defaultBdtRefId: BdtPolicyId-   # bdtRefId(BDT Reference ID), indicating transfer policies of background data transfer.
+  nrfUri: http://127.0.0.10:8000  # a valid URI of NRF
+  serviceList:   # the SBI services provided by this PCF
     - serviceName: npcf-am-policy-control
     - serviceName: npcf-smpolicycontrol
-      suppFeat: 3fff
+      suppFeat: 3fff # the features supported by Npcf_SMPolicyControl, name defined in TS 29.512 5.8-1, value defined in TS 29.571 5.2.2
     - serviceName: npcf-bdtpolicycontrol
     - serviceName: npcf-policyauthorization
-      suppFeat: 3
+      suppFeat: 3    # the features supported by Npcf_PolicyAuthorization, name defined in TS 29.514 5.8-1, value defined in TS 29.571 5.2.2
     - serviceName: npcf-eventexposure
     - serviceName: npcf-ue-policy-control
-  mongodb:
+  mongodb:       # the mongodb connected by this PCF
     name: free5gc
     url: mongodb://localhost:27017
 
+# the kind of log output
+  # debugLevel: how detialed to output, value: trace, debug, info, warn, error, fatal, panic
+  # ReportCaller: enable the caller report or not, value: true or false
 logger:
   PCF:
     debugLevel: info
