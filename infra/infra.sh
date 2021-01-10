@@ -3,6 +3,7 @@
 # CRLF
 git config --global core.autocrlf input
 # Git Message template
+[ -f ~/.gitmessage ] && mv ~/.gitmessage ~/.gitmessage.old && echo "Move old ~/.gitmessage to ~/.gitmessage.old"
 cp ./gitmessage ~/.gitmessage
 git config --global commit.templage ~/.gitmessage
 
