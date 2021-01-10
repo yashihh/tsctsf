@@ -5,7 +5,7 @@ import (
 )
 
 type NetworkFunction interface {
-	Initialize(c *cli.Context)
+	Initialize(c *cli.Context) error
 	GetCliCmd() (flags []cli.Flag)
 	FilterCli(c *cli.Context) (args []string)
 	//setLogLevel()
