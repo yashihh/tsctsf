@@ -3,7 +3,7 @@
 LOG_PATH="./log/"
 LOG_NAME="free5gc.log"
 PCAP_NAME=""
-TODAY=$(date +"%Y%m%d%H%M%S")
+TODAY=$(date +"%Y%m%d_%H%M%S")
 
 PID_LIST=()
 
