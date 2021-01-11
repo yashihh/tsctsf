@@ -3,20 +3,23 @@ info:
   description: NRF initial local configuration
 
 configuration:
-  MongoDBName: free5gc
-  MongoDBUrl: mongodb://127.0.0.1:27017
+  MongoDBName: free5gc # name of MongoDB
+  MongoDBUrl: mongodb://127.0.0.1:27017 # a valid URL of the mongodb
   sbi:
-    scheme: http
+    scheme: http # the protocol for sbi (http or https)
     registerIPv4: 127.0.0.10 # IP used to serve NFs or register to another NRF
     bindingIPv4: 127.0.0.10  # IP used to bind the service
-    port: 8000
+    port: 8000 # port used to bind the service
   DefaultPlmnId:
-    mcc: 208
-    mnc: 93
-  serviceNameList:
-    - nnrf-nfm
-    - nnrf-disc
+    mcc: 208 # Mobile Country Code (3 digit)
+    mnc: 93 # Mobile Network Code (2 or 3 digit)
+  serviceNameList: # the SBI services provided by this NRF 
+    - nnrf-nfm # Nnrf_NFManagement Service
+    - nnrf-disc # Nnrf_NFDiscovery Service
 
+# the kind of log output
+  # debugLevel: how detialed to output, value: trace, debug, info, warn, error, fatal, panic
+  # ReportCaller: enable the caller report or not, value: true or false
 logger:
   NRF:
     debugLevel: info
