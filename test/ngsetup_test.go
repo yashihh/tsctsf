@@ -89,7 +89,7 @@ func TestNGSetup(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg

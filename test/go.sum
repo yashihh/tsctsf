@@ -5,6 +5,8 @@ bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201202123716-f12eceae
 bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201202123716-f12eceaeb099/go.mod h1:E7qsbGsKNymegVUUZO8pjMx/FUGM6XUu6hMUp3hLNeA=
 bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20201213113619-17bf1c692838 h1:K+vROtQildg5eCCtcIdJmV2RNoBgZBVi0HLnj+clVGY=
 bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20201213113619-17bf1c692838/go.mod h1:d1uW+B++jSNarUgsQROiydgo7ZrPU9mVB3F2IdPx1Yw=
+bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20201215124223-c4ac6395ac2f h1:JMOZ018CVaWzFQHGvubfcavGup6Vbsg3mM2s/pDqhVU=
+bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20201215124223-c4ac6395ac2f/go.mod h1:d1uW+B++jSNarUgsQROiydgo7ZrPU9mVB3F2IdPx1Yw=
 bitbucket.org/free5gc-team/TimeDecode v0.0.0-20201213113753-1161dce20365 h1:L8Vd++OuZfW1hEGYNadvw+dZzk2Jq22zIN7Df7MuKa8=
 bitbucket.org/free5gc-team/TimeDecode v0.0.0-20201213113753-1161dce20365/go.mod h1:gXxTbIVuG7e4Yu2xZs2uxTDvUJH9DsVqej52i8B81do=
 bitbucket.org/free5gc-team/UeauCommon v0.0.0-20201211040450-fc83e159de75 h1:12MKTnLYSm0dWROx1OzRElCy9eGGo/eB5ezroagK5ek=
@@ -41,10 +43,6 @@ bitbucket.org/free5gc-team/milenage v0.0.0-20201211040256-1f9245345719/go.mod h1
 bitbucket.org/free5gc-team/nas v0.0.0-20200915042954-4c7174d9820e/go.mod h1:F4Oh8/1QDf7JDYqYhTRVZiX65yCcEQ4Vc7iD5X12o1s=
 bitbucket.org/free5gc-team/nas v0.0.0-20201124100346-bc3015e754ec h1:hoeih47N4rzYvkceWTDijVbeCcuUpQHXo58u2e5Vu3c=
 bitbucket.org/free5gc-team/nas v0.0.0-20201124100346-bc3015e754ec/go.mod h1:J8JxP5TcEltr/sOSKeOYDvo71uBVio22MUsKeSRVDtw=
-bitbucket.org/free5gc-team/nas v0.0.0-20201213001844-18595c2c9b47 h1:IZDyyfMZtxtR4EJ8gfZg6C4HtdYF7JOFC5lZtL+Yu3o=
-bitbucket.org/free5gc-team/nas v0.0.0-20201213001844-18595c2c9b47/go.mod h1:Uf8YaL4qvo0o3Qk8CYfBf/J6DgtX8lYbjVEN7WbE/AM=
-bitbucket.org/free5gc-team/nas v0.0.0-20201216145657-8bfbf6fcfac7 h1:PjT5P3SY/cMqhUR5z6y//kkfS/twXDsNdXR12jLohvs=
-bitbucket.org/free5gc-team/nas v0.0.0-20201216145657-8bfbf6fcfac7/go.mod h1:Uf8YaL4qvo0o3Qk8CYfBf/J6DgtX8lYbjVEN7WbE/AM=
 bitbucket.org/free5gc-team/nas v0.0.0-20201231073918-452c53585d76 h1:7M24WWuem56R/XE8TeLQSG9PaPmNCJdfpo4dWMgoF5E=
 bitbucket.org/free5gc-team/nas v0.0.0-20201231073918-452c53585d76/go.mod h1:Uf8YaL4qvo0o3Qk8CYfBf/J6DgtX8lYbjVEN7WbE/AM=
 bitbucket.org/free5gc-team/ngap v0.0.0-20200915042202-2cf700b6cfe5/go.mod h1:SS2wgYuOLbU109qmeLyn1P9pI/QP4Bg/9k7cG24I2Hs=

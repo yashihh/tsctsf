@@ -36,7 +36,7 @@ func getNgapIp(amfIP, ranIP string, amfPort, ranPort int) (amfAddr, ranAddr *sct
 	return amfAddr, ranAddr, nil
 }
 
-func ConntectToAmf(amfIP, ranIP string, amfPort, ranPort int) (*sctp.SCTPConn, error) {
+func ConnectToAmf(amfIP, ranIP string, amfPort, ranPort int) (*sctp.SCTPConn, error) {
 	amfAddr, ranAddr, err := getNgapIp(amfIP, ranIP, amfPort, ranPort)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func ConntectToAmf(amfIP, ranIP string, amfPort, ranPort int) (*sctp.SCTPConn, e
 	}
 	info, err := conn.GetDefaultSentParam()
 	if err != nil {
-		fatal.Fatalf("conn GetDefaultSentParam error in ConntectToAmf: %+v", err)
+		fatal.Fatalf("conn GetDefaultSentParam error in ConnectToAmf: %+v", err)
 	}
 	info.PPID = ngapPPID
 	err = conn.SetDefaultSentParam(info)
