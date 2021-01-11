@@ -49,7 +49,7 @@ func TestRegistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
@@ -290,7 +290,7 @@ func TestDeregistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -494,7 +494,7 @@ func TestServiceRequest(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -722,7 +722,7 @@ func TestGUTIRegistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	require.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1038,7 +1038,7 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1251,7 +1251,7 @@ func TestXnHandover(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1268,7 +1268,7 @@ func TestXnHandover(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	conn2, err1 := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
+	conn2, err1 := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
 	assert.Nil(t, err1)
 
 	// send Second NGSetupRequest Msg
@@ -1466,7 +1466,7 @@ func TestPaging(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMFcd
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1716,7 +1716,7 @@ func TestN2Handover(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN1 connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN1 connect to UPF
@@ -1738,7 +1738,7 @@ func TestN2Handover(t *testing.T) {
 	time.Sleep(10 * time.Millisecond)
 
 	// RAN2 connect to AMF
-	conn2, err1 := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
+	conn2, err1 := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
 	assert.Nil(t, err1)
 
 	// RAN2 connect to UPF
@@ -2072,7 +2072,7 @@ func TestDuplicateRegistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
@@ -2343,7 +2343,7 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	}()
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -2539,7 +2539,7 @@ func TestReSynchronisation(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
@@ -2855,7 +2855,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF

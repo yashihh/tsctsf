@@ -138,10 +138,10 @@ func ueRanEmulator() error {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConntectToAmf(
+	conn, err := test.ConnectToAmf(
 		uerancfg.N2Amf.Addr, uerancfg.N2Ran.Addr, int(uerancfg.N2Amf.Port), int(uerancfg.N2Ran.Port))
 	if err != nil {
-		err = fmt.Errorf("ConntectToAmf: %v", err)
+		err = fmt.Errorf("ConnectToAmf: %v", err)
 		return err
 	}
 	defer func() {
@@ -150,7 +150,7 @@ func ueRanEmulator() error {
 			fatal.Fatalf("conn Close error in ueRanEmulator: %+v", errConn)
 		}
 	}()
-	fmt.Printf("[UERANEM] Conntect to AMF successfully\n")
+	fmt.Printf("[UERANEM] Connect to AMF successfully\n")
 
 	// RAN connect to UPF
 	upfConn, err := test.ConnectToUpf(
@@ -165,7 +165,7 @@ func ueRanEmulator() error {
 			fatal.Fatalf("upfConn Close error in ueRanEmulator: %+v", errConn)
 		}
 	}()
-	fmt.Printf("[UERANEM] Conntect to UPF successfully\n")
+	fmt.Printf("[UERANEM] Connect to UPF successfully\n")
 
 	// send NGSetupRequest Msg
 	sendMsg, err = test.GetNGSetupRequest([]byte("\x00\x01\x02"), 24, "free5gc")
