@@ -24,7 +24,7 @@ if [ $# -ne 0 ]; then
     done
 fi
 
-LOG_PATH=${LOG_PATH}${TODAY}"/"
+LOG_PATH=${LOG_PATH%/}"/"${TODAY}"/"
 
 if [ ! -d ${LOG_PATH} ]; then
     mkdir -p ${LOG_PATH}
