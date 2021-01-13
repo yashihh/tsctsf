@@ -7,10 +7,10 @@ configuration:
   ngapIpList:  # the IP that AMF listening on N2 interface (connent to RAN)
     - 127.0.0.1
   sbi:
-    scheme: http # http or https
+    scheme: http # the protocol for sbi (http or https)
     registerIPv4: 127.0.0.18 # IP used to register to NRF
     bindingIPv4: 127.0.0.18  # IP used to bind the service
-    port: 8000
+    port: 8000 # port used to bind the service
   serviceNameList: # the SBI services provided by this AMF
     - namf-comm # Namf_Communication service
     - namf-evts # Namf_EventExposure service
@@ -19,18 +19,18 @@ configuration:
     - namf-oam  # OAM service
   servedGuamiList: # Guami(the Globally Unique AMF ID), an AMF can be configured with one or more GUAMIs.
     - plmnId:
-        mcc: 208
-        mnc: 93
+        mcc: 208 # Mobile Country Code (3 digit)
+        mnc: 93 # Mobile Network Code (2 or 3 digit)
       amfId: cafe00
   supportTaiList:  # TAI(Tracking Area Identifier), the TAI list supported by this AMF
     - plmnId:
-        mcc: 208
-        mnc: 93
+        mcc: 208 # Mobile Country Code (3 digit)
+        mnc: 93 # Mobile Network Code (2 or 3 digit)
       tac: 1
   plmnSupportList: # PLMN(Public land mobile network), the PLMNs supported by this AMF
     - plmnId:
-        mcc: 208
-        mnc: 93
+        mcc: 208 # Mobile Country Code (3 digit)
+        mnc: 93 # Mobile Network Code (2 or 3 digit)
       snssaiList:
         - sst: 1
           sd: 010203
