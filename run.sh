@@ -1,6 +1,34 @@
 #!/usr/bin/env bash
 
+LOG_PATH="./log/"
+LOG_NAME="free5gc.log"
+PCAP_NAME=""
+TODAY=$(date +"%Y%m%d_%H%M%S")
+
 PID_LIST=()
+
+if [ $# -ne 0 ]; then
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -logpath)
+                shift
+                LOG_PATH=$1 ;;
+            -logname)
+                shift
+                LOG_NAME=$1 ;;
+            -pcapname)
+                shift
+                PCAP_NAME=$1 ;;
+        esac
+        shift
+    done
+fi
+
+LOG_PATH=${LOG_PATH%/}"/"${TODAY}"/"
+
+if [ ! -d ${LOG_PATH} ]; then
+    mkdir -p ${LOG_PATH}
+fi
 
 cd NFs/upf/build
 sudo -E ./bin/free5gc-upfd &
@@ -25,7 +53,12 @@ SUDO_N3IWF_PID=$!
 sleep 1
 N3IWF_PID=$(pgrep -P $SUDO_N3IWF_PID)
 PID_LIST+=($SUDO_N3IWF_PID $N3IWF_PID)
- 
+
+if [ "${PCAP_NAME}" != "" ]; then
+    sudo tcpdump -i any -w ${LOG_PATH}${PCAP_NAME} &
+    PID_LIST+=($!)
+fi
+
 function terminate()
 {
     sudo kill -SIGTERM ${PID_LIST[${#PID_LIST[@]}-2]} ${PID_LIST[${#PID_LIST[@]}-1]}
