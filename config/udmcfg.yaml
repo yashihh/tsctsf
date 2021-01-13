@@ -32,8 +32,8 @@ configuration:
     udmProfileBHNPrivateKey: F1AB1074477EBCC7F554EA1C5FC368B1616730155E0041AC447D6301975FECDA
 
 # the kind of log output
-# debugLevel: how detialed to output, value: trace, debug, info, warn, error, fatal, panic
-# ReportCaller: enable the caller report or not, value: true or false
+  # debugLevel: how detialed to output, value: trace, debug, info, warn, error, fatal, panic
+  # ReportCaller: enable the caller report or not, value: true or false
 logger:
   UDM:
     debugLevel: info
