@@ -19,21 +19,21 @@ configuration:
     - namf-oam  # OAM service
   servedGuamiList: # Guami(the Globally Unique AMF ID), an AMF can be configured with one or more GUAMIs.
     - plmnId:
-        mcc: 208 # Mobile Country Code (3 digit)
-        mnc: 93 # Mobile Network Code (2 or 3 digit)
+        mcc: 208 # Mobile Country Code (3 digits string, digit: 0~9)
+        mnc: 93 # Mobile Network Code (2 or 3 digits string, digit: 0~9)
       amfId: cafe00
   supportTaiList:  # TAI(Tracking Area Identifier), the TAI list supported by this AMF
     - plmnId:
-        mcc: 208 # Mobile Country Code (3 digit)
-        mnc: 93 # Mobile Network Code (2 or 3 digit)
+        mcc: 208
+        mnc: 93
       tac: 1
   plmnSupportList: # PLMN(Public land mobile network), the PLMNs supported by this AMF
     - plmnId:
-        mcc: 208 # Mobile Country Code (3 digit)
-        mnc: 93 # Mobile Network Code (2 or 3 digit)
+        mcc: 208
+        mnc: 93
       snssaiList:
-        - sst: 1
-          sd: 010203
+        - sst: 1 # Slice/Service Type (1 byte hex string)
+          sd: 010203 # Slice Differentiator (3 bytes hex string)
         - sst: 1
           sd: 112233
   supportDnnList:  # DNN(Data Network Name), the DNN list supported by this AMF
@@ -79,7 +79,7 @@ configuration:
     maxRetryTimes: 4 # the max number of retransmission
 
 # the kind of log output
-  # debugLevel: how detialed to output, value: trace, debug, info, warn, error, fatal, panic
+  # debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
   # ReportCaller: enable the caller report or not, value: true or false
 logger:
   AMF:

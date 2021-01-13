@@ -6,16 +6,16 @@ configuration:
   N3IWFInformation:
     GlobalN3IWFID: # ID used to globally identify an N3IWF
       PLMNID: # Public Land Mobile Network ID
-        MCC: # Mobile Country Code (3 digits)
+        MCC: # Mobile Country Code (3 digits string, digit: 0~9)
           208
-        MNC: # Mobile Network Code (2 or 3 digits)
+        MNC: # Mobile Network Code (2 or 3 digits string, digit: 0~9)
           93
-      N3IWFID: # ID used to identify an N3IWF in PLMN (2 bytes)
+      N3IWFID: # ID used to identify an N3IWF in PLMN (2 bytes unsigned int)
         135
     Name: # The name of this N3IWF
       free5GC_N3IWF
     SupportedTAList: # Tracking Area supported by this N3IWF
-      - TAC: # Tracking Area Code (3 bytes)
+      - TAC: # Tracking Area Code (3 bytes hex string)
           1
         BroadcastPLMNList: # Refer to TS 38.413
           - PLMNID:
@@ -24,10 +24,10 @@ configuration:
               MNC:
                 93
             TAISliceSupportList: # Network Slice supported in this TAI
-              - SNSSAI: # Network Slice Selection Assistance Information
-                  SST: # Slice/Service Type (1 bytes)
+              - SNSSAI: # Single Network Slice Selection Assistance Information
+                  SST: # Slice/Service Type (1 byte hex string)
                     1
-                  SD: # Slice Differentiator (3 bytes)
+                  SD: # Slice Differentiator (3 bytes hex string)
                     010203
               - SNSSAI:
                   SST:
