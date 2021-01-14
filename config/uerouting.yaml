@@ -2,12 +2,12 @@ info:
   version: 1.0.0
   description: Routing information for UE
 
-ueRoutingInfo:
-  - SUPI: imsi-2089300007487
-    AN: 10.200.200.101
-    PathList:
-      - DestinationIP: 60.60.0.101
-        UPF: !!seq
+ueRoutingInfo: # the list of ue routing information
+  - SUPI: imsi-2089300007487 # Subscription Permanent Identifier
+    AN: 10.200.200.101 # the valid URI of AN
+    PathList: # the topology of the path from AN to DN
+      - DestinationIP: 60.60.0.101 # the valid IP address of the path's endpoint
+        UPF: !!seq # the node names in the path, these node names should be defined in smfcfg.yaml
           - BranchingUPF
           - AnchorUPF1
 
@@ -29,13 +29,13 @@ ueRoutingInfo:
           - BranchingUPF
           - AnchorUPF2
 
-routeProfile:
-  MEC1:
-    forwardingPolicyID: 10
+routeProfile: # Maintains the mapping between RouteProfileID and ForwardingPolicyID of UPF
+  MEC1: # Route Profile identifier
+    forwardingPolicyID: 10 # Forwarding Policy ID of the route profile
 
-pfdDataForApp:
-  - applicationId: edge
-    pfds:
-      - pfdID: pfd1
-        flowDescriptions:
+pfdDataForApp: # PFDs for an Application
+  - applicationId: edge # Application identifier
+    pfds: # PFDs for the Application
+      - pfdID: pfd1 # PFD identifier
+        flowDescriptions: # Represents a 3-tuple with protocol, server ip and server port for UL/DL application traffic
           - permit out ip from 60.60.0.1 8080 to any
