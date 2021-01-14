@@ -7,5 +7,5 @@ for NF in ${NF_LIST}; do
 done
 
 sudo killall tcpdump
-sudo ip link del upfgtp0
+sudo ip link del upfgtp
 
