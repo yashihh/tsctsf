@@ -4,7 +4,7 @@ info:
 
 configuration:
   smfName: SMF # the name of this SMF
-  sbi:
+  sbi: # Service-based interface information
     scheme: http # the protocol for sbi (http or https)
     registerIPv4: 127.0.0.2 # IP used to register to NRF
     bindingIPv4: 127.0.0.2  # IP used to bind the service
@@ -12,50 +12,50 @@ configuration:
     tls: # the local path of TLS key
       key: free5gc/support/TLS/smf.key # SMF TLS Certificate
       pem: free5gc/support/TLS/smf.pem # SMF TLS Private key
-  serviceNameList: # the SBI services provided by this SMF, refer to TS 29.510
+  serviceNameList: # the SBI services provided by this SMF, refer to TS 29.502
     - nsmf-pdusession # Nsmf_PDUSession service
     - nsmf-event-exposure # Nsmf_EventExposure service
-    - nsmf-oam # smf service for OAM
-  snssaiInfos: # list of sNssai the SMF supported
-    - sNssai: # Single-Network Slice Selection Assistance Information
-        sst: 1 # Slice/Service Type (unsigned interger within range 0-255)
-        sd: 010203 # Slice Differentiator (3-octet string)
-      dnnInfos: # list of dnn
-        - dnn: internet # Data network name
-          dns: # the ip address of dns
+    - nsmf-oam # OAM service
+  snssaiInfos: # the S-NSSAI (Single Network Slice Selection Assistance Information) list supported by this AMF
+    - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+        sst: 1 # Slice/Service Type (uinteger, range: 0~255)
+        sd: 010203 # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+      dnnInfos: # DNN information list
+        - dnn: internet # Data Network Name
+          dns: # the IP address of DNS
             ipv4: 8.8.8.8
             ipv6: 2001:4860:4860::8888
           ueSubnet: 60.60.0.0/16 # should be CIDR type
-    - sNssai:
-        sst: 1
-        sd: 112233
-      dnnInfos:
-        - dnn: internet
-          dns:
+    - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+        sst: 1 # Slice/Service Type (uinteger, range: 0~255)
+        sd: 112233 # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+      dnnInfos: # DNN information list
+        - dnn: internet # Data Network Name
+          dns: # the IP address of DNS
             ipv4: 8.8.8.8
             ipv6: 2001:4860:4860::8888
-          ueSubnet: 60.61.0.0/16
-  pfcp: # the IP address of SMF’s N4 interface (PFCP)
+          ueSubnet: 60.61.0.0/16 # should be CIDR type
+  pfcp: # the IP address of N4 interface on SMF (PFCP)
     addr: 127.0.0.1
   userplane_information: # list of userplane information
     up_nodes: # information of userplane node (AN or UPF)
       gNB1: # the name of the node
         type: AN # the type of the node (AN or UPF)
-      UPF:
-        type: UPF
+      UPF:  # the name of the node
+        type: UPF # the type of the node (AN or UPF)
         node_id: 127.0.0.8 # the ID of the UPF node
-        sNssaiUpfInfos: # the list of the sNssai in User plane
-          - sNssai:
-              sst: 1
-              sd: 010203
-            dnnUpfInfoList: # the list of the dnn information
+        sNssaiUpfInfos: # S-NSSAI information list for this UPF
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: 1 # Slice/Service Type (uinteger, range: 0~255)
+              sd: 010203 # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
               - dnn: internet
-          - sNssai:
-              sst: 1
-              sd: 112233
-            dnnUpfInfoList:
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: 1 # Slice/Service Type (uinteger, range: 0~255)
+              sd: 112233 # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
               - dnn: internet
-        interfaces:
+        interfaces: # Interface list for this UPF
           - interfaceType: N3 # the type of the interface (N3 or N9)
             endpoints: # the IP address of this interface on SMF
               - 127.0.0.8
