@@ -3,6 +3,6 @@ info:
   description: WebUI initial local configuration
 
 configuration:
-  mongodb:
-    name: free5gc
-    url: mongodb://localhost:27017
+  mongodb: # the mongodb connected by this webui
+    name: free5gc # name of the mongodb
+    url: mongodb://localhost:27017 # a valid URL of the mongodb
