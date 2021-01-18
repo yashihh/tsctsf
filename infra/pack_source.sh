@@ -8,7 +8,7 @@ NF_PATH="${SOURCE_ROOT}/NFs"
 
 git clone https://bitbucket.org/free5gc-team/free5gc.git ${SOURCE_ROOT}
 
-cd ${SOURCE_ROOT} && git submodule update --init
+cd ${SOURCE_ROOT} && git checkout develop && git submodule sync --recursive && git submodule update --init && git submodule foreach git checkout develop && git submodule foreach git pull
 rm -rf infra release .golangci.yml bitbucket-pipelines.yml
 
 # go vendor

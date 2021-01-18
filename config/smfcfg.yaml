@@ -35,7 +35,7 @@ configuration:
             ipv4: 8.8.8.8
             ipv6: 2001:4860:4860::8888
           ueSubnet: 60.61.0.0/16 # should be CIDR type
-  pfcp: # the IP address of N4 interface on SMF (PFCP)
+  pfcp: # the IP address of N4 interface on this SMF (PFCP)
     addr: 127.0.0.1
   userplane_information: # list of userplane information
     up_nodes: # information of userplane node (AN or UPF)
@@ -43,7 +43,7 @@ configuration:
         type: AN # the type of the node (AN or UPF)
       UPF:  # the name of the node
         type: UPF # the type of the node (AN or UPF)
-        node_id: 127.0.0.8 # the ID of the UPF node
+        node_id: 127.0.0.8 # the IP/FQDN of N4 interface on this UPF (PFCP)
         sNssaiUpfInfos: # S-NSSAI information list for this UPF
           - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
               sst: 1 # Slice/Service Type (uinteger, range: 0~255)
@@ -57,7 +57,7 @@ configuration:
               - dnn: internet
         interfaces: # Interface list for this UPF
           - interfaceType: N3 # the type of the interface (N3 or N9)
-            endpoints: # the IP address of this interface on SMF
+            endpoints: # the IP address of this N3/N9 interface on this UPF
               - 127.0.0.8
             networkInstance: internet # Data Network Name (DNN)
     links: # the topology graph of userplane, A and B represent the two nodes of each link
