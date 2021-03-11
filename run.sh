@@ -15,19 +15,26 @@ if [ $# -ne 0 ]; then
                 LOG_PATH=$1 ;;
             -w)
                 shift
-                PCAP_NAME=$1 ;;
+                if [ "$1" != "" ];
+                then
+                    PCAP_NAME=$1
+                else
+                    PCAP_NAME=free5gc.pcap
+                fi
         esac
         shift
     done
 fi
 
 LOG_PATH=${LOG_PATH%/}"/"${TODAY}"/"
+echo "log path: $LOG_PATH"
 
 if [ ! -d ${LOG_PATH} ]; then
     mkdir -p ${LOG_PATH}
 fi
 
 if [ "${PCAP_NAME}" != "" ]; then
+    echo "tcpdump name: $PCAP_NAME"
     sudo tcpdump -i any -w ${LOG_PATH}${PCAP_NAME} &
     PID_LIST+=($!)
     sleep 0.1
