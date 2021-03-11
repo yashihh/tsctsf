@@ -10,13 +10,10 @@ PID_LIST=()
 if [ $# -ne 0 ]; then
     while [ $# -gt 0 ]; do
         case $1 in
-            -logpath)
+            -p)
                 shift
                 LOG_PATH=$1 ;;
-            -logname)
-                shift
-                LOG_NAME=$1 ;;
-            -pcapname)
+            -w)
                 shift
                 PCAP_NAME=$1 ;;
         esac
@@ -28,6 +25,12 @@ LOG_PATH=${LOG_PATH%/}"/"${TODAY}"/"
 
 if [ ! -d ${LOG_PATH} ]; then
     mkdir -p ${LOG_PATH}
+fi
+
+if [ "${PCAP_NAME}" != "" ]; then
+    sudo tcpdump -i any -w ${LOG_PATH}${PCAP_NAME} &
+    PID_LIST+=($!)
+    sleep 0.1
 fi
 
 cd NFs/upf/build
@@ -43,21 +46,16 @@ NF_LIST="nrf amf smf udr pcf udm nssf ausf"
 export GIN_MODE=release
 
 for NF in ${NF_LIST}; do
-    ./bin/${NF} &
+    ./bin/${NF} -l ${LOG_PATH}${NF}.log -lc ${LOG_PATH}${LOG_NAME} &
     PID_LIST+=($!)
     sleep 0.1
 done
 
-sudo ./bin/n3iwf &
+sudo ./bin/n3iwf -l ${LOG_PATH}n3iwf.log -lc ${LOG_PATH}${LOG_NAME} &
 SUDO_N3IWF_PID=$!
 sleep 1
 N3IWF_PID=$(pgrep -P $SUDO_N3IWF_PID)
 PID_LIST+=($SUDO_N3IWF_PID $N3IWF_PID)
-
-if [ "${PCAP_NAME}" != "" ]; then
-    sudo tcpdump -i any -w ${LOG_PATH}${PCAP_NAME} &
-    PID_LIST+=($!)
-fi
 
 function terminate()
 {
