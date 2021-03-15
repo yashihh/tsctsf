@@ -12,15 +12,29 @@ if [ $# -ne 0 ]; then
         case $1 in
             -p)
                 shift
-                LOG_PATH=$1 ;;
+                case $1 in
+                    -*)
+                        continue ;;
+                    *)
+                        if [ "$1" != "" ];
+                        then
+                            LOG_PATH=$1
+                        fi
+                esac ;;
             -w)
                 shift
-                if [ "$1" != "" ];
-                then
-                    PCAP_NAME=$1
-                else
-                    PCAP_NAME=free5gc.pcap
-                fi
+                case $1 in
+                    -*)
+                        PCAP_NAME=free5gc.pcap
+                        continue ;;
+                    *)
+                        if [ "$1" != "" ];
+                        then
+                            PCAP_NAME=$1
+                        else
+                            PCAP_NAME=free5gc.pcap
+                        fi
+                esac
         esac
         shift
     done
