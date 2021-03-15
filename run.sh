@@ -2,8 +2,8 @@
 
 LOG_PATH="./log/"
 LOG_NAME="free5gc.log"
-PCAP_NAME=""
 TODAY=$(date +"%Y%m%d_%H%M%S")
+PCAP_MODE=0
 
 PID_LIST=()
 
@@ -21,20 +21,22 @@ if [ $# -ne 0 ]; then
                             LOG_PATH=$1
                         fi
                 esac ;;
-            -w)
+            -cp)
                 shift
                 case $1 in
-                    -*)
-                        PCAP_NAME=free5gc.pcap
-                        continue ;;
+                    -dp)
+                        PCAP_MODE=3 ;;
                     *)
-                        if [ "$1" != "" ];
-                        then
-                            PCAP_NAME=$1
-                        else
-                            PCAP_NAME=free5gc.pcap
-                        fi
-                esac
+                        PCAP_MODE=1
+                esac ;;
+            -dp)
+                shift
+                case $1 in
+                    -cp)
+                        PCAP_MODE=3 ;;
+                    *)
+                        PCAP_MODE=2
+                esac ;;
         esac
         shift
     done
@@ -47,9 +49,17 @@ if [ ! -d ${LOG_PATH} ]; then
     mkdir -p ${LOG_PATH}
 fi
 
-if [ "${PCAP_NAME}" != "" ]; then
-    echo "tcpdump name: $PCAP_NAME"
-    sudo tcpdump -i any -w ${LOG_PATH}${PCAP_NAME} &
+if [ $PCAP_MODE -ne 0 ]; then
+    PCAP=${LOG_PATH}free5gc.pcap
+    case $PCAP_MODE in
+        1)  # -cp
+            sudo tcpdump -i any 'sctp port 38412 || tcp port 8000 || udp port 8805' -w ${PCAP} & ;;
+        2)  # -dp
+            sudo tcpdump -i any 'udp port 2152' -w ${PCAP} & ;;
+        3)  # -cp -dp or -dp -cp
+            sudo tcpdump -i any 'sctp port 38412 || tcp port 8000 || udp port 8805 || udp port 2152' -w ${PCAP} &
+    esac
+
     PID_LIST+=($!)
     sleep 0.1
 fi
