@@ -22,21 +22,9 @@ if [ $# -ne 0 ]; then
                         fi
                 esac ;;
             -cp)
-                shift
-                case $1 in
-                    -dp)
-                        PCAP_MODE=3 ;;
-                    *)
-                        PCAP_MODE=1
-                esac ;;
+                PCAP_MODE=$((${PCAP_MODE} | 0x01)) ;;
             -dp)
-                shift
-                case $1 in
-                    -cp)
-                        PCAP_MODE=3 ;;
-                    *)
-                        PCAP_MODE=2
-                esac ;;
+                PCAP_MODE=$((${PCAP_MODE} | 0x02))
         esac
         shift
     done
@@ -56,7 +44,7 @@ if [ $PCAP_MODE -ne 0 ]; then
             sudo tcpdump -i any 'sctp port 38412 || tcp port 8000 || udp port 8805' -w ${PCAP} & ;;
         2)  # -dp
             sudo tcpdump -i any 'udp port 2152' -w ${PCAP} & ;;
-        3)  # -cp -dp or -dp -cp
+        3)  # include -cp -dp
             sudo tcpdump -i any 'sctp port 38412 || tcp port 8000 || udp port 8805 || udp port 2152' -w ${PCAP} &
     esac
 
