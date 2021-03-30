@@ -14,15 +14,15 @@ import (
 	"github.com/stretchr/testify/require"
 
 	// ausf_context "github.com/free5gc/ausf/context"
-	"github.com/free5gc/CommonConsumerTestData/UDM/TestGenAuthData"
-	"github.com/free5gc/nas"
-	"github.com/free5gc/nas/nasMessage"
-	"github.com/free5gc/nas/nasTestpacket"
-	"github.com/free5gc/nas/nasType"
-	"github.com/free5gc/nas/security"
-	"github.com/free5gc/ngap"
-	"github.com/free5gc/ngap/ngapType"
-	"github.com/free5gc/openapi/models"
+	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
+	"bitbucket.org/free5gc-team/nas"
+	"bitbucket.org/free5gc-team/nas/nasMessage"
+	"bitbucket.org/free5gc-team/nas/nasTestpacket"
+	"bitbucket.org/free5gc-team/nas/nasType"
+	"bitbucket.org/free5gc-team/nas/security"
+	"bitbucket.org/free5gc-team/ngap"
+	"bitbucket.org/free5gc-team/ngap/ngapType"
+	"bitbucket.org/free5gc-team/openapi/models"
 )
 
 func TestULCLAndMultiUPF(t *testing.T) {
