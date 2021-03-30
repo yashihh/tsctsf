@@ -3,7 +3,6 @@ package test_test
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"sync"
 	"testing"
@@ -20,7 +19,6 @@ import (
 	"bitbucket.org/free5gc-team/ngap"
 	nrf_service "bitbucket.org/free5gc-team/nrf/service"
 	nssf_service "bitbucket.org/free5gc-team/nssf/service"
-	"bitbucket.org/free5gc-team/path_util"
 	pcf_service "bitbucket.org/free5gc-team/pcf/service"
 	smf_service "bitbucket.org/free5gc-team/smf/service"
 	udm_service "bitbucket.org/free5gc-team/udm/service"
@@ -55,13 +53,7 @@ func init() {
 	if initFlag {
 		//app.AppInitializeWillInitialize("")
 		flagSet := flag.NewFlagSet("free5gc", 0)
-		flagSet.String("smfcfg", "", "SMF Config Path")
 		cli := cli.NewContext(nil, flagSet, nil)
-		err := cli.Set("smfcfg", path_util.Free5gcPath("free5gc/config/test/smfcfg.test.yaml"))
-		if err != nil {
-			log.Fatal("SMF test config error")
-			return
-		}
 
 		for _, service := range NFs {
 			service.Initialize(cli)

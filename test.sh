@@ -36,7 +36,7 @@ then
     exit 1
 fi
 
-cp config/test/smfcfg.single.test.yaml config/test/smfcfg.test.yaml
+cp config/test/smfcfg.single.test.yaml config/smfcfg.yaml
 
 GOPATH=$HOME/go
 if [ $OS == "Ubuntu" ]; then
