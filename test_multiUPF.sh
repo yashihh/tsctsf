@@ -110,7 +110,7 @@ for NF in ${NF_LIST}; do
     PID_LIST+=($!)
 done
 
-$F5GC_DIR/bin/smf -smfcfg "${CONF_DIR}/multiUPF/smfcfg.ulcl.yaml" -uerouting "${CONF_DIR}/multiUPF/uerouting.yaml"&
+$F5GC_DIR/bin/smf -config "${CONF_DIR}/multiUPF/smfcfg.ulcl.yaml" -uerouting "${CONF_DIR}/multiUPF/uerouting.yaml"&
 PID_LIST+=($!)
 
 cd test

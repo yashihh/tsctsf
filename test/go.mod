@@ -4,21 +4,20 @@ go 1.14
 
 require (
 	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20201202123716-f12eceaeb099
-	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20201215124223-c4ac6395ac2f
+	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210310054103-f65f6e610c4f
 	bitbucket.org/free5gc-team/UeauCommon v0.0.0-20201211040450-fc83e159de75
 	bitbucket.org/free5gc-team/amf v0.0.0
-	bitbucket.org/free5gc-team/aper v0.0.0-20201213000141-4a816f02c4e5
+	bitbucket.org/free5gc-team/aper v0.0.0-20210315054243-dc6bff320796
 	bitbucket.org/free5gc-team/ausf v0.0.0
 	bitbucket.org/free5gc-team/http2_util v0.0.0-20201212235925-bd3a307d110a
-	bitbucket.org/free5gc-team/logger_util v0.0.0-20210110171946-953738f7b167 // indirect
 	bitbucket.org/free5gc-team/milenage v0.0.0-20201211040256-1f9245345719
 	bitbucket.org/free5gc-team/n3iwf v0.0.0
-	bitbucket.org/free5gc-team/nas v0.0.0-20201231073918-452c53585d76
-	bitbucket.org/free5gc-team/ngap v0.0.0-20201213001141-924cc2f2b303
+	bitbucket.org/free5gc-team/nas v0.0.0-20210310060525-46f85f0df7d0
+	bitbucket.org/free5gc-team/ngap v0.0.0-20210316165214-9c3fd3e641ab
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
-	bitbucket.org/free5gc-team/openapi v0.0.0-20210106141213-a003c6e9f7ce
-	bitbucket.org/free5gc-team/path_util v0.0.0-20201214054434-5d8f807c9de3
+	bitbucket.org/free5gc-team/openapi v0.0.0-20210310054439-5aa53778eb95
+	bitbucket.org/free5gc-team/path_util v0.0.0-20210310053142-9b06de73fd52
 	bitbucket.org/free5gc-team/pcf v0.0.0
 	bitbucket.org/free5gc-team/smf v0.0.0
 	bitbucket.org/free5gc-team/udm v0.0.0
@@ -27,6 +26,10 @@ require (
 	github.com/Djarvur/go-err113 v0.1.0 // indirect
 	github.com/aws/aws-sdk-go v1.36.24 // indirect
 	github.com/calee0219/fatal v0.0.1
+	github.com/free5gc/CommonConsumerTestData v1.0.0
+	github.com/free5gc/nas v1.0.0
+	github.com/free5gc/ngap v1.0.1
+	github.com/free5gc/openapi v1.0.0
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-ping/ping v0.0.0-20200918120429-e8ae07c3cec8
 	github.com/golangci/golangci-lint v1.35.2

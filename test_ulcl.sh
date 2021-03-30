@@ -59,7 +59,7 @@ elif [ $OS == "Fedora" ]; then
 fi
 PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
-cp config/test/smfcfg.ulcl.test.yaml config/test/smfcfg.test.yaml
+cp config/smfcfg.yaml config/test/smfcfg.test.yaml
 
 UPFNS="UPFns"
 
