@@ -53,7 +53,7 @@ if [ $PCAP_MODE -ne 0 ]; then
 fi
 
 cd NFs/upf/build
-sudo -E ./bin/free5gc-upfd &
+sudo -E ./bin/free5gc-upfd -l ${LOG_PATH}upf.log -g ${LOG_PATH}${LOG_NAME} &
 PID_LIST+=($!)
 
 sleep 1
