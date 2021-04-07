@@ -17,7 +17,6 @@ require (
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
 	bitbucket.org/free5gc-team/openapi v0.0.0-20210310054439-5aa53778eb95
-	bitbucket.org/free5gc-team/path_util v0.0.0-20210310053142-9b06de73fd52
 	bitbucket.org/free5gc-team/pcf v0.0.0
 	bitbucket.org/free5gc-team/smf v0.0.0
 	bitbucket.org/free5gc-team/udm v0.0.0
@@ -26,10 +25,6 @@ require (
 	github.com/Djarvur/go-err113 v0.1.0 // indirect
 	github.com/aws/aws-sdk-go v1.36.24 // indirect
 	github.com/calee0219/fatal v0.0.1
-	github.com/free5gc/CommonConsumerTestData v1.0.0
-	github.com/free5gc/nas v1.0.0
-	github.com/free5gc/ngap v1.0.1
-	github.com/free5gc/openapi v1.0.0
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-ping/ping v0.0.0-20200918120429-e8ae07c3cec8
 	github.com/golangci/golangci-lint v1.35.2
