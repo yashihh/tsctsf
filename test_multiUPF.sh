@@ -106,7 +106,7 @@ done
 NF_LIST="nrf amf udr pcf udm nssf ausf"
 F5GC_DIR="$(cd "$( dirname "$0" )" && pwd -P)"
 for NF in ${NF_LIST}; do
-    $F5GC_DIR/bin/${NF} -${NF}cfg "${CONF_DIR}/${NF}cfg.yaml"&
+    $F5GC_DIR/bin/${NF} -config "${CONF_DIR}/${NF}cfg.yaml"&
     PID_LIST+=($!)
 done
 
