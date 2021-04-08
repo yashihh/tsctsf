@@ -52,13 +52,10 @@ if [ $PCAP_MODE -ne 0 ]; then
     sleep 0.1
 fi
 
-cd NFs/upf/build
-sudo -E ./bin/free5gc-upfd -l ${LOG_PATH}upf.log -g ${LOG_PATH}${LOG_NAME} &
+sudo -E ./NFs/upf/build/bin/free5gc-upfd -l ${LOG_PATH}upf.log -g ${LOG_PATH}${LOG_NAME} &
 PID_LIST+=($!)
 
 sleep 1
-
-cd ../../..
 
 NF_LIST="nrf amf smf udr pcf udm nssf ausf"
 
