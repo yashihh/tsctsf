@@ -1,6 +1,6 @@
 info:
-  version: 1.0.0
-  description: AMF initial local configuration
+  version: 1.0.1
+  description: SMF initial local configuration
 
 configuration:
   smfName: SMF
