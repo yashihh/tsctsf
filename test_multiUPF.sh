@@ -99,14 +99,14 @@ for i in $(seq -f "%02g" 1 $UPF_NUM); do
         TCPDUMP_PID_[${i}]=$(sudo ip netns pids "${UPFNS}${i}")
     fi
 
-    cd NFs/upf/build && sudo -E ip netns exec "${UPFNS}${i}" ./bin/free5gc-upfd -f "${CONF_DIR}/multiUPF/upfcfg${i}.yaml" &
+    cd NFs/upf/build && sudo -E ip netns exec "${UPFNS}${i}" ./bin/free5gc-upfd -c "${CONF_DIR}/multiUPF/upfcfg${i}.yaml" &
     sleep 1
 done
 
 NF_LIST="nrf amf udr pcf udm nssf ausf"
 F5GC_DIR="$(cd "$( dirname "$0" )" && pwd -P)"
 for NF in ${NF_LIST}; do
-    $F5GC_DIR/bin/${NF} -${NF}cfg "${CONF_DIR}/${NF}cfg.yaml"&
+    $F5GC_DIR/bin/${NF} -c "${CONF_DIR}/${NF}cfg.yaml"&
     PID_LIST+=($!)
 done
 
