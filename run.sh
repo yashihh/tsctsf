@@ -52,7 +52,7 @@ if [ $PCAP_MODE -ne 0 ]; then
     sleep 0.1
 fi
 
-sudo -E ./NFs/upf/build/bin/free5gc-upfd -l ${LOG_PATH}upf.log -g ${LOG_PATH}${LOG_NAME} &
+sudo -E ./NFs/upf/build/bin/free5gc-upfd -c ./config/upfcfg.yaml -l ${LOG_PATH}upf.log -g ${LOG_PATH}${LOG_NAME} &
 PID_LIST+=($!)
 
 sleep 1
@@ -62,12 +62,12 @@ NF_LIST="nrf amf smf udr pcf udm nssf ausf"
 export GIN_MODE=release
 
 for NF in ${NF_LIST}; do
-    ./bin/${NF} -l ${LOG_PATH}${NF}.log -lc ${LOG_PATH}${LOG_NAME} &
+    ./bin/${NF} -c ./config/${NF}cfg.yaml -l ${LOG_PATH}${NF}.log -lc ${LOG_PATH}${LOG_NAME} &
     PID_LIST+=($!)
     sleep 0.1
 done
 
-sudo ./bin/n3iwf -l ${LOG_PATH}n3iwf.log -lc ${LOG_PATH}${LOG_NAME} &
+sudo ./bin/n3iwf -c ./config/n3iwfcfg.yaml -l ${LOG_PATH}n3iwf.log -lc ${LOG_PATH}${LOG_NAME} &
 SUDO_N3IWF_PID=$!
 sleep 1
 N3IWF_PID=$(pgrep -P $SUDO_N3IWF_PID)
