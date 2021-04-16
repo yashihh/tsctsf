@@ -56,7 +56,13 @@ func init() {
 		cli := cli.NewContext(nil, flagSet, nil)
 
 		for _, service := range NFs {
-			service.Initialize(cli)
+			if err := service.Initialize(cli); err != nil {
+				fmt.Println("Error:", err)
+				panic("Fail to initialize")
+			}
+		}
+
+		for _, service := range NFs {
 			go service.Start()
 			time.Sleep(200 * time.Millisecond)
 		}
