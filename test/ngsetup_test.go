@@ -335,27 +335,27 @@ func amfConfig() error {
 			Non3gppDeregistrationTimerValue: 3240,
 			T3513: amf_factory.TimerValue{
 				Enable:        true,
-				ExpireTime:    6,
+				ExpireTime:    6000000000,
 				MaxRetryTimes: 4,
 			},
 			T3522: amf_factory.TimerValue{
 				Enable:        true,
-				ExpireTime:    6,
+				ExpireTime:    6000000000,
 				MaxRetryTimes: 4,
 			},
 			T3550: amf_factory.TimerValue{
 				Enable:        true,
-				ExpireTime:    6,
+				ExpireTime:    6000000000,
 				MaxRetryTimes: 4,
 			},
 			T3560: amf_factory.TimerValue{
 				Enable:        true,
-				ExpireTime:    6,
+				ExpireTime:    6000000000,
 				MaxRetryTimes: 4,
 			},
 			T3565: amf_factory.TimerValue{
 				Enable:        true,
-				ExpireTime:    6,
+				ExpireTime:    6000000000,
 				MaxRetryTimes: 4,
 			},
 		},
@@ -469,6 +469,7 @@ func smfConfig() error {
 							},
 							DnnUpfInfoList: []smf_factory.DnnUpfInfoItem{{
 								Dnn: "internet",
+								DnaiList: []string{"edge"},
 								Pools: []smf_factory.UEIPPool{{
 									Cidr: "60.60.0.0/16",
 								}},
