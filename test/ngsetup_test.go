@@ -3,6 +3,7 @@ package test_test
 import (
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 	"test"
 	"test/app"
@@ -49,8 +50,17 @@ var NFs = []app.NetworkFunction{
 }
 
 func init() {
+	var flag string = ""
 
 	for _, arg := range os.Args {
+		values := strings.Split(arg, "=")
+		for k, v := range values {
+			if v == "-test.run" {
+				flag = values[k+1]
+				fmt.Printf("Run %s\n", flag)
+			}
+		}
+
 		if arg == "noinit" {
 			initFlag = false
 			break
@@ -67,7 +77,7 @@ func init() {
 			fmt.Printf("NRF Config failed: %v\n", err)
 		}
 
-		if err := amfConfig(); err != nil {
+		if err := amfConfig(flag); err != nil {
 			fmt.Printf("AMF Config failed: %v\n", err)
 		}
 
@@ -253,17 +263,27 @@ func nrfConfig() error {
 	return nil
 }
 
-func amfConfig() error {
+func amfConfig(flag string) error {
+	var ngapIpList, integrityOrder, cipheringOrder []string
+
+	if flag == "TestNon3GPP" {
+		ngapIpList = []string{"10.200.200.1"}
+		integrityOrder = []string{"NIA2", "NIA0"}
+		cipheringOrder = []string{"NEA2", "NEA0"}
+	} else {
+		ngapIpList = []string{"127.0.0.1"}
+		integrityOrder = []string{"NIA2"}
+		cipheringOrder = []string{"NEA0"}
+	}
+
 	amf_factory.AmfConfig = amf_factory.Config{
 		Info: &amf_factory.Info{
 			Version:     "1.0.1",
 			Description: "AMF initial test configuration",
 		},
 		Configuration: &amf_factory.Configuration{
-			AmfName: "AMF",
-			NgapIpList: []string{
-				"127.0.0.1",
-			},
+			AmfName:    "AMF",
+			NgapIpList: ngapIpList,
 			Sbi: &amf_factory.Sbi{
 				Scheme:       "http",
 				RegisterIPv4: "127.0.0.18",
@@ -309,12 +329,8 @@ func amfConfig() error {
 			},
 			NrfUri: "http://127.0.0.10:8000",
 			Security: &amf_factory.Security{
-				IntegrityOrder: []string{
-					"NIA2",
-				},
-				CipheringOrder: []string{
-					"NEA0",
-				},
+				IntegrityOrder: integrityOrder,
+				CipheringOrder: cipheringOrder,
 			},
 			NetworkName: amf_factory.NetworkName{
 				Full:  "free5GC",
@@ -469,7 +485,7 @@ func smfConfig() error {
 							},
 							DnnUpfInfoList: []smf_factory.DnnUpfInfoItem{{
 								Dnn: "internet",
-								DnaiList: []string{"edge"},
+								//DnaiList: []string{"edge"},
 								Pools: []smf_factory.UEIPPool{{
 									Cidr: "60.60.0.0/16",
 								}},
