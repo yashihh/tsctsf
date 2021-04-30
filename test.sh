@@ -36,8 +36,6 @@ then
     exit 1
 fi
 
-cp config/test/smfcfg.single.test.yaml config/smfcfg.yaml
-
 GOPATH=$HOME/go
 if [ $OS == "Ubuntu" ]; then
     GOROOT=/usr/local/go
