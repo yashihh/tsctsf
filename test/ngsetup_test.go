@@ -81,7 +81,7 @@ func init() {
 			fmt.Printf("AMF Config failed: %v\n", err)
 		}
 
-		if err := smfConfig(); err != nil {
+		if err := smfConfig(flag); err != nil {
 			fmt.Printf("SMF Config failed: %v\n", err)
 		}
 
@@ -418,7 +418,13 @@ func amfConfig(flag string) error {
 	return nil
 }
 
-func smfConfig() error {
+func smfConfig(flag string) error {
+	var dnaiList []string
+
+	if flag == "TestAFInfluenceOnTrafficRouting" {
+		dnaiList = []string{"edge"}
+	}
+
 	smf_factory.SmfConfig = smf_factory.Config{
 		Info: &smf_factory.Info{
 			Version:     "1.0.1",
@@ -484,8 +490,8 @@ func smfConfig() error {
 								Sd:  "010203",
 							},
 							DnnUpfInfoList: []smf_factory.DnnUpfInfoItem{{
-								Dnn: "internet",
-								//DnaiList: []string{"edge"},
+								Dnn:      "internet",
+								DnaiList: dnaiList,
 								Pools: []smf_factory.UEIPPool{{
 									Cidr: "60.60.0.0/16",
 								}},
