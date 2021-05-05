@@ -67,18 +67,18 @@ func init() {
 		}
 	}
 
-	if initFlag {
-		// default key log path
-		if err := os.MkdirAll("./log/", 0775); err != nil {
-			fmt.Printf("Make directory %s failed: %+v", "./log/", err)
-		}
+	// default key log path
+	if err := os.MkdirAll("./log/", 0775); err != nil {
+		fmt.Printf("Make directory %s failed: %+v", "./log/", err)
+	}
 
+	if err := amfConfig(flag); err != nil {
+		fmt.Printf("AMF Config failed: %v\n", err)
+	}
+
+	if initFlag {
 		if err := nrfConfig(); err != nil {
 			fmt.Printf("NRF Config failed: %v\n", err)
-		}
-
-		if err := amfConfig(flag); err != nil {
-			fmt.Printf("AMF Config failed: %v\n", err)
 		}
 
 		if err := smfConfig(flag); err != nil {
@@ -266,7 +266,7 @@ func nrfConfig() error {
 func amfConfig(flag string) error {
 	var ngapIpList, integrityOrder, cipheringOrder []string
 
-	if flag == "TestNon3GPP" {
+	if flag == "TestCN" || flag == "TestNon3GPPUE" {
 		ngapIpList = []string{"10.200.200.1"}
 		integrityOrder = []string{"NIA2", "NIA0"}
 		cipheringOrder = []string{"NEA2", "NEA0"}

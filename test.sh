@@ -156,8 +156,6 @@ then
     sudo ip netns del ${UENS}
     sudo killall n3iwf
     killall test.test
-    cp -f config/amfcfg.yaml.bak config/amfcfg.yaml
-    rm -f config/amfcfg.yaml.bak
 fi
 
 sleep 2
