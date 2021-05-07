@@ -3,6 +3,7 @@ package test_test
 import (
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 	"test"
 	"test/app"
@@ -49,8 +50,17 @@ var NFs = []app.NetworkFunction{
 }
 
 func init() {
+	var testID string = ""
 
 	for _, arg := range os.Args {
+		values := strings.Split(arg, "=")
+		for k, v := range values {
+			if v == "-test.run" {
+				testID = values[k+1]
+				fmt.Printf("Run %s\n", testID)
+			}
+		}
+
 		if arg == "noinit" {
 			initFlag = false
 			break
@@ -67,11 +77,11 @@ func init() {
 			fmt.Printf("NRF Config failed: %v\n", err)
 		}
 
-		if err := amfConfig(); err != nil {
+		if err := amfConfig(testID); err != nil {
 			fmt.Printf("AMF Config failed: %v\n", err)
 		}
 
-		if err := smfConfig(); err != nil {
+		if err := smfConfig(testID); err != nil {
 			fmt.Printf("SMF Config failed: %v\n", err)
 		}
 
@@ -253,17 +263,27 @@ func nrfConfig() error {
 	return nil
 }
 
-func amfConfig() error {
+func amfConfig(testID string) error {
+	var ngapIpList, integrityOrder, cipheringOrder []string
+
+	if testID == "TestCN" {
+		ngapIpList = []string{"10.200.200.1"}
+		integrityOrder = []string{"NIA2", "NIA0"}
+		cipheringOrder = []string{"NEA2", "NEA0"}
+	} else {
+		ngapIpList = []string{"127.0.0.1"}
+		integrityOrder = []string{"NIA2"}
+		cipheringOrder = []string{"NEA0"}
+	}
+
 	amf_factory.AmfConfig = amf_factory.Config{
 		Info: &amf_factory.Info{
 			Version:     "1.0.1",
 			Description: "AMF initial test configuration",
 		},
 		Configuration: &amf_factory.Configuration{
-			AmfName: "AMF",
-			NgapIpList: []string{
-				"127.0.0.1",
-			},
+			AmfName:    "AMF",
+			NgapIpList: ngapIpList,
 			Sbi: &amf_factory.Sbi{
 				Scheme:       "http",
 				RegisterIPv4: "127.0.0.18",
@@ -309,12 +329,8 @@ func amfConfig() error {
 			},
 			NrfUri: "http://127.0.0.10:8000",
 			Security: &amf_factory.Security{
-				IntegrityOrder: []string{
-					"NIA2",
-				},
-				CipheringOrder: []string{
-					"NEA0",
-				},
+				IntegrityOrder: integrityOrder,
+				CipheringOrder: cipheringOrder,
 			},
 			NetworkName: amf_factory.NetworkName{
 				Full:  "free5GC",
@@ -402,7 +418,13 @@ func amfConfig() error {
 	return nil
 }
 
-func smfConfig() error {
+func smfConfig(testID string) error {
+	var dnaiList []string
+
+	if testID == "TestAFInfluenceOnTrafficRouting" {
+		dnaiList = []string{"edge"}
+	}
+
 	smf_factory.SmfConfig = smf_factory.Config{
 		Info: &smf_factory.Info{
 			Version:     "1.0.1",
@@ -468,8 +490,8 @@ func smfConfig() error {
 								Sd:  "010203",
 							},
 							DnnUpfInfoList: []smf_factory.DnnUpfInfoItem{{
-								Dnn: "internet",
-								DnaiList: []string{"edge"},
+								Dnn:      "internet",
+								DnaiList: dnaiList,
 								Pools: []smf_factory.UEIPPool{{
 									Cidr: "60.60.0.0/16",
 								}},

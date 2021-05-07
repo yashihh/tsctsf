@@ -99,10 +99,6 @@ then
     sudo ip addr add 10.0.0.1/24 dev ipsec0
     sudo ip link set ipsec0 up
 
-    # Configuration
-    cp -f config/amfcfg.yaml config/amfcfg.yaml.bak
-    cp -f config/amfcfg.n3test.yaml config/amfcfg.yaml
-
     # Run CN
     cd test && $GOROOT/bin/go test -v -vet=off -timeout 0 -run TestCN &
     sleep 10
@@ -160,8 +156,6 @@ then
     sudo ip netns del ${UENS}
     sudo killall n3iwf
     killall test.test
-    cp -f config/amfcfg.yaml.bak config/amfcfg.yaml
-    rm -f config/amfcfg.yaml.bak
 fi
 
 sleep 2
