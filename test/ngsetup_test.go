@@ -50,14 +50,14 @@ var NFs = []app.NetworkFunction{
 }
 
 func init() {
-	var flag string = ""
+	var testID string = ""
 
 	for _, arg := range os.Args {
 		values := strings.Split(arg, "=")
 		for k, v := range values {
 			if v == "-test.run" {
-				flag = values[k+1]
-				fmt.Printf("Run %s\n", flag)
+				testID = values[k+1]
+				fmt.Printf("Run %s\n", testID)
 			}
 		}
 
@@ -67,21 +67,21 @@ func init() {
 		}
 	}
 
-	// default key log path
-	if err := os.MkdirAll("./log/", 0775); err != nil {
-		fmt.Printf("Make directory %s failed: %+v", "./log/", err)
-	}
-
-	if err := amfConfig(flag); err != nil {
-		fmt.Printf("AMF Config failed: %v\n", err)
-	}
-
 	if initFlag {
+		// default key log path
+		if err := os.MkdirAll("./log/", 0775); err != nil {
+			fmt.Printf("Make directory %s failed: %+v", "./log/", err)
+		}
+
 		if err := nrfConfig(); err != nil {
 			fmt.Printf("NRF Config failed: %v\n", err)
 		}
 
-		if err := smfConfig(flag); err != nil {
+		if err := amfConfig(testID); err != nil {
+			fmt.Printf("AMF Config failed: %v\n", err)
+		}
+
+		if err := smfConfig(testID); err != nil {
 			fmt.Printf("SMF Config failed: %v\n", err)
 		}
 
@@ -263,10 +263,10 @@ func nrfConfig() error {
 	return nil
 }
 
-func amfConfig(flag string) error {
+func amfConfig(testID string) error {
 	var ngapIpList, integrityOrder, cipheringOrder []string
 
-	if flag == "TestCN" || flag == "TestNon3GPPUE" {
+	if testID == "TestCN" {
 		ngapIpList = []string{"10.200.200.1"}
 		integrityOrder = []string{"NIA2", "NIA0"}
 		cipheringOrder = []string{"NEA2", "NEA0"}
@@ -418,10 +418,10 @@ func amfConfig(flag string) error {
 	return nil
 }
 
-func smfConfig(flag string) error {
+func smfConfig(testID string) error {
 	var dnaiList []string
 
-	if flag == "TestAFInfluenceOnTrafficRouting" {
+	if testID == "TestAFInfluenceOnTrafficRouting" {
 		dnaiList = []string{"edge"}
 	}
 
