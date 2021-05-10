@@ -8,4 +8,5 @@ done
 
 sudo killall tcpdump
 sudo ip link del upfgtp
+sudo rm /dev/mqueue/*
 
