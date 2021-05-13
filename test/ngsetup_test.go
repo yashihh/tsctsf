@@ -211,7 +211,7 @@ func beforeClose(ue *test.RanUeContext) {
 func nrfConfig() error {
 	nrf_factory.NrfConfig = nrf_factory.Config{
 		Info: &nrf_factory.Info{
-			Version:     "1.0.0",
+			Version:     "1.0.1",
 			Description: "NRF initial test configuration",
 		},
 		Configuration: &nrf_factory.Configuration{
@@ -222,6 +222,10 @@ func nrfConfig() error {
 				RegisterIPv4: "127.0.0.10",
 				BindingIPv4:  "127.0.0.10",
 				Port:         8000,
+				Tls: &nrf_factory.Tls{
+					Pem: "config/TLS/nrf.pem",
+					Key: "config/TLS/nrf.key",
+				},
 			},
 			DefaultPlmnId: models.PlmnId{
 				Mcc: "208",
@@ -278,7 +282,7 @@ func amfConfig(testID string) error {
 
 	amf_factory.AmfConfig = amf_factory.Config{
 		Info: &amf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "AMF initial test configuration",
 		},
 		Configuration: &amf_factory.Configuration{
@@ -289,6 +293,10 @@ func amfConfig(testID string) error {
 				RegisterIPv4: "127.0.0.18",
 				BindingIPv4:  "127.0.0.18",
 				Port:         8000,
+				Tls: &amf_factory.Tls{
+					Pem: "config/TLS/amf.pem",
+					Key: "config/TLS/amf.key",
+				},
 			},
 			ServiceNameList: []string{
 				"namf-comm",
@@ -437,9 +445,9 @@ func smfConfig(testID string) error {
 				RegisterIPv4: "127.0.0.2",
 				BindingIPv4:  "127.0.0.2",
 				Port:         8000,
-				TLS: &smf_factory.TLS{
-					PEM: "free5gc/support/TLS/smf.key",
-					Key: "free5gc/support/TLS/smf.pem",
+				Tls: &smf_factory.Tls{
+					Pem: "config/TLS/smf.pem",
+					Key: "config/TLS/smf.key",
 				},
 			},
 			ServiceNameList: []string{
@@ -639,7 +647,7 @@ func smfUeRoutingConfig() {
 func udrConfig() error {
 	udr_factory.UdrConfig = udr_factory.Config{
 		Info: &udr_factory.Info{
-			Version:     "1.0.0",
+			Version:     "1.0.1",
 			Description: "UDR initial test configuration",
 		},
 		Configuration: &udr_factory.Configuration{
@@ -648,6 +656,10 @@ func udrConfig() error {
 				RegisterIPv4: "127.0.0.4",
 				BindingIPv4:  "127.0.0.4",
 				Port:         8000,
+				Tls: &udr_factory.Tls{
+					Pem: "config/TLS/udr.pem",
+					Key: "config/TLS/udr.key",
+				},
 			},
 			Mongodb: &udr_factory.Mongodb{
 				Name: "free5gc",
@@ -685,7 +697,7 @@ func udrConfig() error {
 func pcfConfig() error {
 	pcf_factory.PcfConfig = pcf_factory.Config{
 		Info: &pcf_factory.Info{
-			Version:     "1.0.0",
+			Version:     "1.0.1",
 			Description: "PCF initial test configuration",
 		},
 		Configuration: &pcf_factory.Configuration{
@@ -695,6 +707,10 @@ func pcfConfig() error {
 				RegisterIPv4: "127.0.0.7",
 				BindingIPv4:  "127.0.0.7",
 				Port:         8000,
+				Tls: &pcf_factory.Tls{
+					Pem: "config/TLS/pcf.pem",
+					Key: "config/TLS/pcf.key",
+				},
 			},
 			TimeFormat:      "2019-01-02 15:04:05",
 			DefaultBdtRefId: "BdtPolicyId-",
@@ -749,7 +765,7 @@ func pcfConfig() error {
 func udmConfig() error {
 	udm_factory.UdmConfig = udm_factory.Config{
 		Info: &udm_factory.Info{
-			Version:     "1.0.0",
+			Version:     "1.0.1",
 			Description: "UDM initial test configuration",
 		},
 		Configuration: &udm_factory.Configuration{
@@ -766,7 +782,6 @@ func udmConfig() error {
 				BindingIPv4:  "127.0.0.3",
 				Port:         8000,
 				Tls: &udm_factory.Tls{
-					Log: "./log/udmsslkey.log",
 					Pem: "free5gc/support/TLS/udm.pem",
 					Key: "free5gc/support/TLS/udm.key",
 				},
@@ -811,7 +826,7 @@ func nssfConfig() error {
 
 	nssf_factory.NssfConfig = nssf_factory.Config{
 		Info: &nssf_factory.Info{
-			Version:     "1.0.0",
+			Version:     "1.0.1",
 			Description: "NSSF initial test configuration",
 		},
 		Configuration: &nssf_factory.Configuration{
@@ -821,6 +836,10 @@ func nssfConfig() error {
 				RegisterIPv4: "127.0.0.31",
 				BindingIPv4:  "127.0.0.31",
 				Port:         8000,
+				Tls: &nssf_factory.Tls{
+					Pem: "config/TLS/nssf.pem",
+					Key: "config/TLS/nssf.key",
+				},
 			},
 			ServiceNameList: []models.ServiceName{
 				"nnssf-nsselection",
@@ -1308,7 +1327,7 @@ func nssfConfig() error {
 func ausfConfig() error {
 	ausf_factory.AusfConfig = ausf_factory.Config{
 		Info: &ausf_factory.Info{
-			Version:     "1.0.0",
+			Version:     "1.0.1",
 			Description: "AUSF initial test configuration",
 		},
 		Configuration: &ausf_factory.Configuration{
@@ -1317,6 +1336,10 @@ func ausfConfig() error {
 				RegisterIPv4: "127.0.0.9",
 				BindingIPv4:  "127.0.0.9",
 				Port:         8000,
+				Tls: &ausf_factory.Tls{
+					Pem: "config/TLS/ausf.pem",
+					Key: "config/TLS/ausf.key",
+				},
 			},
 			ServiceNameList: []string{
 				"nausf-auth",

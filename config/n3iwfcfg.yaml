@@ -1,5 +1,5 @@
 info:
-  version: 1.0.0
+  version: 1.0.1
   description: N3IWF initial local configuration
 
 configuration:
@@ -61,12 +61,13 @@ configuration:
 
   # --- Security ---
   PrivateKey: # Private key file path
+    config/TLS/n3iwf.key
 
   CertificateAuthority: # Certificate Authority (CA) file path
+    config/TLS/n3iwf.pem
 
   Certificate: # Certificate file path
-
-
+    config/TLS/n3iwf.pem
 
   UEIPAddressRange: # IP address allocated to UE in IPSec tunnel
     10.0.0.0/24
