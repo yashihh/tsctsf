@@ -34,3 +34,6 @@ webconsole/public
 
 packages/
 free5gc.zip
+
+# VS Code Workspace config
+*.code-workspace
