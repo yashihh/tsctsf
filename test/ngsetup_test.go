@@ -435,7 +435,7 @@ func smfConfig(testID string) error {
 
 	smf_factory.SmfConfig = smf_factory.Config{
 		Info: &smf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "SMF initial single test configuration",
 		},
 		Configuration: &smf_factory.Configuration{
