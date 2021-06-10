@@ -10,13 +10,14 @@ import (
 	"test"
 	"time"
 
+	"test/nasTestpacket"
+
 	"github.com/calee0219/fatal"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
-	"bitbucket.org/free5gc-team/nas/nasTestpacket"
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/ngap"

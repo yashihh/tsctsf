@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"test/nasTestpacket"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -17,7 +19,6 @@ import (
 	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
-	"bitbucket.org/free5gc-team/nas/nasTestpacket"
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/ngap"

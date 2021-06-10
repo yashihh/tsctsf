@@ -7,10 +7,11 @@ import (
 	"reflect"
 	"testing"
 
+	"test/nasTestpacket"
+
 	"bitbucket.org/free5gc-team/aper"
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
-	"bitbucket.org/free5gc-team/nas/nasTestpacket"
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/ngap"
 	"bitbucket.org/free5gc-team/ngap/ngapType"
