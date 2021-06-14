@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"test/nasTestpacket"
+
 	"github.com/go-ping/ping"
 	"github.com/stretchr/testify/assert"
 	"github.com/vishvananda/netlink"
@@ -21,7 +23,6 @@ import (
 	"bitbucket.org/free5gc-team/n3iwf/ike/message"
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
-	"bitbucket.org/free5gc-team/nas/nasTestpacket"
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/openapi/models"

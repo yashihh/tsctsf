@@ -14,6 +14,8 @@ import (
 	"testing"
 	"time"
 
+	"test/nasTestpacket"
+
 	"github.com/gin-gonic/gin"
 	"github.com/mohae/deepcopy"
 	"github.com/stretchr/testify/assert"
@@ -28,7 +30,6 @@ import (
 	"bitbucket.org/free5gc-team/milenage"
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
-	"bitbucket.org/free5gc-team/nas/nasTestpacket"
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/ngap"
