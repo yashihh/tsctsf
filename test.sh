@@ -104,7 +104,7 @@ then
     sleep 10
 
     # Run N3IWF
-    cd NFs/n3iwf && sudo -E $GOROOT/bin/go run n3iwf.go &
+    cd NFs/n3iwf && sudo -E $GOROOT/bin/go run cmd/n3iwf.go &
     sleep 5
 
     # Run Test UE
