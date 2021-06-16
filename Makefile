@@ -38,10 +38,10 @@ all: $(NF) $(WEBCONSOLE)
 
 $(GO_NF): % : $(GO_BIN_PATH)/%
 
-$(GO_BIN_PATH)/%: %.go $(NF_GO_FILES)
+$(GO_BIN_PATH)/%: $(NF_GO_FILES)
 # $(@F): The file-within-directory part of the file name of the target.
 	@echo "Start building $(@F)...."
-	cd $(GO_SRC_PATH)/$(@F) && \
+	cd $(GO_SRC_PATH)/$(@F)/cmd && \
 	CGO_ENABLED=0 go build -ldflags "$(LDFLAGS)" -o $(ROOT_PATH)/$@ $(@F).go
 
 vpath %.go $(addprefix $(GO_SRC_PATH)/, $(GO_NF))

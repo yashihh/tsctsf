@@ -18,9 +18,9 @@ import (
 	"golang.org/x/sys/unix"
 
 	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
-	"bitbucket.org/free5gc-team/n3iwf/context"
-	"bitbucket.org/free5gc-team/n3iwf/ike/handler"
-	"bitbucket.org/free5gc-team/n3iwf/ike/message"
+	"bitbucket.org/free5gc-team/n3iwf/pkg/context"
+	"bitbucket.org/free5gc-team/n3iwf/pkg/ike/handler"
+	"bitbucket.org/free5gc-team/n3iwf/pkg/ike/message"
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
 	"bitbucket.org/free5gc-team/nas/nasType"

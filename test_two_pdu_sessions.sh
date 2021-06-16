@@ -106,7 +106,7 @@ for i in $(seq -f "%02g" 1 $UPF_NUM); do
     else
         sed -i -e "s/internet2/internet/g" ./NFs/upf/build/config/upfcfg.ulcl.yaml
     fi
-    cd NFs/upf/build && sudo -E ip netns exec "${UPFNS}${i}" ./bin/free5gc-upfd -f config/upfcfg.ulcl.yaml &
+    cd NFs/upf/build && sudo -E ip netns exec "${UPFNS}${i}" ./bin/free5gc-upfd -c config/upfcfg.ulcl.yaml &
     sleep 1
     sed -i -e "s/internet2/internet/g" ./NFs/upf/build/config/upfcfg.ulcl.yaml
 done
