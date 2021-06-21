@@ -1,6 +1,7 @@
 package test_test
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -26,8 +27,11 @@ import (
 	"bitbucket.org/free5gc-team/openapi/models"
 )
 
+var ueCount = flag.Int("ueCount", 1, "Number of ue")
+var upfNum = flag.Int("upfNum", 1, "Number of upf")
+
 func TestULCLAndMultiUPF(t *testing.T) {
-	testULCLSessionBase(t, 4, 6)
+	testULCLSessionBase(t, *ueCount, *upfNum)
 }
 
 func testULCLSessionBase(t *testing.T, ueCount int, upfNum int) {
