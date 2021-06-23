@@ -103,6 +103,9 @@ for i in $(seq -f "%02g" 1 $UPF_NUM); do
     sleep 1
 done
 
+sudo tcpdump -i any 'sctp port 38412 || tcp port 8000 || udp port 8805' -w 'control_plane.pcap' &
+TCPDUMP_CP=($!)
+
 NF_LIST="nrf amf udr pcf udm nssf ausf"
 F5GC_DIR="$(cd "$( dirname "$0" )" && pwd -P)"
 for NF in ${NF_LIST}; do
@@ -114,10 +117,10 @@ $F5GC_DIR/bin/smf -c "${CONF_DIR}/multiUPF/smfcfg.ulcl.yaml" -u "${CONF_DIR}/mul
 PID_LIST+=($!)
 
 cd test
-$GOROOT/bin/go test -v -vet=off -run $1  -args noinit
+$GOROOT/bin/go test -v -vet=off -ueCount 4 -upfNum ${UPF_NUM} -run $1 -args noinit
 
 for ((idx=${#PID_LIST[@]}-1;idx>=0;idx--)); do
-    sudo kill -SIGKILL ${PID_LIST[$idx]}
+    sudo kill -SIGINT ${PID_LIST[$idx]}
 done
 
 sleep 3
@@ -129,6 +132,10 @@ mkdir -p testkeylog
 for KEYLOG in $(ls *sslkey.log); do
      mv $KEYLOG testkeylog
 done
+
+if [ ${DUMP_NS} ]; then
+    sudo kill -SIGINT ${TCPDUMP_CP}
+fi
 
 # sudo ip addr del 60.60.0.1/32 dev lo
 sudo ip link del veth0
