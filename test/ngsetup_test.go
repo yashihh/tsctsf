@@ -637,7 +637,7 @@ func smfUeRoutingConfig() {
 			Pfds: []smf_factory.PfdContent{{
 				PfdID: "pfd1",
 				FlowDescriptions: []string{
-					"permit out ip from 60.60.0.1 8080 to any",
+					"permit out ip from 60.60.0.0/24 8080 to 60.60.0.1",
 				},
 			}},
 		}},

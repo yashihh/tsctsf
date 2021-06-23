@@ -2335,6 +2335,9 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 		router.POST("nnef-callback/v1/traffic-influence/:appID", func(c *gin.Context) {
 			c.Status(http.StatusOK)
 		})
+		router.POST("nnef-callback/v1/applications/:appID/terminate", func(c *gin.Context) {
+			c.Status(http.StatusNoContent)
+		})
 
 		server, err := http2_util.NewServer("127.0.0.100:8000", "", router)
 		if err == nil && server != nil {
