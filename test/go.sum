@@ -12,8 +12,8 @@ bitbucket.org/free5gc-team/aper v0.0.0-20210414074706-491f6ea71741 h1:0v7I09LPCG
 bitbucket.org/free5gc-team/aper v0.0.0-20210414074706-491f6ea71741/go.mod h1:ESZyWN5yqFnHre5lpbsYlyrwo9DpQ1EnY0+Z+WKIr00=
 bitbucket.org/free5gc-team/flowdesc v0.0.0-20201211040502-ec124a7d65a1 h1:Vdib5ZJcOWBoweYYxIPZapkGq5CdZtyrzapwwhPs+is=
 bitbucket.org/free5gc-team/flowdesc v0.0.0-20201211040502-ec124a7d65a1/go.mod h1:Qt4dksxTnqap8DHyJQRr10yiuER1WShvl5JmVv2jLd4=
-bitbucket.org/free5gc-team/fsm v0.0.0-20210310053819-240603e3fb39 h1:LlgtqfV7VBwKIHTUaIUE+mABwy5SIml+VAsh8I69DLg=
-bitbucket.org/free5gc-team/fsm v0.0.0-20210310053819-240603e3fb39/go.mod h1:ySxTCYLE47r5nGXwbJFEsgtPjOpax8Ednl++xn/icPg=
+bitbucket.org/free5gc-team/fsm v0.0.0-20210623062747-759e6f8e13d6 h1:PWNw1F8SAqk53mhG2GlAtaJvqZhBNNwx2FsQQ0HT0X8=
+bitbucket.org/free5gc-team/fsm v0.0.0-20210623062747-759e6f8e13d6/go.mod h1:ySxTCYLE47r5nGXwbJFEsgtPjOpax8Ednl++xn/icPg=
 bitbucket.org/free5gc-team/http2_util v0.0.0-20201212235925-bd3a307d110a h1:jeZeox8I0w66Y7nBZhWiQqxoBRNgpjJJgYYCSPz8QcA=
 bitbucket.org/free5gc-team/http2_util v0.0.0-20201212235925-bd3a307d110a/go.mod h1:GQTj1a8NrkYrV6G+Rj5gV8ZofDGwuhUWyr6M8L0MD4E=
 bitbucket.org/free5gc-team/http_wrapper v0.0.0-20201211040440-7c475efe43d4 h1:45ZVO7jrMEOp+Aaeu+Ep0vpYfG20y50kj+WPioZF8ts=
