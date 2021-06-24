@@ -282,7 +282,7 @@ func amfConfig(testID string) error {
 
 	amf_factory.AmfConfig = amf_factory.Config{
 		Info: &amf_factory.Info{
-			Version:     "1.0.2",
+			Version:     "1.0.3",
 			Description: "AMF initial test configuration",
 		},
 		Configuration: &amf_factory.Configuration{
@@ -344,15 +344,28 @@ func amfConfig(testID string) error {
 				Full:  "free5GC",
 				Short: "free",
 			},
-			NetworkFeatureSupport5GS: &amf_factory.NetworkFeatureSupport5GS{
-				Enable:  true,
-				ImsVoPS: 0,
-				Emc:     0,
-				Emf:     0,
-				IwkN26:  0,
-				Mpsi:    0,
-				EmcN3:   0,
-				Mcsi:    0,
+			NgapIE: &amf_factory.NgapIE{
+				MobilityRestrictionList: &amf_factory.MobilityRestrictionList{
+					Enable: true,
+				},
+				MaskedIMEISV: &amf_factory.MaskedIMEISV{
+					Enable: true,
+				},
+				RedirectionVoiceFallback: &amf_factory.RedirectionVoiceFallback{
+					Enable: false,
+				},
+			},
+			NasIE: &amf_factory.NasIE{
+				NetworkFeatureSupport5GS: &amf_factory.NetworkFeatureSupport5GS{
+					Enable:  true,
+					ImsVoPS: 0,
+					Emc:     0,
+					Emf:     0,
+					IwkN26:  0,
+					Mpsi:    0,
+					EmcN3:   0,
+					Mcsi:    0,
+				},
 			},
 			T3502Value:                      720,
 			T3512Value:                      3600,
