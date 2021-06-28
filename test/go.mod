@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20210610114415-89b2b2050948
-	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210310054103-f65f6e610c4f
+	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210628080810-3a7576b0ffe5
 	bitbucket.org/free5gc-team/UeauCommon v0.0.0-20201211040450-fc83e159de75
 	bitbucket.org/free5gc-team/amf v0.0.0
 	bitbucket.org/free5gc-team/aper v0.0.0-20210414074706-491f6ea71741

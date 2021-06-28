@@ -2,8 +2,8 @@
 4d63.com/gochecknoglobals v0.0.0-20201008074935-acfc0b28355a/go.mod h1:wfdC5ZjKSPr7CybKEcgJhUOgeAQW1+7WcyK8OvUilfo=
 bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20210610114415-89b2b2050948 h1:ytRH6w/zbXK7nbUt5ZNSzUaWcZ5djakvC5kSlDeinMQ=
 bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20210610114415-89b2b2050948/go.mod h1:61IL8cjqrztptHCn0C5T0C/Q6ciVGr+9t6TvmzawADU=
-bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210310054103-f65f6e610c4f h1:6bOFBnYgcwb2ClhbLW7fpZCDev4uA0qMvj76U3h3h4w=
-bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210310054103-f65f6e610c4f/go.mod h1:ke8Lmn2XhRTqy8LNr3KRVAtMCKw/yYYAgQsmmSi+ljY=
+bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210628080810-3a7576b0ffe5 h1:KBX4flyTfs28TYCurUxW7xx/fIO7H/XL+atYyzzBCNw=
+bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210628080810-3a7576b0ffe5/go.mod h1:ke8Lmn2XhRTqy8LNr3KRVAtMCKw/yYYAgQsmmSi+ljY=
 bitbucket.org/free5gc-team/TimeDecode v0.0.0-20210610090116-1dcf9ac6aed7 h1:44SLbDKXw4zbLVoxezN9Cx97eXHpve9kUsd/gdPx7vM=
 bitbucket.org/free5gc-team/TimeDecode v0.0.0-20210610090116-1dcf9ac6aed7/go.mod h1:Uq8v+naJb/t+oOT5kPiUtOTlUqhmmEYKUCJUhx6TeNo=
 bitbucket.org/free5gc-team/UeauCommon v0.0.0-20201211040450-fc83e159de75 h1:12MKTnLYSm0dWROx1OzRElCy9eGGo/eB5ezroagK5ek=
