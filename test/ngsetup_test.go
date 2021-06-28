@@ -118,8 +118,9 @@ func init() {
 
 func NfTerminate() {
 	if initFlag {
-		for _, service := range NFs {
-			service.Terminate()
+		nfNums := len(NFs)
+		for i := nfNums - 1; i >= 0; i-- {
+			NFs[i].Terminate()
 		}
 	}
 }
