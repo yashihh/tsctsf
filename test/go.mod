@@ -3,18 +3,18 @@ module test
 go 1.14
 
 require (
-	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20210610114415-89b2b2050948
+	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20210716054757-b67f8f90db22
 	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210628080810-3a7576b0ffe5
 	bitbucket.org/free5gc-team/UeauCommon v0.0.0-20201211040450-fc83e159de75
 	bitbucket.org/free5gc-team/amf v0.0.0
-	bitbucket.org/free5gc-team/aper v0.0.0-20210414074706-491f6ea71741
+	bitbucket.org/free5gc-team/aper v0.0.0-20210715094321-88fd0bb6cce9
 	bitbucket.org/free5gc-team/ausf v0.0.0
 	bitbucket.org/free5gc-team/http2_util v0.0.0-20201212235925-bd3a307d110a
 	bitbucket.org/free5gc-team/logger_util v0.0.0-20210414054242-2101cfc15ebb
 	bitbucket.org/free5gc-team/milenage v0.0.0-20201211040256-1f9245345719
 	bitbucket.org/free5gc-team/n3iwf v0.0.0
 	bitbucket.org/free5gc-team/nas v0.0.0-20210610112928-da6346e73fab
-	bitbucket.org/free5gc-team/ngap v0.0.0-20210610085113-7e26561720a1
+	bitbucket.org/free5gc-team/ngap v0.0.0-20210715110807-6f4274fe49a7
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
 	bitbucket.org/free5gc-team/openapi v0.0.0-20210610084256-990ed030d4de
