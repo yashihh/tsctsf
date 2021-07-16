@@ -9,6 +9,8 @@ configuration:
   pfcp:
     - addr: 127.0.0.8
 
+  node_id: 127.0.0.8
+
   gtpu:
     - addr: 192.168.0.1
     # [optional] gtpu.name
