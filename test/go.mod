@@ -3,7 +3,7 @@ module test
 go 1.14
 
 require (
-	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20210610114415-89b2b2050948
+	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20210716054757-b67f8f90db22
 	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210628080810-3a7576b0ffe5
 	bitbucket.org/free5gc-team/UeauCommon v0.0.0-20201211040450-fc83e159de75
 	bitbucket.org/free5gc-team/amf v0.0.0
