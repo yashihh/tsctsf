@@ -67,7 +67,7 @@ export GIN_MODE=release
 # Setup bridge
 sudo ip link add veth0 type veth peer name br-veth0
 sudo ip link set veth0 up
-# sudo ip addr add 60.60.0.1 dev lo
+# sudo ip addr add 10.60.0.1 dev lo
 sudo ip addr add 10.200.200.1/24 dev veth0
 sudo ip addr add 10.200.200.2/24 dev veth0
 
@@ -88,7 +88,7 @@ for i in $(seq -f "%02g" 1 $UPF_NUM); do
 
     sudo ip netns exec "${UPFNS}${i}" ip link set lo up
     sudo ip netns exec "${UPFNS}${i}" ip link set "veth${i}" up
-#    sudo ip netns exec "${UPFNS}${i}" ip addr add "60.60.0.1${i}" dev lo
+#    sudo ip netns exec "${UPFNS}${i}" ip addr add "10.60.0.1${i}" dev lo
     sudo ip netns exec "${UPFNS}${i}" ip addr add "10.200.200.1${i}/24" dev "veth${i}"
 
     sudo ip link set "br-veth${i}" master free5gc-br
@@ -137,7 +137,7 @@ if [ ${DUMP_NS} ]; then
     sudo kill -SIGINT ${TCPDUMP_CP}
 fi
 
-# sudo ip addr del 60.60.0.1/32 dev lo
+# sudo ip addr del 10.60.0.1/32 dev lo
 sudo ip link del veth0
 sudo ip link del free5gc-br
 

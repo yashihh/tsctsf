@@ -54,7 +54,7 @@ sudo ip netns add ${UPFNS}
 
 sudo ip link add veth0 type veth peer name veth1
 sudo ip link set veth0 up
-sudo ip addr add 60.60.0.1 dev lo
+sudo ip addr add 10.60.0.1 dev lo
 sudo ip addr add 10.200.200.1/24 dev veth0
 sudo ip addr add 10.200.200.2/24 dev veth0
 
@@ -62,7 +62,7 @@ sudo ip link set veth1 netns ${UPFNS}
 
 ${EXEC_UPFNS} ip link set lo up
 ${EXEC_UPFNS} ip link set veth1 up
-${EXEC_UPFNS} ip addr add 60.60.0.101 dev lo
+${EXEC_UPFNS} ip addr add 10.60.0.101 dev lo
 ${EXEC_UPFNS} ip addr add 10.200.200.101/24 dev veth1
 ${EXEC_UPFNS} ip addr add 10.200.200.102/24 dev veth1
 
@@ -144,7 +144,7 @@ done
 
 sudo ip link del veth0
 sudo ip netns del ${UPFNS}
-sudo ip addr del 60.60.0.1/32 dev lo
+sudo ip addr del 10.60.0.1/32 dev lo
 
 if [[ "$1" == "TestNon3GPP" ]]
 then

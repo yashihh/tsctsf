@@ -232,7 +232,7 @@ func TestRegistration(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	// Send the dummy packet
-	// ping IP(tunnel IP) from 60.60.0.2(127.0.0.1) to 60.60.0.20(127.0.0.8)
+	// ping IP(tunnel IP) from 10.60.0.2(127.0.0.1) to 10.60.0.20(127.0.0.8)
 	gtpHdr, err := hex.DecodeString("32ff00340000000100000000")
 	assert.Nil(t, err)
 	icmpData, err := hex.DecodeString("8c870d0000000000101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637")
@@ -245,8 +245,8 @@ func TestRegistration(t *testing.T) {
 		Flags:    0,
 		TotalLen: 48,
 		TTL:      64,
-		Src:      net.ParseIP("60.60.0.1").To4(),
-		Dst:      net.ParseIP("60.60.0.101").To4(),
+		Src:      net.ParseIP("10.60.0.1").To4(),
+		Dst:      net.ParseIP("10.60.0.101").To4(),
 		ID:       1,
 	}
 	checksum := test.CalculateIpv4HeaderChecksum(&ipv4hdr)
@@ -1661,7 +1661,7 @@ func TestPaging(t *testing.T) {
 		// fmt.Println(string(recvMsg))
 	}()
 
-	cmd := exec.Command("sudo", "ip", "netns", "exec", "UPFns", "bash", "-c", "echo -n 'hello' | nc -u -w1 60.60.0.1 8080")
+	cmd := exec.Command("sudo", "ip", "netns", "exec", "UPFns", "bash", "-c", "echo -n 'hello' | nc -u -w1 10.60.0.1 8080")
 	_, err = cmd.Output()
 	if err != nil {
 		fmt.Println(err)
@@ -1908,7 +1908,7 @@ func TestN2Handover(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	// Send the dummy packet to test if UE is connected to RAN1
-	// ping IP(tunnel IP) from 60.60.0.1(127.0.0.1) to 60.60.0.100(127.0.0.8)
+	// ping IP(tunnel IP) from 10.60.0.1(127.0.0.1) to 10.60.0.100(127.0.0.8)
 	gtpHdr, err := hex.DecodeString("32ff00340000000100000000")
 	assert.Nil(t, err)
 	icmpData, err := hex.DecodeString("8c870d0000000000101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637")
@@ -1921,8 +1921,8 @@ func TestN2Handover(t *testing.T) {
 		Flags:    0,
 		TotalLen: 48,
 		TTL:      64,
-		Src:      net.ParseIP("60.60.0.1").To4(),
-		Dst:      net.ParseIP("60.60.0.101").To4(),
+		Src:      net.ParseIP("10.60.0.1").To4(),
+		Dst:      net.ParseIP("10.60.0.101").To4(),
 		ID:       1,
 	}
 	checksum := test.CalculateIpv4HeaderChecksum(&ipv4hdr)
@@ -2048,7 +2048,7 @@ func TestN2Handover(t *testing.T) {
 	time.Sleep(1000 * time.Millisecond)
 
 	// Send the dummy packet
-	// ping IP(tunnel IP) from 60.60.0.2(127.0.0.1) to 60.60.0.20(127.0.0.8)
+	// ping IP(tunnel IP) from 10.60.0.2(127.0.0.1) to 10.60.0.20(127.0.0.8)
 	_, err = upfConn2.Write(append(tt, b...))
 	assert.Nil(t, err)
 
@@ -2273,7 +2273,7 @@ func TestDuplicateRegistration(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	// Send the dummy packet
-	// ping IP(tunnel IP) from 60.60.0.2(127.0.0.1) to 60.60.0.20(127.0.0.8)
+	// ping IP(tunnel IP) from 10.60.0.2(127.0.0.1) to 10.60.0.20(127.0.0.8)
 	gtpHdr, err := hex.DecodeString("32ff00340000000300000000")
 	assert.Nil(t, err)
 	icmpData, err := hex.DecodeString("8c870d0000000000101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637")
@@ -2286,8 +2286,8 @@ func TestDuplicateRegistration(t *testing.T) {
 		Flags:    0,
 		TotalLen: 48,
 		TTL:      64,
-		Src:      net.ParseIP("60.60.0.2").To4(),
-		Dst:      net.ParseIP("60.60.0.101").To4(),
+		Src:      net.ParseIP("10.60.0.2").To4(),
+		Dst:      net.ParseIP("10.60.0.101").To4(),
 		ID:       1,
 	}
 	checksum := test.CalculateIpv4HeaderChecksum(&ipv4hdr)
@@ -2800,7 +2800,7 @@ func TestReSynchronisation(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	// Send the dummy packet
-	// ping IP(tunnel IP) from 60.60.0.2(127.0.0.1) to 60.60.0.20(127.0.0.8)
+	// ping IP(tunnel IP) from 10.60.0.2(127.0.0.1) to 10.60.0.20(127.0.0.8)
 	gtpHdr, err := hex.DecodeString("32ff00340000000100000000")
 	assert.Nil(t, err)
 	icmpData, err := hex.DecodeString("8c870d0000000000101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637")
@@ -2813,8 +2813,8 @@ func TestReSynchronisation(t *testing.T) {
 		Flags:    0,
 		TotalLen: 48,
 		TTL:      64,
-		Src:      net.ParseIP("60.60.0.1").To4(),
-		Dst:      net.ParseIP("60.60.0.101").To4(),
+		Src:      net.ParseIP("10.60.0.1").To4(),
+		Dst:      net.ParseIP("10.60.0.101").To4(),
 		ID:       1,
 	}
 	checksum := test.CalculateIpv4HeaderChecksum(&ipv4hdr)
@@ -3090,7 +3090,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	// Send the dummy packet
-	// ping IP(tunnel IP) from 60.60.0.2(127.0.0.1) to 60.60.0.20(127.0.0.8)
+	// ping IP(tunnel IP) from 10.60.0.2(127.0.0.1) to 10.60.0.20(127.0.0.8)
 	gtpHdr, err := hex.DecodeString("32ff00340000000100000000")
 	assert.Nil(t, err)
 	icmpData, err := hex.DecodeString("8c870d0000000000101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637")
@@ -3103,8 +3103,8 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 		Flags:    0,
 		TotalLen: 48,
 		TTL:      64,
-		Src:      net.ParseIP("60.60.0.1").To4(),
-		Dst:      net.ParseIP("60.60.0.101").To4(),
+		Src:      net.ParseIP("10.60.0.1").To4(),
+		Dst:      net.ParseIP("10.60.0.101").To4(),
 		ID:       1,
 	}
 	checksum := test.CalculateIpv4HeaderChecksum(&ipv4hdr)
@@ -3134,7 +3134,7 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 	assert.Nil(t, err, err)
 	//
 	// Send the dummy packet
-	// ping IP(tunnel IP) from 60.60.0.2(127.0.0.1) to 60.60.0.20(127.0.0.8)
+	// ping IP(tunnel IP) from 10.60.0.2(127.0.0.1) to 10.60.0.20(127.0.0.8)
 	gtpHdr, err = hex.DecodeString("32ff00340000000100000000")
 	assert.Nil(t, err)
 	icmpData, err = hex.DecodeString("8c870d0000000000101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637")
@@ -3147,8 +3147,8 @@ func TestRequestTwoPDUSessoins(t *testing.T) {
 		Flags:    0,
 		TotalLen: 48,
 		TTL:      64,
-		Src:      net.ParseIP("60.60.0.2").To4(),
-		Dst:      net.ParseIP("60.60.0.102").To4(),
+		Src:      net.ParseIP("10.60.0.2").To4(),
+		Dst:      net.ParseIP("10.60.0.102").To4(),
 		ID:       1,
 	}
 	checksum = test.CalculateIpv4HeaderChecksum(&ipv4hdr)
