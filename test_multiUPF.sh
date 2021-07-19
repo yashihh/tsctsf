@@ -111,6 +111,7 @@ F5GC_DIR="$(cd "$( dirname "$0" )" && pwd -P)"
 for NF in ${NF_LIST}; do
     $F5GC_DIR/bin/${NF} -c "${CONF_DIR}/${NF}cfg.yaml"&
     PID_LIST+=($!)
+    sleep 0.1
 done
 
 $F5GC_DIR/bin/smf -c "${CONF_DIR}/multiUPF/smfcfg.ulcl.yaml" -u "${CONF_DIR}/multiUPF/uerouting.yaml"&
@@ -121,6 +122,7 @@ $GOROOT/bin/go test -v -vet=off -ueCount 4 -upfNum ${UPF_NUM} -run $1 -args noin
 
 for ((idx=${#PID_LIST[@]}-1;idx>=0;idx--)); do
     sudo kill -SIGINT ${PID_LIST[$idx]}
+    sleep 0.1
 done
 
 sleep 3
