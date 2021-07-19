@@ -449,7 +449,7 @@ func smfConfig(testID string) error {
 
 	smf_factory.SmfConfig = smf_factory.Config{
 		Info: &smf_factory.Info{
-			Version:     "1.0.2",
+			Version:     "1.0.3",
 			Description: "SMF initial single test configuration",
 		},
 		Configuration: &smf_factory.Configuration{
@@ -518,7 +518,7 @@ func smfConfig(testID string) error {
 								Dnn:      "internet",
 								DnaiList: dnaiList,
 								Pools: []smf_factory.UEIPPool{{
-									Cidr: "60.60.0.0/16",
+									Cidr: "10.60.0.0/16",
 								}},
 							}},
 						}, {
@@ -529,7 +529,7 @@ func smfConfig(testID string) error {
 							DnnUpfInfoList: []smf_factory.DnnUpfInfoItem{{
 								Dnn: "internet",
 								Pools: []smf_factory.UEIPPool{{
-									Cidr: "60.61.0.0/16",
+									Cidr: "10.61.0.0/16",
 								}},
 							}},
 						}},
@@ -617,7 +617,7 @@ func smfUeRoutingConfig() {
 					B: "AnchorUPF1",
 				}},
 				SpecificPaths: []smf_factory.SpecificPath{{
-					DestinationIP: "60.60.0.103/32",
+					DestinationIP: "10.60.0.103/32",
 					Path: []string{
 						"BranchingUPF",
 						"AnchorUPF2",
@@ -654,7 +654,7 @@ func smfUeRoutingConfig() {
 			Pfds: []smf_factory.PfdContent{{
 				PfdID: "pfd1",
 				FlowDescriptions: []string{
-					"permit out ip from 60.60.0.0/24 8080 to 60.60.0.1",
+					"permit out ip from 10.60.0.0/24 8080 to 10.60.0.1",
 				},
 			}},
 		}},

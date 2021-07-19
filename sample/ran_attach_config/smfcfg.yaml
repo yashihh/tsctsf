@@ -42,5 +42,5 @@ configuration:
     links:
       - A: gNB1
         B: UPF
-  ue_subnet: 60.60.0.0/16
+  ue_subnet: 10.60.0.0/16
   nrfUri: http://localhost:29510

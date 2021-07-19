@@ -38,7 +38,7 @@ sudo ip netns add ${UPFNS}
 
 sudo ip link add veth0 type veth peer name veth1
 sudo ip link set veth0 up
-sudo ip addr add 60.60.0.1 dev lo
+sudo ip addr add 10.60.0.1 dev lo
 sudo ip addr add 10.200.200.1/24 dev veth0
 sudo ip addr add 10.200.200.2/24 dev veth0
 
@@ -46,7 +46,7 @@ sudo ip link set veth1 netns ${UPFNS}
 
 ${EXEC_UPFNS} ip link set lo up
 ${EXEC_UPFNS} ip link set veth1 up
-${EXEC_UPFNS} ip addr add 60.60.0.100 dev lo
+${EXEC_UPFNS} ip addr add 10.60.0.100 dev lo
 ${EXEC_UPFNS} ip addr add 10.200.200.101/24 dev veth1
 ${EXEC_UPFNS} ip addr add 10.200.200.102/24 dev veth1
 
@@ -58,7 +58,7 @@ fi
 
 cd src/upf/build && ${EXEC_UPFNS} ./bin/free5gc-upfd -f config/upfcfg.test.yaml &
 sleep 2
-${EXEC_UPFNS} ip r add 60.60.0.0/24 dev free5GCgtp0
+${EXEC_UPFNS} ip r add 10.60.0.0/16 dev free5GCgtp0
 
 cd src/test
 $GOROOT/bin/go test -tags=debug -v -vet=off -run $1
@@ -80,4 +80,4 @@ done
 
 sudo ip link del veth0
 sudo ip netns del ${UPFNS}
-sudo ip addr del 60.60.0.1/32 dev lo
+sudo ip addr del 10.60.0.1/32 dev lo
