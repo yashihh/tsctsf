@@ -495,7 +495,9 @@ func smfConfig(testID string) error {
 				}},
 			}},
 			PFCP: &smf_factory.PFCP{
-				Addr: "10.200.200.1",
+				NodeID:       "10.200.200.1",
+				ExternalAddr: "10.200.200.1",
+				ListenAddr:   "10.200.200.1",
 			},
 			UserPlaneInformation: smf_factory.UserPlaneInformation{
 				UPNodes: map[string]smf_factory.UPNode{
@@ -506,6 +508,7 @@ func smfConfig(testID string) error {
 					"UPF": {
 						Type:   "UPF",
 						NodeID: "10.200.200.101",
+						Addr:   "10.200.200.101",
 						SNssaiInfos: []smf_factory.SnssaiUpfInfoItem{{
 							SNssai: &models.Snssai{
 								Sst: 1,
