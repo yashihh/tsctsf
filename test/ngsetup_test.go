@@ -590,7 +590,7 @@ func smfConfig(testID string) error {
 		},
 	}
 
-	if testID == "TestRequestTwoPDUSessoins" {
+	if testID == "TestRequestTwoPDUSessions" {
 		smf_factory.SmfConfig.Configuration.UserPlaneInformation.Links =
 			append(smf_factory.SmfConfig.Configuration.UserPlaneInformation.Links, smf_factory.UPLink{
 				A: "gNB1",
