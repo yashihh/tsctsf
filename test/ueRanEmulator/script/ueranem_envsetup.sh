@@ -29,8 +29,6 @@ do
 done
 shift $(($OPTIND - 1))
 
-cp ../../../../config/test/smfcfg.single.test.yaml ../../../../config/test/smfcfg.test.yaml
-
 GOPATH=$HOME/go
 if [ $OS == "Ubuntu" ]; then
     GOROOT=/usr/local/go
@@ -69,5 +67,5 @@ then
     LOCALDUMP=$!
 fi
 
-cd ../../../upf/build && ${EXEC_UPFNS} ./bin/free5gc-upfd -f config/upfcfg.test.yaml &
+cd ../../../upf/build && ${EXEC_UPFNS} ./bin/free5gc-upfd -c config/upfcfg.test.yaml &
 sleep 2

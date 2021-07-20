@@ -59,8 +59,6 @@ elif [ $OS == "Fedora" ]; then
 fi
 PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
-cp config/test/smfcfg.pdusessions.test.yaml config/test/smfcfg.test.yaml
-
 UPFNS="UPFns"
 
 export GIN_MODE=release
