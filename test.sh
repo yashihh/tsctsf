@@ -112,16 +112,6 @@ then
     ${EXEC_UENS} $GOROOT/bin/go test -v -vet=off -timeout 0 -run TestNon3GPPUE -args noinit
 
 else
-    #NF_PATH=`pwd`/NFs
-    #./bin/nrf &
-    #sleep 1
-    #./bin/amf &
-    #./bin/ausf &
-    #./bin/nssf &
-    #./bin/smf -smfcfg ./config/test/smfcfg.test.yaml&
-    #./bin/udm &
-    #./bin/udr &
-    #sleep 4
     cd test
     $GOROOT/bin/go test -v -vet=off -run $1
 fi

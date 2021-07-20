@@ -79,7 +79,7 @@ configuration:
       UPF2:
         type: UPF
         nodeID: 10.200.200.102
-        externalAddr: 10.200.200.102
+        addr: 10.200.200.102
         sNssaiUpfInfos:
           - sNssai:
               sst: 1
@@ -97,7 +97,7 @@ configuration:
       UPF3:
         type: UPF
         nodeID: 10.200.200.103
-        externalAddr: 10.200.200.103
+        addr: 10.200.200.103
         sNssaiUpfInfos:
           - sNssai:
               sst: 1
@@ -114,7 +114,7 @@ configuration:
       UPF4:
         type: UPF
         nodeID: 10.200.200.104
-        externalAddr: 10.200.200.104
+        addr: 10.200.200.104
         sNssaiUpfInfos:
           - sNssai:
               sst: 1
@@ -131,7 +131,7 @@ configuration:
       UPF5:
         type: UPF
         nodeID: 10.200.200.105
-        externalAddr: 10.200.200.105
+        addr: 10.200.200.105
         sNssaiUpfInfos:
           - sNssai:
               sst: 1
@@ -148,7 +148,7 @@ configuration:
       UPF6:
         type: UPF
         nodeID: 10.200.200.106
-        externalAddr: 10.200.200.106
+        addr: 10.200.200.106
         sNssaiUpfInfos:
           - sNssai:
               sst: 1

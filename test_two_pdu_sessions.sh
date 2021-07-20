@@ -44,7 +44,7 @@ do
 done
 shift $(($OPTIND - 1))
 
-TEST_POOL="TestRequestTwoPDUSessoins"
+TEST_POOL="TestRequestTwoPDUSessions"
 if [[ ! "$1" =~ $TEST_POOL ]]
 then
     echo "Usage: $0 [ ${TEST_POOL//|/ | } ]"
@@ -58,8 +58,6 @@ elif [ $OS == "Fedora" ]; then
     GOROOT=/usr/lib/golang
 fi
 PATH=$PATH:$GOPATH/bin:$GOROOT/bin
-
-cp config/test/smfcfg.pdusessions.test.yaml config/test/smfcfg.test.yaml
 
 UPFNS="UPFns"
 
