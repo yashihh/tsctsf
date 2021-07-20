@@ -486,13 +486,22 @@ func smfConfig(testID string) error {
 					Sst: 1,
 					Sd:  "112233",
 				},
-				DnnInfos: []smf_factory.SnssaiDnnInfoItem{{
-					Dnn: "internet",
-					DNS: &smf_factory.DNS{
-						IPv4Addr: "8.8.8.8",
-						IPv6Addr: "2001:4860:4860::8888",
+				DnnInfos: []smf_factory.SnssaiDnnInfoItem{
+					{
+						Dnn: "internet",
+						DNS: &smf_factory.DNS{
+							IPv4Addr: "8.8.8.8",
+							IPv6Addr: "2001:4860:4860::8888",
+						},
 					},
-				}},
+					{
+						Dnn: "internet2",
+						DNS: &smf_factory.DNS{
+							IPv4Addr: "8.8.8.8",
+							IPv6Addr: "2001:4860:4860::8888",
+						},
+					},
+				},
 			}},
 			PFCP: &smf_factory.PFCP{
 				NodeID:       "10.200.200.1",
@@ -579,6 +588,40 @@ func smfConfig(testID string) error {
 				ReportCaller: false,
 			},
 		},
+	}
+
+	if testID == "TestRequestTwoPDUSessoins" {
+		smf_factory.SmfConfig.Configuration.UserPlaneInformation.Links =
+			append(smf_factory.SmfConfig.Configuration.UserPlaneInformation.Links, smf_factory.UPLink{
+				A: "gNB1",
+				B: "UPF2",
+			})
+
+		smf_factory.SmfConfig.Configuration.UserPlaneInformation.UPNodes["UPF2"] =
+			smf_factory.UPNode{
+				Type:   "UPF",
+				NodeID: "10.200.200.102",
+				Addr:   "10.200.200.102",
+				SNssaiInfos: []smf_factory.SnssaiUpfInfoItem{{
+					SNssai: &models.Snssai{
+						Sst: 1,
+						Sd:  "112233",
+					},
+					DnnUpfInfoList: []smf_factory.DnnUpfInfoItem{{
+						Dnn: "internet2",
+						Pools: []smf_factory.UEIPPool{{
+							Cidr: "10.62.0.0/16",
+						}},
+					}},
+				}},
+				InterfaceUpfInfoList: []smf_factory.InterfaceUpfInfoItem{{
+					InterfaceType: "N3",
+					Endpoints: []string{
+						"10.200.200.102",
+					},
+					NetworkInstance: "internet2",
+				}},
+			}
 	}
 
 	smfUeRoutingConfig()

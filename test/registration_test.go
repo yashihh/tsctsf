@@ -2853,7 +2853,7 @@ func TestReSynchronisation(t *testing.T) {
 	NfTerminate()
 }
 
-func TestRequestTwoPDUSessoins(t *testing.T) {
+func TestRequestTwoPDUSessions(t *testing.T) {
 	var n int
 	var sendMsg []byte
 	var recvMsg = make([]byte, 2048)

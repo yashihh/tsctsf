@@ -44,7 +44,7 @@ do
 done
 shift $(($OPTIND - 1))
 
-TEST_POOL="TestRequestTwoPDUSessoins"
+TEST_POOL="TestRequestTwoPDUSessions"
 if [[ ! "$1" =~ $TEST_POOL ]]
 then
     echo "Usage: $0 [ ${TEST_POOL//|/ | } ]"
