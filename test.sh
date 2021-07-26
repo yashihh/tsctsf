@@ -68,10 +68,8 @@ ${EXEC_UPFNS} ip addr add 10.200.200.102/24 dev veth1
 
 if [ ${DUMP_NS} ]
 then
-    ${EXEC_UPFNS} tcpdump -i any -w ${UPFNS}.pcap &
-    TCPDUMP_PID=$(sudo ip netns pids ${UPFNS})
-    sudo -E tcpdump -i lo -w default_ns.pcap &
-    LOCALDUMP=$!
+    ${EXEC_UPFNS} tcpdump -U -i any -w ${UPFNS}.pcap &
+    sudo -E tcpdump -U -i lo -w default_ns.pcap &
 fi
 
 cd NFs/upf/build && ${EXEC_UPFNS} ./bin/free5gc-upfd -c config/upfcfg.test.yaml &
@@ -99,6 +97,12 @@ then
     sudo ip addr add 10.0.0.1/24 dev ipsec0
     sudo ip link set ipsec0 up
 
+    if [ ${DUMP_NS} ]
+    then
+        ${EXEC_UENS} tcpdump -U -i any -w ${UENS}.pcap &
+        sudo -E tcpdump -U -i any '(host 192.168.127.1 or host 10.0.0.1 or host 10.60.0.1)' -w n3iwf.pcap &
+    fi
+
     # Run CN
     cd test && $GOROOT/bin/go test -v -vet=off -timeout 0 -run TestCN &
     sleep 10
@@ -122,8 +126,9 @@ sleep 1
 
 if [ ${DUMP_NS} ]
 then
-    ${EXEC_UPFNS} kill -SIGINT ${TCPDUMP_PID}
-    sudo -E kill -SIGINT ${LOCALDUMP}
+    # kill all tcpdump processes in the default network namespace
+    sudo killall tcpdump
+    sleep 1
 fi
 
 cd ..
@@ -138,6 +143,10 @@ sudo ip addr del 10.60.0.1/32 dev lo
 
 if [[ "$1" == "TestNon3GPP" ]]
 then
+    if [ ${DUMP_NS} ]
+    then
+        sudo ip xfrm state > NWu_SA_state.log
+    fi
     sudo ip xfrm policy flush
     sudo ip xfrm state flush
     sudo ip link del veth2
