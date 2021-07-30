@@ -78,7 +78,7 @@ sleep 2
 if [[ "$1" == "TestNon3GPP" ]]
 then
     UENS="UEns"
-    EXEC_UENS="sudo ip netns exec ${UENS}"
+    EXEC_UENS="sudo -E ip netns exec ${UENS}"
 
     sudo ip netns add ${UENS}
 
