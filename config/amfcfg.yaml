@@ -1,5 +1,5 @@
 info:
-  version: 1.0.3
+  version: 1.0.4
   description: AMF initial local configuration
 
 configuration:
@@ -98,6 +98,7 @@ configuration:
     enable: true     # true or false
     expireTime: 6s   # default is 6 seconds
     maxRetryTimes: 4 # the max number of retransmission
+  locality: area1 # Name of the location where a set of AMF, SMF and UPFs are located
 
 # the kind of log output
   # debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
