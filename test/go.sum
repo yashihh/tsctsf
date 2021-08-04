@@ -21,6 +21,7 @@ bitbucket.org/free5gc-team/http_wrapper v0.0.0-20201211040440-7c475efe43d4/go.mo
 bitbucket.org/free5gc-team/idgenerator v0.0.0-20201211040458-d68b2cd1a422 h1:g22JwVYekyAAmc218Wpq9P83SRhP5n6IFUFbG3TVu2U=
 bitbucket.org/free5gc-team/idgenerator v0.0.0-20201211040458-d68b2cd1a422/go.mod h1:0I+2v036Vbipp6BwO04k1BUq/UkImf92QbBt9Z5FQvo=
 bitbucket.org/free5gc-team/logger_conf v0.0.0-20201212235533-db34fd2deea0/go.mod h1:g/B6TdHhalcxn5XAu084lyzdXyaBGHWT1p3Nwcf4CEw=
+bitbucket.org/free5gc-team/logger_util v0.0.0-20210309092142-45babfcdab5a/go.mod h1:di3i5yJROrZiHsdl/SUNZU0DjiJa7k7Kr1YgBp10KI4=
 bitbucket.org/free5gc-team/logger_util v0.0.0-20210414054242-2101cfc15ebb h1:ybHylWKSEomVL2rh+Wrm4vp6PWZPptDhcrfDBJ7pDzQ=
 bitbucket.org/free5gc-team/logger_util v0.0.0-20210414054242-2101cfc15ebb/go.mod h1:di3i5yJROrZiHsdl/SUNZU0DjiJa7k7Kr1YgBp10KI4=
 bitbucket.org/free5gc-team/milenage v0.0.0-20201211040256-1f9245345719 h1:BrlW6HZXSPFLcDDR5v1pP7mCE8yH3P8cOkdmz6vd3Xk=
@@ -29,14 +30,17 @@ bitbucket.org/free5gc-team/nas v0.0.0-20210610112928-da6346e73fab h1:Ye0gE0KiHiZ
 bitbucket.org/free5gc-team/nas v0.0.0-20210610112928-da6346e73fab/go.mod h1:sxMzZJneemCh3BxAQTQ1eZqM4/YjyCDUvIEWPWeKsus=
 bitbucket.org/free5gc-team/ngap v0.0.0-20210715110807-6f4274fe49a7 h1:pKbUJr54+p0cQMU/mcEF2C90jizQA8RKH999cYxzwG0=
 bitbucket.org/free5gc-team/ngap v0.0.0-20210715110807-6f4274fe49a7/go.mod h1:ETGDxIL69kZ13+SAer6vHtT5y/7Z4JedaDJdE1ujsG8=
+bitbucket.org/free5gc-team/openapi v0.0.0-20210310054439-5aa53778eb95/go.mod h1:gR4X9f+PehijY2n/l2HgxmSmW0ZLatADz8B7hh8PYZ8=
 bitbucket.org/free5gc-team/openapi v0.0.0-20210414074928-e9e853669ae4/go.mod h1:gR4X9f+PehijY2n/l2HgxmSmW0ZLatADz8B7hh8PYZ8=
 bitbucket.org/free5gc-team/openapi v0.0.0-20210610084256-990ed030d4de h1:w0sm1e7IqVlFQS/tlzYFGey/fzId3XyHxPVY42SxxGc=
 bitbucket.org/free5gc-team/openapi v0.0.0-20210610084256-990ed030d4de/go.mod h1:vzVTnZqsN809YkXijkPbQVQCZHz5n+/J7sY0q9eBRn0=
 bitbucket.org/free5gc-team/path_util v0.0.0-20201212235135-42ce24f2b9c9/go.mod h1:8KT1mRTxzh0STAR4juLuvsCo3y1kTUHQ9X+OIeagU4k=
+bitbucket.org/free5gc-team/path_util v0.0.0-20210310053142-9b06de73fd52/go.mod h1:8KT1mRTxzh0STAR4juLuvsCo3y1kTUHQ9X+OIeagU4k=
 bitbucket.org/free5gc-team/pfcp v0.0.0-20210708092112-b8daccbee3ba h1:kQ8wGJlQhE5gSaot0EoLrii9f9C8WQNMScrmkt9IPtE=
 bitbucket.org/free5gc-team/pfcp v0.0.0-20210708092112-b8daccbee3ba/go.mod h1:jIQGL82EqoNb61n4fmugo5H9ZQm9YILm+xqD70Mj8bQ=
 bitbucket.org/free5gc-team/tlv v0.0.0-20201213115942-325afad36c45 h1:MYfEjYhmquMaODpnXY5z/PzZ4PCICwVTIE4IDIt0cfY=
 bitbucket.org/free5gc-team/tlv v0.0.0-20201213115942-325afad36c45/go.mod h1:L71NkXfcUCMGXAr9XNeg/OHZ26QTBBK+LYuPXT+lxws=
+bitbucket.org/free5gc-team/util_3gpp v0.0.0-20210310055342-afd534be66dc/go.mod h1:21+lbPxqGGGA3D6gb4hL1d4foWGYbqrOQkpuFiRzNQM=
 bitbucket.org/free5gc-team/util_3gpp v0.0.0-20210414075447-94afef878592/go.mod h1:oaWB2vvooXaGS3jstqniVa+LnKZXcApSgtjJpusHXH4=
 bitbucket.org/free5gc-team/util_3gpp v0.0.0-20210610093126-18c9713dbf0e h1:itkN3ODN/s2fQA+4/oABetOnPxJvGdIJ4IBQlawDZr4=
 bitbucket.org/free5gc-team/util_3gpp v0.0.0-20210610093126-18c9713dbf0e/go.mod h1:m1zfBnRpgFBSz3zDPkQE2cYGQxZyBj5uuimx9fk9qyc=

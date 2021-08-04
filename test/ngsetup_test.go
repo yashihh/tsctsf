@@ -283,7 +283,7 @@ func amfConfig(testID string) error {
 
 	amf_factory.AmfConfig = amf_factory.Config{
 		Info: &amf_factory.Info{
-			Version:     "1.0.3",
+			Version:     "1.0.4",
 			Description: "AMF initial test configuration",
 		},
 		Configuration: &amf_factory.Configuration{
@@ -449,7 +449,7 @@ func smfConfig(testID string) error {
 
 	smf_factory.SmfConfig = smf_factory.Config{
 		Info: &smf_factory.Info{
-			Version:     "1.0.3",
+			Version:     "1.0.4",
 			Description: "SMF initial single test configuration",
 		},
 		Configuration: &smf_factory.Configuration{
