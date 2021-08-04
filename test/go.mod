@@ -3,21 +3,21 @@ module test
 go 1.14
 
 require (
-	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20210719110755-cd489047c8e4
-	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210628080810-3a7576b0ffe5
-	bitbucket.org/free5gc-team/UeauCommon v0.0.0-20201211040450-fc83e159de75
+	bitbucket.org/free5gc-team/CommonConsumerTestData v0.0.0-20210802141330-db33a538698a
+	bitbucket.org/free5gc-team/MongoDBLibrary v0.0.0-20210727145526-4d927206a081
+	bitbucket.org/free5gc-team/UeauCommon v0.0.0-20210727144325-065b592b55b4
 	bitbucket.org/free5gc-team/amf v0.0.0
-	bitbucket.org/free5gc-team/aper v0.0.0-20210715094321-88fd0bb6cce9
+	bitbucket.org/free5gc-team/aper v0.0.0-20210727142431-039bf12df90e
 	bitbucket.org/free5gc-team/ausf v0.0.0
-	bitbucket.org/free5gc-team/http2_util v0.0.0-20201212235925-bd3a307d110a
-	bitbucket.org/free5gc-team/logger_util v0.0.0-20210414054242-2101cfc15ebb
-	bitbucket.org/free5gc-team/milenage v0.0.0-20201211040256-1f9245345719
+	bitbucket.org/free5gc-team/http2_util v0.0.0-20210727150618-67c7200d9f25
+	bitbucket.org/free5gc-team/logger_util v0.0.0-20210727141908-0945a67fba5f
+	bitbucket.org/free5gc-team/milenage v0.0.0-20210727144217-89f7d47a88cd
 	bitbucket.org/free5gc-team/n3iwf v0.0.0
-	bitbucket.org/free5gc-team/nas v0.0.0-20210610112928-da6346e73fab
-	bitbucket.org/free5gc-team/ngap v0.0.0-20210715110807-6f4274fe49a7
+	bitbucket.org/free5gc-team/nas v0.0.0-20210802140121-d3fa3ad5a264
+	bitbucket.org/free5gc-team/ngap v0.0.0-20210802133653-3053161e76fd
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
-	bitbucket.org/free5gc-team/openapi v0.0.0-20210610084256-990ed030d4de
+	bitbucket.org/free5gc-team/openapi v0.0.0-20210727151710-5d7f919e407f
 	bitbucket.org/free5gc-team/pcf v0.0.0
 	bitbucket.org/free5gc-team/smf v0.0.0
 	bitbucket.org/free5gc-team/udm v0.0.0
