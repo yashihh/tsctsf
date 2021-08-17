@@ -111,7 +111,7 @@ then
 
     # Run N3IWF
     cd NFs/n3iwf && N3IWF_PID=$(sudo -E $GOROOT/bin/go run cmd/n3iwf.go &)
-    # sleep 5
+    sleep 5
 
     # Run Test UE
     cd test
