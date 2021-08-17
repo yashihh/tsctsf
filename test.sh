@@ -49,6 +49,8 @@ EXEC_UPFNS="sudo -E ip netns exec ${UPFNS}"
 
 export GIN_MODE=release
 
+trap handleSIGINT SIGINT
+
 # Setup network namespace
 sudo ip netns add ${UPFNS}
 
@@ -100,7 +102,7 @@ then
     if [ ${DUMP_NS} ]
     then
         ${EXEC_UENS} tcpdump -U -i any -w ${UENS}.pcap &
-        sudo -E tcpdump -U -i any '(host 192.168.127.1 or host 10.0.0.1 or host 10.60.0.1)' -w n3iwf.pcap &
+        sudo -E tcpdump -U -i any '(host 192.168.127.1 or host 10.0.0.1 or host 10.200.200.2 or host 10.60.0.1)' -w n3iwf.pcap &
     fi
 
     # Run CN
@@ -108,8 +110,8 @@ then
     sleep 10
 
     # Run N3IWF
-    cd NFs/n3iwf && sudo -E $GOROOT/bin/go run cmd/n3iwf.go &
-    sleep 5
+    cd NFs/n3iwf && N3IWF_PID=$(sudo -E $GOROOT/bin/go run cmd/n3iwf.go &)
+    # sleep 5
 
     # Run Test UE
     cd test
@@ -120,41 +122,50 @@ else
     $GOROOT/bin/go test -v -vet=off -run $1
 fi
 
-sleep 3
-sudo killall -15 free5gc-upfd
-sleep 1
+function handleSIGINT
+{
+    echo -e "\033[41;37m Terminating ... \033[0m"
+    terminate $1
+}
 
-if [ ${DUMP_NS} ]
-then
-    # kill all tcpdump processes in the default network namespace
-    sudo killall tcpdump
+function terminate()
+{
+    sleep 3
+    sudo killall -15 free5gc-upfd
     sleep 1
-fi
 
-cd ..
-mkdir -p testkeylog
-for KEYLOG in $(ls *sslkey.log); do
-    mv $KEYLOG testkeylog
-done
-
-sudo ip link del veth0
-sudo ip netns del ${UPFNS}
-sudo ip addr del 10.60.0.1/32 dev lo
-
-if [[ "$1" == "TestNon3GPP" ]]
-then
     if [ ${DUMP_NS} ]
     then
-        sudo ip xfrm state > NWu_SA_state.log
+        # kill all tcpdump processes in the default network namespace
+        sudo killall tcpdump
+        sleep 1
     fi
-    sudo ip xfrm policy flush
-    sudo ip xfrm state flush
-    sudo ip link del veth2
-    sudo ip link del ipsec0
-    ${EXEC_UENS} ip link del ipsec0
-    sudo ip netns del ${UENS}
-    sudo killall n3iwf
-    killall test.test
-fi
 
-sleep 2
+    cd ..
+    mkdir -p testkeylog
+    for KEYLOG in $(ls *sslkey.log); do
+        mv $KEYLOG testkeylog
+    done
+
+    sudo ip link del veth0
+    sudo ip netns del ${UPFNS}
+    sudo ip addr del 10.60.0.1/32 dev lo
+
+    if [[ "$1" == "TestNon3GPP" ]]
+    then
+        if [ ${DUMP_NS} ]
+        then
+            sudo ip xfrm state > NWu_SA_state.log
+        fi
+        sudo ip xfrm policy flush
+        sudo ip xfrm state flush
+        sudo ip link del veth2
+        sudo ip link del ipsec0
+        ${EXEC_UENS} ip link del ipsec0
+        sudo ip netns del ${UENS}
+        sudo killall n3iwf
+        killall test.test
+    fi
+}
+
+terminate $1
