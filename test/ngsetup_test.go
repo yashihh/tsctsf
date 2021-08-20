@@ -34,6 +34,7 @@ import (
 	udm_service "bitbucket.org/free5gc-team/udm/pkg/service"
 	udr_factory "bitbucket.org/free5gc-team/udr/pkg/factory"
 	udr_service "bitbucket.org/free5gc-team/udr/pkg/service"
+	suci "bitbucket.org/free5gc-team/util_3gpp/suci"
 )
 
 var initFlag bool = true
@@ -847,11 +848,17 @@ func udmConfig() error {
 				},
 			},
 			NrfUri: "http://127.0.0.10:8000",
-			Keys: &udm_factory.Keys{
-				UdmProfileAHNPublicKey:  "5a8d38864820197c3394b92613b20b91633cbd897119273bf8e4a6f4eec0a650",
-				UdmProfileAHNPrivateKey: "c53c22208b61860b06c62e5406a7b330c2b577aa5558981510d128247d38bd1d",
-				UdmProfileBHNPublicKey:  "0472DA71976234CE833A6907425867B82E074D44EF907DFB4B3E21C1C2256EBCD15A7DED52FCBB097A4ED250E036C7B9C8C7004C4EEDC4F068CD7BF8D3F900E3B4",
-				UdmProfileBHNPrivateKey: "F1AB1074477EBCC7F554EA1C5FC368B1616730155E0041AC447D6301975FECDA",
+			SuciProfiles: []suci.SuciProfile{
+				{
+					ProtectionScheme: "1", // Protect Scheme: Profile A
+					PrivateKey:       "c53c22208b61860b06c62e5406a7b330c2b577aa5558981510d128247d38bd1d",
+					PublicKey:        "5a8d38864820197c3394b92613b20b91633cbd897119273bf8e4a6f4eec0a650",
+				},
+				{
+					ProtectionScheme: "2", // Protect Scheme: Profile B
+					PrivateKey:       "F1AB1074477EBCC7F554EA1C5FC368B1616730155E0041AC447D6301975FECDA",
+					PublicKey:        "0472DA71976234CE833A6907425867B82E074D44EF907DFB4B3E21C1C2256EBCD15A7DED52FCBB097A4ED250E036C7B9C8C7004C4EEDC4F068CD7BF8D3F900E3B4",
+				},
 			},
 		},
 		Logger: &logger_util.Logger{
