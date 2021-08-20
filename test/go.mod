@@ -22,6 +22,7 @@ require (
 	bitbucket.org/free5gc-team/smf v0.0.0
 	bitbucket.org/free5gc-team/udm v0.0.0
 	bitbucket.org/free5gc-team/udr v0.0.0
+	bitbucket.org/free5gc-team/util_3gpp v0.0.0-20210811152517-61d77cd50a5a
 	git.cs.nctu.edu.tw/calee/sctp v1.1.0
 	github.com/Djarvur/go-err113 v0.1.0 // indirect
 	github.com/aws/aws-sdk-go v1.36.24 // indirect
