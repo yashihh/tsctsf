@@ -137,11 +137,9 @@ func GetUlNasTransport_PduSessionEstablishmentRequest(pduSessionId uint8, reques
 	ulNasTransport.RequestType.SetIei(nasMessage.ULNASTransportRequestTypeType)
 	ulNasTransport.RequestType.SetRequestTypeValue(requestType)
 	if dnnString != "" {
-		dnn := []byte(dnnString)
 		ulNasTransport.DNN = new(nasType.DNN)
 		ulNasTransport.DNN.SetIei(nasMessage.ULNASTransportDNNType)
-		ulNasTransport.DNN.SetLen(uint8(len(dnn)))
-		ulNasTransport.DNN.SetDNN(dnn)
+		ulNasTransport.DNN.SetDNN(dnnString)
 	}
 	if sNssai != nil {
 		var sdTemp [3]uint8
@@ -192,11 +190,9 @@ func GetUlNasTransport_PduSessionModificationRequest(pduSessionId uint8, request
 	ulNasTransport.RequestType.SetIei(nasMessage.ULNASTransportRequestTypeType)
 	ulNasTransport.RequestType.SetRequestTypeValue(requestType)
 	if dnnString != "" {
-		dnn := []byte(dnnString)
 		ulNasTransport.DNN = new(nasType.DNN)
 		ulNasTransport.DNN.SetIei(nasMessage.ULNASTransportDNNType)
-		ulNasTransport.DNN.SetLen(uint8(len(dnn)))
-		ulNasTransport.DNN.SetDNN(dnn)
+		ulNasTransport.DNN.SetDNN(dnnString)
 	}
 	if sNssai != nil {
 		var sdTemp [3]uint8
@@ -923,11 +919,9 @@ func GetUlNasTransport_PduSessionReleaseComplete(pduSessionId uint8, requestType
 	ulNasTransport.RequestType.SetIei(nasMessage.ULNASTransportRequestTypeType)
 	ulNasTransport.RequestType.SetRequestTypeValue(requestType)
 	if dnnString != "" {
-		dnn := []byte(dnnString)
 		ulNasTransport.DNN = new(nasType.DNN)
 		ulNasTransport.DNN.SetIei(nasMessage.ULNASTransportDNNType)
-		ulNasTransport.DNN.SetLen(uint8(len(dnn)))
-		ulNasTransport.DNN.SetDNN(dnn)
+		ulNasTransport.DNN.SetDNN(dnnString)
 	}
 	if sNssai != nil {
 		var sdTemp [3]uint8

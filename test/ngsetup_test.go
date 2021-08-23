@@ -5,20 +5,18 @@ import (
 	"os"
 	"strings"
 	"sync"
-	"test"
-	"test/app"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"test"
+	"test/app"
+	"test/consumerTestdata/UDM/TestGenAuthData"
 
-	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
-	"bitbucket.org/free5gc-team/MongoDBLibrary"
 	amf_factory "bitbucket.org/free5gc-team/amf/pkg/factory"
 	amf_service "bitbucket.org/free5gc-team/amf/pkg/service"
 	ausf_factory "bitbucket.org/free5gc-team/ausf/pkg/factory"
 	ausf_service "bitbucket.org/free5gc-team/ausf/pkg/service"
-	"bitbucket.org/free5gc-team/logger_util"
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/ngap"
 	nrf_factory "bitbucket.org/free5gc-team/nrf/pkg/factory"
@@ -32,9 +30,11 @@ import (
 	smf_service "bitbucket.org/free5gc-team/smf/pkg/service"
 	udm_factory "bitbucket.org/free5gc-team/udm/pkg/factory"
 	udm_service "bitbucket.org/free5gc-team/udm/pkg/service"
+	"bitbucket.org/free5gc-team/udm/pkg/suci"
 	udr_factory "bitbucket.org/free5gc-team/udr/pkg/factory"
 	udr_service "bitbucket.org/free5gc-team/udr/pkg/service"
-	suci "bitbucket.org/free5gc-team/util_3gpp/suci"
+	logger_util "bitbucket.org/free5gc-team/util/logger"
+	"bitbucket.org/free5gc-team/util/mongoapi"
 )
 
 var initFlag bool = true
@@ -111,7 +111,10 @@ func init() {
 			time.Sleep(200 * time.Millisecond)
 		}
 	} else {
-		MongoDBLibrary.SetMongoDB("free5gc", "mongodb://127.0.0.1:27017")
+		if err := mongoapi.SetMongoDB("free5gc", "mongodb://127.0.0.1:27017"); err != nil {
+			fmt.Printf("SetMongoDB failed: %v\n", err)
+			return
+		}
 		fmt.Println("MongoDB Set")
 	}
 
@@ -240,18 +243,6 @@ func nrfConfig() error {
 		},
 		Logger: &logger_util.Logger{
 			NRF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			PathUtil: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			OpenApi: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			MongoDBLibrary: &logger_util.LogSetting{
 				DebugLevel:   "info",
 				ReportCaller: false,
 			},
@@ -419,14 +410,6 @@ func amfConfig(testID string) error {
 				DebugLevel:   "info",
 				ReportCaller: false,
 			},
-			PathUtil: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			OpenApi: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
 		},
 	}
 
@@ -573,14 +556,6 @@ func smfConfig(testID string) error {
 				ReportCaller: false,
 			},
 			Aper: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			PathUtil: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			OpenApi: &logger_util.LogSetting{
 				DebugLevel:   "info",
 				ReportCaller: false,
 			},
@@ -733,22 +708,14 @@ func udrConfig() error {
 				DebugLevel:   "info",
 				ReportCaller: false,
 			},
-			MongoDBLibrary: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			PathUtil: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			OpenApi: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
 		},
 	}
 
 	if err := udr_factory.CheckConfigVersion(); err != nil {
+		return err
+	}
+
+	if _, err := udr_factory.UdrConfig.Validate(); err != nil {
 		return err
 	}
 
@@ -801,14 +768,6 @@ func pcfConfig() error {
 				DebugLevel:   "info",
 				ReportCaller: false,
 			},
-			PathUtil: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			OpenApi: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
 		},
 	}
 
@@ -826,7 +785,7 @@ func pcfConfig() error {
 func udmConfig() error {
 	udm_factory.UdmConfig = udm_factory.Config{
 		Info: &udm_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "UDM initial test configuration",
 		},
 		Configuration: &udm_factory.Configuration{
@@ -866,22 +825,14 @@ func udmConfig() error {
 				DebugLevel:   "info",
 				ReportCaller: false,
 			},
-			OpenApi: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			PathUtil: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
 		},
 	}
 
-	if err := pcf_factory.CheckConfigVersion(); err != nil {
+	if err := udm_factory.CheckConfigVersion(); err != nil {
 		return err
 	}
 
-	if _, err := pcf_factory.PcfConfig.Validate(); err != nil {
+	if _, err := udm_factory.UdmConfig.Validate(); err != nil {
 		return err
 	}
 
@@ -1371,14 +1322,6 @@ func nssfConfig() error {
 				DebugLevel:   "info",
 				ReportCaller: false,
 			},
-			PathUtil: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			OpenApi: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
 		},
 	}
 
@@ -1426,18 +1369,14 @@ func ausfConfig() error {
 				DebugLevel:   "info",
 				ReportCaller: false,
 			},
-			PathUtil: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			OpenApi: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
 		},
 	}
 
 	if err := ausf_factory.CheckConfigVersion(); err != nil {
+		return err
+	}
+
+	if _, err := ausf_factory.AusfConfig.Validate(); err != nil {
 		return err
 	}
 

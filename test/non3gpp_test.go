@@ -10,14 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"test/nasTestpacket"
-
 	"github.com/go-ping/ping"
 	"github.com/stretchr/testify/assert"
 	"github.com/vishvananda/netlink"
 	"golang.org/x/sys/unix"
+	"test/consumerTestdata/UDM/TestGenAuthData"
+	"test/nasTestpacket"
 
-	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
 	"bitbucket.org/free5gc-team/n3iwf/pkg/context"
 	"bitbucket.org/free5gc-team/n3iwf/pkg/ike/handler"
 	"bitbucket.org/free5gc-team/n3iwf/pkg/ike/message"

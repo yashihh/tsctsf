@@ -4,20 +4,18 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
-
 	"os/exec"
-	"test"
+	"path/filepath"
 	"testing"
 	"time"
 
-	"test/nasTestpacket"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"test"
+	"test/consumerTestdata/UDM/TestGenAuthData"
+	"test/nasTestpacket"
 
 	// ausf_context "github.com/free5gc/ausf/context"
-	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
 	"bitbucket.org/free5gc-team/nas/nasType"

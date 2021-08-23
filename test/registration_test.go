@@ -10,11 +10,8 @@ import (
 	"net/http"
 	"os/exec"
 	"strconv"
-	"test"
 	"testing"
 	"time"
-
-	"test/nasTestpacket"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mohae/deepcopy"
@@ -22,12 +19,12 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv4"
+	"test"
+	"test/consumerTestdata/PCF/TestPolicyAuthorization"
+	"test/consumerTestdata/UDM/TestGenAuthData"
+	"test/nasTestpacket"
 
 	// ausf_context "bitbucket.org/free5gc-team/ausf/context"
-	"bitbucket.org/free5gc-team/CommonConsumerTestData/PCF/TestPolicyAuthorization"
-	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
-	"bitbucket.org/free5gc-team/http2_util"
-	"bitbucket.org/free5gc-team/milenage"
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
 	"bitbucket.org/free5gc-team/nas/nasType"
@@ -36,6 +33,8 @@ import (
 	"bitbucket.org/free5gc-team/ngap/ngapType"
 	"bitbucket.org/free5gc-team/openapi/Npcf_PolicyAuthorization"
 	"bitbucket.org/free5gc-team/openapi/models"
+	"bitbucket.org/free5gc-team/util/httpwrapper"
+	"bitbucket.org/free5gc-team/util/milenage"
 )
 
 const ranN2Ipv4Addr string = "127.0.0.1"
@@ -2339,7 +2338,7 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 			c.Status(http.StatusNoContent)
 		})
 
-		server, err := http2_util.NewServer("127.0.0.100:8000", "", router)
+		server, err := httpwrapper.NewHttp2Server("127.0.0.100:8000", "", router)
 		if err == nil && server != nil {
 			err = server.ListenAndServe()
 		}
