@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"test/nasTestpacket"
+	"test/ngapTestpacket"
 
 	"bitbucket.org/free5gc-team/aper"
 	"bitbucket.org/free5gc-team/nas"
@@ -15,8 +16,6 @@ import (
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/ngap"
 	"bitbucket.org/free5gc-team/ngap/ngapType"
-
-	"test/ngapTestpacket"
 )
 
 type testEncodeData struct {

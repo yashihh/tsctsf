@@ -6,15 +6,15 @@ import (
 
 	"github.com/calee0219/fatal"
 	"golang.org/x/net/ipv4"
+	"test/consumerTestdata/UDM/TestGenAuthData"
+	"test/consumerTestdata/UDR/TestRegistrationProcedure"
 
-	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDM/TestGenAuthData"
-	"bitbucket.org/free5gc-team/CommonConsumerTestData/UDR/TestRegistrationProcedure"
-	"bitbucket.org/free5gc-team/UeauCommon"
-	"bitbucket.org/free5gc-team/milenage"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/openapi/models"
+	"bitbucket.org/free5gc-team/util/milenage"
+	"bitbucket.org/free5gc-team/util/ueauth"
 )
 
 type RanUeContext struct {
@@ -156,31 +156,40 @@ func (ue *RanUeContext) DeriveRESstarAndSetKey(
 
 	// derive RES*
 	key := append(ck, ik...)
-	FC := UeauCommon.FC_FOR_RES_STAR_XRES_STAR_DERIVATION
+	FC := ueauth.FC_FOR_RES_STAR_XRES_STAR_DERIVATION
 	P0 := []byte(snName)
 	P1 := rand
 	P2 := res
 
 	ue.DerivateKamf(key, snName, sqn, ak)
 	ue.DerivateAlgKey()
-	kdfVal_for_resStar :=
-		UeauCommon.GetKDFValue(key, FC, P0, UeauCommon.KDFLen(P0), P1, UeauCommon.KDFLen(P1), P2, UeauCommon.KDFLen(P2))
+	kdfVal_for_resStar, err :=
+		ueauth.GetKDFValue(key, FC, P0, ueauth.KDFLen(P0), P1, ueauth.KDFLen(P1), P2, ueauth.KDFLen(P2))
+	if err != nil {
+		fatal.Fatalf("GetKDFValue error: %+v", err)
+	}
 	return kdfVal_for_resStar[len(kdfVal_for_resStar)/2:]
 
 }
 
 func (ue *RanUeContext) DerivateKamf(key []byte, snName string, SQN, AK []byte) {
 
-	FC := UeauCommon.FC_FOR_KAUSF_DERIVATION
+	FC := ueauth.FC_FOR_KAUSF_DERIVATION
 	P0 := []byte(snName)
 	SQNxorAK := make([]byte, 6)
 	for i := 0; i < len(SQN); i++ {
 		SQNxorAK[i] = SQN[i] ^ AK[i]
 	}
 	P1 := SQNxorAK
-	Kausf := UeauCommon.GetKDFValue(key, FC, P0, UeauCommon.KDFLen(P0), P1, UeauCommon.KDFLen(P1))
+	Kausf, err := ueauth.GetKDFValue(key, FC, P0, ueauth.KDFLen(P0), P1, ueauth.KDFLen(P1))
+	if err != nil {
+		fatal.Fatalf("GetKDFValue error: %+v", err)
+	}
 	P0 = []byte(snName)
-	Kseaf := UeauCommon.GetKDFValue(Kausf, UeauCommon.FC_FOR_KSEAF_DERIVATION, P0, UeauCommon.KDFLen(P0))
+	Kseaf, err := ueauth.GetKDFValue(Kausf, ueauth.FC_FOR_KSEAF_DERIVATION, P0, ueauth.KDFLen(P0))
+	if err != nil {
+		fatal.Fatalf("GetKDFValue error: %+v", err)
+	}
 
 	supiRegexp, err := regexp.Compile("(?:imsi|supi)-([0-9]{5,15})")
 	if err != nil {
@@ -189,31 +198,40 @@ func (ue *RanUeContext) DerivateKamf(key []byte, snName string, SQN, AK []byte) 
 	groups := supiRegexp.FindStringSubmatch(ue.Supi)
 
 	P0 = []byte(groups[1])
-	L0 := UeauCommon.KDFLen(P0)
+	L0 := ueauth.KDFLen(P0)
 	P1 = []byte{0x00, 0x00}
-	L1 := UeauCommon.KDFLen(P1)
+	L1 := ueauth.KDFLen(P1)
 
-	ue.Kamf = UeauCommon.GetKDFValue(Kseaf, UeauCommon.FC_FOR_KAMF_DERIVATION, P0, L0, P1, L1)
+	ue.Kamf, err = ueauth.GetKDFValue(Kseaf, ueauth.FC_FOR_KAMF_DERIVATION, P0, L0, P1, L1)
+	if err != nil {
+		fatal.Fatalf("GetKDFValue error: %+v", err)
+	}
 }
 
 // Algorithm key Derivation function defined in TS 33.501 Annex A.9
 func (ue *RanUeContext) DerivateAlgKey() {
 	// Security Key
 	P0 := []byte{security.NNASEncAlg}
-	L0 := UeauCommon.KDFLen(P0)
+	L0 := ueauth.KDFLen(P0)
 	P1 := []byte{ue.CipheringAlg}
-	L1 := UeauCommon.KDFLen(P1)
+	L1 := ueauth.KDFLen(P1)
 
-	kenc := UeauCommon.GetKDFValue(ue.Kamf, UeauCommon.FC_FOR_ALGORITHM_KEY_DERIVATION, P0, L0, P1, L1)
+	kenc, err := ueauth.GetKDFValue(ue.Kamf, ueauth.FC_FOR_ALGORITHM_KEY_DERIVATION, P0, L0, P1, L1)
+	if err != nil {
+		fatal.Fatalf("GetKDFValue error: %+v", err)
+	}
 	copy(ue.KnasEnc[:], kenc[16:32])
 
 	// Integrity Key
 	P0 = []byte{security.NNASIntAlg}
-	L0 = UeauCommon.KDFLen(P0)
+	L0 = ueauth.KDFLen(P0)
 	P1 = []byte{ue.IntegrityAlg}
-	L1 = UeauCommon.KDFLen(P1)
+	L1 = ueauth.KDFLen(P1)
 
-	kint := UeauCommon.GetKDFValue(ue.Kamf, UeauCommon.FC_FOR_ALGORITHM_KEY_DERIVATION, P0, L0, P1, L1)
+	kint, err := ueauth.GetKDFValue(ue.Kamf, ueauth.FC_FOR_ALGORITHM_KEY_DERIVATION, P0, L0, P1, L1)
+	if err != nil {
+		fatal.Fatalf("GetKDFValue error: %+v", err)
+	}
 	copy(ue.KnasInt[:], kint[16:32])
 }
 
