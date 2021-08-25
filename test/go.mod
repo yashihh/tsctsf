@@ -28,8 +28,8 @@ require (
 	github.com/urfave/cli v1.22.5
 	github.com/vishvananda/netlink v1.1.0
 	go.mongodb.org/mongo-driver v1.7.1
-	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d
-	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40
+	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
+	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf
 	gopkg.in/yaml.v2 v2.4.0
 )
 
