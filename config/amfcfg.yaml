@@ -1,5 +1,5 @@
 info:
-  version: 1.0.4
+  version: 1.0.5
   description: AMF initial local configuration
 
 configuration:
@@ -63,6 +63,7 @@ configuration:
   nasIE: # Optional NAS IEs
     networkFeatureSupport5GS: # 5gs Network Feature Support IE, refer to TS 24.501
       enable: true # append this IE in Registration accept or not
+      length: 1 # IE content length (uinteger, range: 1~3)
       imsVoPS: 0 # IMS voice over PS session indicator (uinteger, range: 0~1)
       emc: 0 # Emergency service support indicator for 3GPP access (uinteger, range: 0~3)
       emf: 0 # Emergency service fallback indicator for 3GPP access (uinteger, range: 0~3)
