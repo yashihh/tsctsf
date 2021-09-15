@@ -276,7 +276,7 @@ func amfConfig(testID string) error {
 
 	amf_factory.AmfConfig = amf_factory.Config{
 		Info: &amf_factory.Info{
-			Version:     "1.0.4",
+			Version:     "1.0.5",
 			Description: "AMF initial test configuration",
 		},
 		Configuration: &amf_factory.Configuration{
@@ -352,6 +352,7 @@ func amfConfig(testID string) error {
 			NasIE: &amf_factory.NasIE{
 				NetworkFeatureSupport5GS: &amf_factory.NetworkFeatureSupport5GS{
 					Enable:  true,
+					Length:  1,
 					ImsVoPS: 0,
 					Emc:     0,
 					Emf:     0,
