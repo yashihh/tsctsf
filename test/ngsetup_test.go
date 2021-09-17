@@ -455,12 +455,12 @@ func smfConfig(testID string) error {
 				"nsmf-event-exposure",
 				"nsmf-oam",
 			},
-			SNssaiInfo: []smf_factory.SnssaiInfoItem{{
+			SNssaiInfo: []*smf_factory.SnssaiInfoItem{{
 				SNssai: &models.Snssai{
 					Sst: 1,
 					Sd:  "010203",
 				},
-				DnnInfos: []smf_factory.SnssaiDnnInfoItem{{
+				DnnInfos: []*smf_factory.SnssaiDnnInfoItem{{
 					Dnn: "internet",
 					DNS: &smf_factory.DNS{
 						IPv4Addr: "8.8.8.8",
@@ -472,7 +472,7 @@ func smfConfig(testID string) error {
 					Sst: 1,
 					Sd:  "112233",
 				},
-				DnnInfos: []smf_factory.SnssaiDnnInfoItem{
+				DnnInfos: []*smf_factory.SnssaiDnnInfoItem{
 					{
 						Dnn: "internet",
 						DNS: &smf_factory.DNS{
@@ -495,7 +495,7 @@ func smfConfig(testID string) error {
 				ListenAddr:   "10.200.200.1",
 			},
 			UserPlaneInformation: smf_factory.UserPlaneInformation{
-				UPNodes: map[string]smf_factory.UPNode{
+				UPNodes: map[string]*smf_factory.UPNode{
 					"gNB1": {
 						Type: "AN",
 						ANIP: "192.188.2.3",
@@ -504,15 +504,15 @@ func smfConfig(testID string) error {
 						Type:   "UPF",
 						NodeID: "10.200.200.101",
 						Addr:   "10.200.200.101",
-						SNssaiInfos: []smf_factory.SnssaiUpfInfoItem{{
+						SNssaiInfos: []*smf_factory.SnssaiUpfInfoItem{{
 							SNssai: &models.Snssai{
 								Sst: 1,
 								Sd:  "010203",
 							},
-							DnnUpfInfoList: []smf_factory.DnnUpfInfoItem{{
+							DnnUpfInfoList: []*smf_factory.DnnUpfInfoItem{{
 								Dnn:      "internet",
 								DnaiList: dnaiList,
-								Pools: []smf_factory.UEIPPool{{
+								Pools: []*smf_factory.UEIPPool{{
 									Cidr: "10.60.0.0/16",
 								}},
 							}},
@@ -521,14 +521,14 @@ func smfConfig(testID string) error {
 								Sst: 1,
 								Sd:  "112233",
 							},
-							DnnUpfInfoList: []smf_factory.DnnUpfInfoItem{{
+							DnnUpfInfoList: []*smf_factory.DnnUpfInfoItem{{
 								Dnn: "internet",
-								Pools: []smf_factory.UEIPPool{{
+								Pools: []*smf_factory.UEIPPool{{
 									Cidr: "10.61.0.0/16",
 								}},
 							}},
 						}},
-						InterfaceUpfInfoList: []smf_factory.InterfaceUpfInfoItem{{
+						InterfaceUpfInfoList: []*smf_factory.InterfaceUpfInfoItem{{
 							InterfaceType: "N3",
 							Endpoints: []string{
 								"10.200.200.102",
@@ -537,7 +537,7 @@ func smfConfig(testID string) error {
 						}},
 					},
 				},
-				Links: []smf_factory.UPLink{{
+				Links: []*smf_factory.UPLink{{
 					A: "gNB1",
 					B: "UPF",
 				}},
@@ -570,29 +570,29 @@ func smfConfig(testID string) error {
 
 	if testID == "TestRequestTwoPDUSessions" {
 		smf_factory.SmfConfig.Configuration.UserPlaneInformation.Links =
-			append(smf_factory.SmfConfig.Configuration.UserPlaneInformation.Links, smf_factory.UPLink{
+			append(smf_factory.SmfConfig.Configuration.UserPlaneInformation.Links, &smf_factory.UPLink{
 				A: "gNB1",
 				B: "UPF2",
 			})
 
 		smf_factory.SmfConfig.Configuration.UserPlaneInformation.UPNodes["UPF2"] =
-			smf_factory.UPNode{
+			&smf_factory.UPNode{
 				Type:   "UPF",
 				NodeID: "10.200.200.102",
 				Addr:   "10.200.200.102",
-				SNssaiInfos: []smf_factory.SnssaiUpfInfoItem{{
+				SNssaiInfos: []*smf_factory.SnssaiUpfInfoItem{{
 					SNssai: &models.Snssai{
 						Sst: 1,
 						Sd:  "112233",
 					},
-					DnnUpfInfoList: []smf_factory.DnnUpfInfoItem{{
+					DnnUpfInfoList: []*smf_factory.DnnUpfInfoItem{{
 						Dnn: "internet2",
-						Pools: []smf_factory.UEIPPool{{
+						Pools: []*smf_factory.UEIPPool{{
 							Cidr: "10.62.0.0/16",
 						}},
 					}},
 				}},
-				InterfaceUpfInfoList: []smf_factory.InterfaceUpfInfoItem{{
+				InterfaceUpfInfoList: []*smf_factory.InterfaceUpfInfoItem{{
 					InterfaceType: "N3",
 					Endpoints: []string{
 						"10.200.200.102",
