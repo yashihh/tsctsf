@@ -1,5 +1,5 @@
 info:
-  version: 1.0.5
+  version: 1.0.6
   description: AMF initial local configuration
 
 configuration:
@@ -100,6 +100,11 @@ configuration:
     expireTime: 6s   # default is 6 seconds
     maxRetryTimes: 4 # the max number of retransmission
   locality: area1 # Name of the location where a set of AMF, SMF and UPFs are located
+  sctp: # set the sctp server setting <optinal>, once this field is set, please also add maxInputStream, maxOsStream, maxAttempts, maxInitTimeOut
+    numOstreams: 3 # the maximum out streams of each sctp connection
+    maxInstreams: 5 # the maximum in streams of each sctp connection
+    maxAttempts: 2 # the maximum attempts of each sctp connection
+    maxInitTimeout: 2 # the maximum init timeout of each sctp connection
 
 # the kind of log output
   # debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
