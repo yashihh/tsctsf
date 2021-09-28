@@ -1,5 +1,5 @@
 info:
-  version: 1.0.5
+  version: 1.0.7
   description: AMF initial local configuration
 
 configuration:
@@ -105,6 +105,7 @@ configuration:
     maxInstreams: 5 # the maximum in streams of each sctp connection
     maxAttempts: 2 # the maximum attempts of each sctp connection
     maxInitTimeout: 2 # the maximum init timeout of each sctp connection
+  defaultUECtxReq: false # the default value of UE Context Request to decide when triggering Initial Context Setup procedure
 
 # the kind of log output
   # debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
