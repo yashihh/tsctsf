@@ -7,11 +7,11 @@ require (
 	bitbucket.org/free5gc-team/aper v0.0.0-20210812055911-3c0f9b418266
 	bitbucket.org/free5gc-team/ausf v0.0.0
 	bitbucket.org/free5gc-team/n3iwf v0.0.0
-	bitbucket.org/free5gc-team/nas v0.0.0-20210815080206-427fa3cc633d
-	bitbucket.org/free5gc-team/ngap v0.0.0-20210813113614-06c93fc039f4
+	bitbucket.org/free5gc-team/nas v0.0.0-20211014135214-bd1825a2eea4
+	bitbucket.org/free5gc-team/ngap v0.0.0-20211014134938-795d0e95d472
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
-	bitbucket.org/free5gc-team/openapi v0.0.0-20210813111249-fc5e4d4afa47
+	bitbucket.org/free5gc-team/openapi v0.0.0-20211014134522-20e0d874611c
 	bitbucket.org/free5gc-team/pcf v0.0.0
 	bitbucket.org/free5gc-team/smf v0.0.0
 	bitbucket.org/free5gc-team/udm v0.0.0
