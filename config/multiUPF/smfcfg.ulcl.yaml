@@ -1,5 +1,5 @@
 info:
-  version: 1.0.4
+  version: 1.0.5
   description: SMF initial local configuration
 
 configuration:
@@ -74,11 +74,13 @@ configuration:
           - interfaceType: N3
             endpoints:
               - 10.200.200.101
-            networkInstance: internet
+            networkInstances: 
+              - internet
           - interfaceType: N9
             endpoints:
               - 10.200.200.101
-            networkInstance: internet
+            networkInstances: 
+              - internet
 
       UPF2:
         type: UPF
@@ -96,7 +98,8 @@ configuration:
           - interfaceType: N9
             endpoints:
               - 10.200.200.102
-            networkInstance: internet
+            networkInstances: 
+              - internet
 
       UPF3:
         type: UPF
@@ -114,7 +117,8 @@ configuration:
           - interfaceType: N9
             endpoints:
               - 10.200.200.103
-            networkInstance: internet
+            networkInstances: 
+              - internet
       UPF4:
         type: UPF
         nodeID: 10.200.200.104
@@ -131,7 +135,8 @@ configuration:
           - interfaceType: N9
             endpoints:
               - 10.200.200.104
-            networkInstance: internet
+            networkInstances: 
+              - internet
       UPF5:
         type: UPF
         nodeID: 10.200.200.105
@@ -148,7 +153,8 @@ configuration:
           - interfaceType: N3
             endpoints:
               - 10.200.200.105
-            networkInstance: internet
+            networkInstances: 
+              - internet
       UPF6:
         type: UPF
         nodeID: 10.200.200.106
@@ -165,7 +171,8 @@ configuration:
           - interfaceType: N3
             endpoints:
               - 10.200.200.106
-            networkInstance: internet
+            networkInstances: 
+              - internet
     links:
       - A: gNB1
         B: UPF5

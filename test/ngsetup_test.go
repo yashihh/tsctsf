@@ -8,10 +8,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 	"test"
 	"test/app"
 	"test/consumerTestdata/UDM/TestGenAuthData"
+
+	"github.com/stretchr/testify/assert"
 
 	amf_factory "bitbucket.org/free5gc-team/amf/pkg/factory"
 	amf_service "bitbucket.org/free5gc-team/amf/pkg/service"
@@ -435,7 +436,7 @@ func smfConfig(testID string) error {
 
 	smf_factory.SmfConfig = smf_factory.Config{
 		Info: &smf_factory.Info{
-			Version:     "1.0.4",
+			Version:     "1.0.5",
 			Description: "SMF initial single test configuration",
 		},
 		Configuration: &smf_factory.Configuration{
@@ -533,7 +534,9 @@ func smfConfig(testID string) error {
 							Endpoints: []string{
 								"10.200.200.102",
 							},
-							NetworkInstance: "internet",
+							NetworkInstances: []string{
+								"internet",
+							},
 						}},
 					},
 				},
@@ -597,7 +600,9 @@ func smfConfig(testID string) error {
 					Endpoints: []string{
 						"10.200.200.102",
 					},
-					NetworkInstance: "internet2",
+					NetworkInstances: []string{
+						"internet2",
+					},
 				}},
 			}
 	}
