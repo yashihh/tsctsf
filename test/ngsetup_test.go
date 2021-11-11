@@ -1344,7 +1344,7 @@ func nssfConfig() error {
 func ausfConfig() error {
 	ausf_factory.AusfConfig = ausf_factory.Config{
 		Info: &ausf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "AUSF initial test configuration",
 		},
 		Configuration: &ausf_factory.Configuration{
