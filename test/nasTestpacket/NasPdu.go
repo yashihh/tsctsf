@@ -531,6 +531,8 @@ func GetServiceRequest(serviceType uint8) []byte {
 	serviceRequest.SetNasKeySetIdentifiler(0x01)
 	serviceRequest.SetAMFSetID(uint16(0xFE) << 2)
 	serviceRequest.SetAMFPointer(0)
+	serviceRequest.TMSI5GS.Octet[0] = 0xf0
+	serviceRequest.SetTypeOfIdentity(4) // 5G-S-TMSI
 	serviceRequest.SetTMSI5G([4]uint8{0, 0, 0, 1})
 	serviceRequest.TMSI5GS.SetLen(7)
 	switch serviceType {
