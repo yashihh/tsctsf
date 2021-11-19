@@ -100,16 +100,16 @@ if [ $N3IWF_ENABLE -ne 0 ]; then
     PID_LIST+=($SUDO_N3IWF_PID $N3IWF_PID)
 fi
 
-function terminate()                                                                
-{                                                                                   
-    if [ $N3IWF_ENABLE -ne 0 ]; then                                                
-        sudo ip xfrm state > ${LOG_PATH}NWu_SA_state.log   
-        sudo ip xfrm state flush                                                        
-        sudo ip xfrm policy flush                            
-    fi                                                                              
+function terminate()
+{
+    if [ $N3IWF_ENABLE -ne 0 ]; then
+        sudo ip xfrm state > ${LOG_PATH}NWu_SA_state.log
+        sudo ip xfrm state flush
+        sudo ip xfrm policy flush
+    fi
     sudo kill -SIGTERM ${PID_LIST[${#PID_LIST[@]}-2]} ${PID_LIST[${#PID_LIST[@]}-1]}
-                                                        
-    sleep 2                                                                         
+
+    sleep 2
 }
 
 trap terminate SIGINT
