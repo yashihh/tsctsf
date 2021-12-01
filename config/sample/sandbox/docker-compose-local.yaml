@@ -1,0 +1,269 @@
+version: '2.4'
+
+services:
+  upf1:
+    container_name: upf1
+    image: localhost:12345/free5gc-upf
+    command: sh -c "/bin/upf-iprules.sh && /bin/free5gc-upfd -c ./config/upfcfg.yaml"
+    working_dir: /free5gc
+    volumes:
+      - ./upfs/upf1/:/free5gc
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "2152:2152/udp"
+    networks:
+      privnet:
+        aliases:
+          - upf1.free5gc.org
+        ipv4_address: 10.100.200.12
+
+  db:
+    container_name: mongodb
+    image: mongo:3.6.23
+    command: mongod --port 27017
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    volumes:
+      - dbdata:/data/db
+    networks:
+      privnet:
+        aliases:
+          - db
+        ipv4_address: 10.100.200.109
+    healthcheck:
+      test: ["CMD", "mongo", "localhost:27017/free5gc",  "--eval" , "'db.getCollectionNames()'"]
+      interval: 3s
+      timeout: 3s
+      retries: 3
+      start_period: 3s
+
+
+  nrf1:
+    container_name: nrf1
+    image: localhost:12345/free5gc-nrf
+    command: /bin/nrf -c ./config/nrfcfg.yaml
+    working_dir: /free5gc
+    volumes:
+      - ./nrfs/nrf1/:/free5gc
+    expose:
+      - "8000"
+    environment:
+      DB_URI: mongodb://db/free5gc
+      GIN_MODE: debug
+    networks:
+      privnet:
+        aliases:
+          - nrf1.free5gc.org
+        ipv4_address: 10.100.200.6
+    healthcheck:
+      test: ["CMD", "curl", "10.100.200.6:8000/nnrf-cmi/v1/"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 3s
+    depends_on:
+      db:
+        condition: service_healthy
+
+  amf1:
+    container_name: amf1
+    image: localhost:12345/free5gc-amf
+    command: /bin/amf -c ./config/amfcfg.yaml
+    working_dir: /free5gc
+    volumes:
+      - ./amfs/amf1/:/free5gc
+    expose:
+      - "8000"
+      - "38412/sctp"
+    environment:
+      GIN_MODE: debug
+    cap_add:
+      - NET_ADMIN
+    networks:
+      privnet:
+        aliases:
+          - amf1.free5gc.org
+        ipv4_address: 10.100.200.3
+    # ports:
+    #   - "38412:38412/sctp"
+    healthcheck:
+      test: ["CMD", "netstat", "--sctp",  "|" , "grep 38412"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  ausf1:
+    container_name: ausf1
+    image: localhost:12345/free5gc-ausf
+    command: /bin/ausf -c ./config/ausfcfg.yaml
+    working_dir: /free5gc
+    expose:
+      - "8000"
+    volumes:
+      - ./ausfs/ausf1/:/free5gc
+    environment:
+      GIN_MODE: debug
+    networks:
+      privnet:
+        aliases:
+          - ausf1.free5gc.org
+        ipv4_address: 10.100.200.4
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  nssf1:
+    container_name: nssf1
+    image: localhost:12345/free5gc-nssf
+    command: /bin/nssf -c ./config/nssfcfg.yaml
+    working_dir: /free5gc
+    expose:
+      - "8000"
+    volumes:
+      - ./nssfs/nssf1/:/free5gc
+    environment:
+      GIN_MODE: debug
+    networks:
+      privnet:
+        aliases:
+          - nssf1.free5gc.org
+        ipv4_address: 10.100.200.7
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  pcf1:
+    container_name: pcf1
+    image: localhost:12345/free5gc-pcf
+    command: /bin/pcf -c ./config/pcfcfg.yaml
+    working_dir: /free5gc
+    expose:
+      - "8000"
+    volumes:
+      - ./pcfs/pcf1/:/free5gc
+    environment:
+      GIN_MODE: debug
+    networks:
+      privnet:
+        aliases:
+          - pcf1.free5gc.org
+        ipv4_address: 10.100.200.8
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+
+  smf1:
+    container_name: smf1
+    image: localhost:12345/free5gc-smf
+    command: /bin/smf -c ./config/smfcfg.yaml -uerouting ./config/uerouting.yaml
+    working_dir: /free5gc
+    expose:
+      - "8000"
+    volumes:
+      - ./smfs/smf1/:/free5gc
+    environment:
+      GIN_MODE: debug
+    networks:
+      privnet:
+        aliases:
+          - smf.free5gc.org
+        ipv4_address: 10.100.200.9
+    depends_on:
+      nrf1:
+        condition: service_healthy
+      upf1:
+        condition: service_started
+
+  udm1:
+    container_name: udm1
+    image: localhost:12345/free5gc-udm
+    command: /bin/udm -c ./config/udmcfg.yaml
+    working_dir: /free5gc
+    expose:
+      - "8000"
+    volumes:
+      - ./udms/udm1/:/free5gc
+    environment:
+      GIN_MODE: debug
+    networks:
+      privnet:
+        aliases:
+          - udm1.free5gc.org
+        ipv4_address: 10.100.200.10
+    depends_on:
+      db:
+        condition: service_healthy
+      nrf1:
+        condition: service_healthy
+
+  udr1:
+    container_name: udr1
+    image: localhost:12345/free5gc-udr
+    command: /bin/udr -c ./config/udrcfg.yaml
+    working_dir: /free5gc
+    expose:
+      - "8000"
+    volumes:
+      - ./udrs/udr1/:/free5gc
+    environment:
+      DB_URI: mongodb://db/free5gc
+      GIN_MODE: debug
+    networks:
+      privnet:
+        aliases:
+          - udr1.free5gc.org
+        ipv4_address: 10.100.200.11
+    depends_on:
+      db:
+        condition: service_healthy
+      nrf1:
+        condition: service_healthy
+
+  fcli:
+    container_name: fcli
+    image: localhost:12345/fcli
+    command: tail -f /dev/null
+    working_dir: /free5gc
+    volumes:
+      - ./fcli/:/free5gc
+    networks:
+      privnet:
+        ipv4_address: 10.100.200.110
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ueransim:
+    privileged: true
+    container_name: ueransim
+    command: tail -f /dev/null
+    image: localhost:12345/ueransim
+    working_dir: /free5gc
+    volumes:
+      - ./ueransim/:/free5gc
+    cap_add:
+      - NET_ADMIN
+    networks:
+      privnet:
+        ipv4_address: 10.100.200.111
+    depends_on:
+      amf1:
+        condition: service_healthy
+
+networks:
+  privnet:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.100.200.0/24
+
+volumes:
+  dbdata:

@@ -1,0 +1,252 @@
+version: '2.4'
+
+services:
+  upf1:
+    container_name: upf1
+    image: ${REPO}/free5gc-upf:${TAG} 
+    command:  sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 && iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE && ./free5gc-upfd -c ../config/upfcfg.yaml"
+    volumes:
+      - ${SANDBOX_DIR}/upfs/upf1/config/:/free5gc/config/
+      - ./share_host_container:/share_host_container
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "2152:2152/udp"
+
+    networks:
+      privnet:
+        aliases:
+          - upf1.free5gc.org
+        ipv4_address: ${UPF_IP}
+  
+  db:
+    container_name: mongodb
+    image: mongo:3.6.23
+    command: mongod --port 27017
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    volumes:
+      - dbdata:/data/db
+    networks:
+      privnet:
+        aliases:
+          - db
+    healthcheck:
+      test: ["CMD", "mongo", "localhost:27017/free5gc",  "--eval" , "'db.getCollectionNames()'"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  nrf1:
+    container_name: nrf
+    image: ${REPO}/free5gc-nrf:${TAG}
+    command: ./nrf -c ../config/nrfcfg.yaml
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/nrfs/nrf1/config/:/free5gc/config/
+    environment:
+      DB_URI: mongodb://db/free5gc
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - nrf.free5gc.org
+        ipv4_address: ${NRF_IP}
+    healthcheck:
+      test: ["CMD", "curl", "${NRF_IP}:8000"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 10s   
+    depends_on:
+      db:
+        condition: service_healthy
+
+  amf1:
+    container_name: amf
+    image: ${REPO}/free5gc-amf:${TAG}
+    command: ./amf -c ../config/amfcfg.yaml
+    expose:
+      - "8000"
+ #     - "38412/sctp"
+    volumes:
+      - ${SANDBOX_DIR}/amfs/amf1/config/:/free5gc/config/
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - amf.free5gc.org
+        ipv4_address: ${AMF_IP}
+    ports:
+      - "38412:38412/sctp"
+    healthcheck:
+      test: ["CMD", "netstat", "--sctp",  "|" , "grep 38412"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      nrf1:
+        condition: service_healthy
+        
+
+  ausf1:
+    container_name: ausf
+    image: ${REPO}/free5gc-ausf:${TAG}
+    command: ./ausf -c ../config/ausfcfg.yaml
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/ausfs/ausf1/config/:/free5gc/config/
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - ausf.free5gc.org
+        ipv4_address: ${AUSF_IP}
+
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  nssf1:
+    container_name: nssf
+    image: ${REPO}/free5gc-nssf:${TAG}
+    command: ./nssf -c ../config/nssfcfg.yaml
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/nssfs/nssf1/config/:/free5gc/config/
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - nssf.free5gc.org
+        ipv4_address: ${NSSFS_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  pcf1:
+    container_name: pcf
+    image: ${REPO}/free5gc-pcf:${TAG}
+    command: ./pcf -c ../config/pcfcfg.yaml
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/pcfs/pcf1/config/:/free5gc/config/
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - pcf.free5gc.org
+        ipv4_address: ${PCF_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  smf1:
+    container_name: smf
+    image: ${REPO}/free5gc-smf:${TAG}
+    command: ./smf -c ../config/smfcfg.yaml -uerouting ../config/uerouting.yaml
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/smfs/smf1/config/:/free5gc/config/
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - smf.free5gc.org
+        ipv4_address: ${SMF_IP}
+
+    depends_on:
+      nrf1:
+        condition: service_healthy
+      upf1:
+        condition: service_started 
+
+  udm1:
+    container_name: udm
+    image: ${REPO}/free5gc-udm:${TAG}
+    command: ./udm -c ../config/udmcfg.yaml
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/udms/udm1/config/:/free5gc/config/
+    environment:
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - udm.free5gc.org
+        ipv4_address: ${UDM_IP}
+    depends_on:
+      db:
+        condition: service_healthy
+      nrf1:
+        condition: service_healthy
+
+  udr1:
+    container_name: udr
+    image: ${REPO}/free5gc-udr:${TAG}
+    command: ./udr -c ../config/udrcfg.yaml
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/udrs/udr1/config/:/free5gc/config/
+    environment:
+      DB_URI: mongodb://db/free5gc
+      GIN_MODE: release
+    networks:
+      privnet:
+        aliases:
+          - udr.free5gc.org
+        ipv4_address: ${UDR_IP}
+    depends_on:
+      db:
+        condition: service_healthy
+      nrf1:
+        condition: service_healthy
+
+  n3iwf1:
+    container_name: n3iwf
+    image: ${REPO}/free5gc-n3iwf:${TAG}
+    command: sh -c "./n3iwf-ipsec.sh"
+    volumes:
+      - ${SANDBOX_DIR}/nwiwfs/n3iwf1/config/:/free5gc/config/
+    environment:
+      GIN_MODE: release
+    cap_add:
+      - NET_ADMIN
+    networks:
+      privnet:
+        aliases:
+          - n3iwf.free5gc.org
+        ipv4_address: ${N3IWF_IP}
+    depends_on:
+      amf1:
+        condition: service_healthy
+      smf1:
+        condition: service_started
+      upf1:
+        condition: service_started
+
+networks:
+  privnet:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.100.200.0/24
+
+volumes:
+  dbdata:

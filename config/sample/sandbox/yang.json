@@ -1,0 +1,1262 @@
+{
+  "free5gc:amfs": {
+    "service": [
+      {
+        "name": "AMF",
+        "sbi": {
+            "scheme": "http",
+            "register_ipv4": "10.100.200.3",
+            "binding_ipv4": "10.100.200.3",
+            "port": 8000,
+            "tls_pem": "config/TLS/amf.pem",
+            "tls_key": "config/TLS/amf.key"
+        },
+        "ngap_ip_list": [
+          "0.0.0.0"
+        ],
+        "service_name_list": [
+          "namf-comm",
+          "namf-evts",
+          "namf-mt",
+          "namf-loc",
+          "namf-oam"
+        ],
+        "nrf_uri": "http://10.100.200.6:8000",
+        "enabled": true,
+        "sid": "amf1",
+        "served_guami_list": [
+          {
+            "guami": "20893cafe00",
+            "mcc": "208",
+            "mnc": "93",
+            "amf_id": "cafe00"
+          }
+        ],
+        "support_tai_list": [
+          {
+            "tai_id": "20893:1",
+            "mcc": "208",
+            "mnc": "93",
+            "tac": 1
+          }
+        ],
+        "plmn_support_list": [
+          {
+            "plmn_id": "20893",
+            "mcc": "208",
+            "mnc": "93",
+            "snssai_list": [
+              {
+                "snssai_id": "1:010203",
+                "sst": 1,
+                "sd": "010203"
+              },
+              {
+                "snssai_id": "1:112233",
+                "sst": 1,
+                "sd": "112233"
+              }
+            ]
+          }
+        ],
+        "support_dnn_list": [ "internet" ],
+        "security": {
+          "integrity_order": [ "NIA2" ],
+          "ciphering_order": [ "NEA0" ]
+        },
+        "network_name": {
+          "full": "free5GC",
+          "short": "free"
+        },
+        "enable_mobility_restriction_list": true,
+        "enable_masked_imeisv": true,
+        "enable_redirection_voice_fallback": false,
+        "network_feature_support_5gs": {
+          "enable": true,
+          "ims_vops": 0,
+          "emc": 0,
+          "emf": 0,
+          "iwk_n26": 0,
+          "mpsi": 0,
+          "emc_n3": 0,
+          "mcsi": 0
+        },
+        "t3502_value": 720,
+        "t3512_value": 3600,
+        "non3gpp_deregistration_timer_value": 3240,
+        "t3513": {
+          "enable": true,
+          "expire_time": "6s",
+          "max_retry_times": 4
+        },
+        "t3522": {
+          "enable": true,
+          "expire_time": "6s",
+          "max_retry_times": 4
+        },
+        "t3550": {
+          "enable": true,
+          "expire_time": "6s",
+          "max_retry_times": 4
+        },
+        "t3560": {
+          "enable": true,
+          "expire_time": "6s",
+          "max_retry_times": 4
+        },
+        "t3565": {
+          "enable": true,
+          "expire_time": "6s",
+          "max_retry_times": 4
+        },
+        "amf_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "nas_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "fsm_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "ngap_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "aper_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "pathutil_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "openapi_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+
+        "state": {
+          "oper_status": "down"
+        }
+      }
+    ]
+  },
+
+  "free5gc:ausfs": {
+    "service": [
+      {
+        "nrf_uri": "http://10.100.200.6:8000",
+        "sbi": {
+            "scheme": "http",
+            "register_ipv4": "10.100.200.4",
+            "binding_ipv4": "10.100.200.4",
+            "port": 8000
+        },
+        "service_name_list": [
+            "nausf-auth"
+        ],
+        "plmn_support_list": [
+          {
+            "plmn_id": "20893",
+            "mcc": "208",
+            "mnc": "93"
+          },
+          {
+            "plmn_id": "12345",
+            "mcc": "123",
+            "mnc": "45"
+          }
+        ],
+        "group_id": "ausfGroup001",
+        "enabled": true,
+        "sid": "ausf1",
+        "ausf_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "pathutil_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "openapi_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+
+        "state": {
+          "oper_status": "down"
+        }
+      }
+    ]
+  },
+
+  "free5gc:nrfs": {
+    "service": [
+      {
+        "sbi": {
+            "scheme": "http",
+            "register_ipv4": "10.100.200.6",
+            "binding_ipv4": "10.100.200.6",
+            "port": 8000
+        },
+        "default_mcc": "208",
+        "default_mnc": "93",
+        "mongo_name": "free5gc",
+        "mongo_uri": "mongodb://db:27017",
+        "service_name_list": [
+          "nnrf-nfm",
+          "nnrf-disc"
+        ],
+        "enabled": true,
+        "mongo_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "pathutil_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "nrf_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "openapi_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "sid": "nrf1"
+      }
+    ]
+  },
+
+  "free5gc:nssfs": {
+    "service": [
+      {
+        "name": "NSSF",
+        "nrf_uri": "http://10.100.200.6:8000",
+        "sbi": {
+            "scheme": "http",
+            "register_ipv4": "10.100.200.7",
+            "binding_ipv4": "10.100.200.7",
+            "port": 8000
+        },
+        "service_name_list": [
+          "nnssf-nsselection",
+          "nnssf-nssaiavailability"
+        ],
+        "supported_plmn_list": [
+          {
+            "plmn_id": "20893",
+            "mcc": "208",
+            "mnc": "93",
+            "snssai_list": [
+              {
+                "snssai_id": "1:010203",
+                "sst": 1,
+                "sd": "010203"
+              },
+              {
+                "snssai_id": "1:112233",
+                "sst": 1,
+                "sd": "112233"
+              },
+              {
+                "snssai_id": "1:000003",
+                "sst": 1,
+                "sd": "000003"
+              },
+              {
+                "snssai_id": "2:000001",
+                "sst": 2,
+                "sd": "000001"
+              },
+              {
+                "snssai_id": "2:000002",
+                "sst": 2,
+                "sd": "000002"
+              }
+            ]
+          }
+        ],
+        "nsi_list": [
+          {
+            "snssai_id": "1:",
+            "sst": 1,
+            "nsi_info_list": [
+              {
+                "info_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances:10",
+                "nrf_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+                "nsi_id": "10"
+              }
+            ]
+          },
+          {
+            "snssai_id": "1:000001",
+            "sst": 1,
+            "sd": "000001",
+            "nsi_info_list": [
+              {
+                "info_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances:11",
+                "nrf_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+                "nsi_id": "11"
+              }
+            ]
+          },
+          {
+            "snssai_id": "1:000002",
+            "sst": 1,
+            "sd": "000002",
+            "nsi_info_list": [
+              {
+                "info_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances:12",
+                "nrf_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+                "nsi_id": "12"
+              },
+              {
+                "info_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances:13",
+                "nrf_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+                "nsi_id": "13"
+              }
+            ]
+          },
+          {
+            "snssai_id": "1:000003",
+            "sst": 1,
+            "sd": "000003",
+            "nsi_info_list": [
+              {
+                "info_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances:13",
+                "nrf_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+                "nsi_id": "13"
+              }
+            ]
+          },
+          {
+            "snssai_id": "2:",
+            "sst": 2,
+            "nsi_info_list": [
+              {
+                "info_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances:20",
+                "nrf_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+                "nsi_id": "20"
+              }
+            ]
+          },
+          {
+            "snssai_id": "2:000001",
+            "sst": 2,
+            "sd": "000001",
+            "nsi_info_list": [
+              {
+                "info_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances:21",
+                "nrf_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+                "nsi_id": "21"
+              }
+            ]
+          },
+          {
+            "snssai_id": "1:010203",
+            "sst": 1,
+            "sd": "010203",
+            "nsi_info_list": [
+              {
+                "info_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances:22",
+                "nrf_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+                "nsi_id": "22"
+              }
+            ]
+          },
+          {
+            "snssai_id": "1:112233",
+            "sst": 1,
+            "sd": "112233",
+            "nsi_info_list": [
+              {
+                "info_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances:23",
+                "nrf_id": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+                "nsi_id": "23"
+              }
+            ]
+          }
+        ],
+        "amf_set_list": [
+          {
+            "amf_set_id": "1",
+            "amf_list": [
+              "ffa2e8d7-3275-49c7-8631-6af1df1d9d26",
+              "0e8831c3-6286-4689-ab27-1e2161e15cb1",
+              "a1fba9ba-2e39-4e22-9c74-f749da571d0d"
+            ],
+            "nrf_amf_set": "http://10.100.200.6:8000/nnrf-nfm/v1/nf-instances",
+            "supported_nssai_availability_data": [
+              {
+                "tai_id": "46692:33456",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33456,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:000001",
+                    "sst": 1,
+                    "sd": "000001"
+                  },
+                  {
+                    "snssai_id": "1:000002",
+                    "sst": 1,
+                    "sd": "000002"
+                  },
+                  {
+                    "snssai_id": "2:000001",
+                    "sst": 2,
+                    "sd": "000001"
+                  }
+                ]
+              },
+              {
+                "tai_id": "46692:33457",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33457,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:",
+                    "sst": 1
+                  },
+                  {
+                    "snssai_id": "1:000001",
+                    "sst": 1,
+                    "sd": "000001"
+                  },
+                  {
+                    "snssai_id": "1:000002",
+                    "sst": 1,
+                    "sd": "000002"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "amf_set_id": "2",
+            "amf_list": [],
+            "nrf_amf_set": "http://10.100.200.6:8080/nnrf-nfm/v1/nf-instances",
+            "supported_nssai_availability_data": [
+              {
+                "tai_id": "46692:33456",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33456,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:",
+                    "sst": 1
+                  },
+                  {
+                    "snssai_id": "1:000001",
+                    "sst": 1,
+                    "sd": "000001"
+                  },
+                  {
+                    "snssai_id": "1:000003",
+                    "sst": 1,
+                    "sd": "000003"
+                  }
+                ]
+              },
+              {
+                "tai_id": "46692:33458",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33458,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:",
+                    "sst": 1
+                  },
+                  {
+                    "snssai_id": "1:000001",
+                    "sst": 1,
+                    "sd": "000001"
+                  },
+                  {
+                    "snssai_id": "2:",
+                    "sst": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "amf_list": [
+          {
+            "nf_id": "469de254-2fe5-4ca0-8381-af3f500af77c",
+            "supported_nssai_availability_data": [
+              {
+                "tai_id": "46692:33456",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33456,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:",
+                    "sst": 1
+                  },
+                  {
+                    "snssai_id": "1:000002",
+                    "sst": 1,
+                    "sd": "000002"
+                  },
+                  {
+                    "snssai_id": "2:",
+                    "sst": 2
+                  }
+                ]
+              },
+              {
+                "tai_id": "46692:33457",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33457,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:000001",
+                    "sst": 1,
+                    "sd": "000001"
+                  },
+                  {
+                    "snssai_id": "1:000002",
+                    "sst": 1,
+                    "sd": "000002"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "nf_id": "fbe604a8-27b2-417e-bd7c-8a7be2691f8d",
+            "supported_nssai_availability_data": [
+              {
+                "tai_id": "46692:33458",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33458,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:",
+                    "sst": 1
+                  },
+                  {
+                    "snssai_id": "1:000001",
+                    "sst": 1,
+                    "sd": "000001"
+                  },
+                  {
+                    "snssai_id": "1:000003",
+                    "sst": 1,
+                    "sd": "000003"
+                  },
+                  {
+                    "snssai_id": "2:",
+                    "sst": 2
+                  }
+                ]
+              },
+              {
+                "tai_id": "46692:33459",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33459,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:",
+                    "sst": 1
+                  },
+                  {
+                    "snssai_id": "1:000001",
+                    "sst": 1,
+                    "sd": "000001"
+                  },
+                  {
+                    "snssai_id": "2:",
+                    "sst": 2
+                  },
+                  {
+                    "snssai_id": "2:000001",
+                    "sst": 2,
+                    "sd": "000001"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "nf_id": "b9e6e2cb-5ce8-4cb6-9173-a266dd9a2f0c",
+            "supported_nssai_availability_data": [
+              {
+                "tai_id": "46692:33456",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33456,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:",
+                    "sst": 1
+                  },
+                  {
+                    "snssai_id": "1:000001",
+                    "sst": 1,
+                    "sd": "000001"
+                  },
+                  {
+                    "snssai_id": "1:000002",
+                    "sst": 1,
+                    "sd": "000002"
+                  },
+                  {
+                    "snssai_id": "2:",
+                    "sst": 2
+                  }
+                ]
+              },
+              {
+                "tai_id": "46692:33458",
+                "mcc": "466",
+                "mnc": "92",
+                "tac": 33458,
+                "supported_snssai_list": [
+                  {
+                    "snssai_id": "1:",
+                    "sst": 1
+                  },
+                  {
+                    "snssai_id": "1:000001",
+                    "sst": 1,
+                    "sd": "000001"
+                  },
+                  {
+                    "snssai_id": "2:",
+                    "sst": 2
+                  },
+                  {
+                    "snssai_id": "2:000001",
+                    "sst": 2,
+                    "sd": "000001"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+
+        "ta_list": [
+          {
+            "tai_id": "46692:33456",
+            "mcc": "466",
+            "mnc": "92",
+            "tac": 33456,
+            "access_type": "3GPP_ACCESS",
+            "supported_snssai_list": [
+              {
+                "snssai_id": "1:",
+                "sst": 1
+              },
+              {
+                "snssai_id": "1:000001",
+                "sst": 1,
+                "sd": "000001"
+              },
+              {
+                "snssai_id": "1:000002",
+                "sst": 1,
+                "sd": "000002"
+              },
+              {
+                "snssai_id": "2:",
+                "sst": 2
+              }
+            ]
+          },
+          {
+            "tai_id": "46692:33457",
+            "mcc": "466",
+            "mnc": "92",
+            "tac": 33457,
+            "access_type": "3GPP_ACCESS",
+            "supported_snssai_list": [
+              {
+                "snssai_id": "1:",
+                "sst": 1
+              },
+              {
+                "snssai_id": "1:000001",
+                "sst": 1,
+                "sd": "000001"
+              },
+              {
+                "snssai_id": "1:000002",
+                "sst": 1,
+                "sd": "000002"
+              },
+              {
+                "snssai_id": "2:",
+                "sst": 2
+              }
+            ]
+          },
+          {
+            "tai_id": "46692:33458",
+            "mcc": "466",
+            "mnc": "92",
+            "tac": 33458,
+            "access_type": "3GPP_ACCESS",
+            "supported_snssai_list": [
+              {
+                "snssai_id": "1:",
+                "sst": 1
+              },
+              {
+                "snssai_id": "1:000001",
+                "sst": 1,
+                "sd": "000001"
+              },
+              {
+                "snssai_id": "1:000003",
+                "sst": 1,
+                "sd": "000003"
+              },
+              {
+                "snssai_id": "2:",
+                "sst": 2
+              }
+            ],
+            "restricted_snssai_list": [
+              {
+                  "plmn_id": "310560",
+                  "mcc": "310",
+                  "mnc": "560",
+                  "snssai_list": [
+                    {
+                      "snssai_id": "1:000003",
+                      "sst": 1,
+                      "sd": "000003"
+                    }
+                  ]
+              }
+            ]
+          },
+          {
+            "tai_id": "46692:33459",
+            "mcc": "466",
+            "mnc": "92",
+            "tac": 33459,
+            "access_type": "3GPP_ACCESS",
+            "supported_snssai_list": [
+              {
+                "snssai_id": "1:",
+                "sst": 1
+              },
+              {
+                "snssai_id": "1:000001",
+                "sst": 1,
+                "sd": "000001"
+              },
+              {
+                "snssai_id": "2:",
+                "sst": 2
+              },
+              {
+                "snssai_id": "2:000001",
+                "sst": 2,
+                "sd": "000001"
+              }
+            ],
+            "restricted_snssai_list": [
+              {
+                  "plmn_id": "310560",
+                  "mcc": "310",
+                  "mnc": "560",
+                  "snssai_list": [
+                    {
+                      "snssai_id": "2:000001",
+                      "sst": 2,
+                      "sd": "000001"
+                    }
+                  ]
+              }
+            ]
+          }
+        ],
+
+        "mapping_list_from_plmn": [
+          {
+            "operator_name": "NTT Docomo",
+            "home_mcc": "440",
+            "home_mnc": "10",
+            "mapping_of_snssai": [
+              {
+                "snssai_id": "1:000001",
+                "sst": 1,
+                "sd": "000001",
+                "home_sst": 1,
+                "home_sd": "000001"
+              },
+              {
+                "snssai_id": "1:000002",
+                "sst": 1,
+                "sd": "000002",
+                "home_sst": 1,
+                "home_sd": "000003"
+              },
+              {
+                "snssai_id": "1:000003",
+                "sst": 1,
+                "sd": "000003",
+                "home_sst": 1,
+                "home_sd": "000004"
+              },
+              {
+                "snssai_id": "2:000001",
+                "sst": 2,
+                "sd": "000001",
+                "home_sst": 2,
+                "home_sd": "000002"
+              }
+            ]
+          },
+          {
+            "operator_name": "AT&T",
+            "home_mcc": "310",
+            "home_mnc": "560",
+            "mapping_of_snssai": [
+              {
+                "snssai_id": "1:000001",
+                "sst": 1,
+                "sd": "000001",
+                "home_sst": 1,
+                "home_sd": "000002"
+              },
+              {
+                "snssai_id": "1:000002",
+                "sst": 1,
+                "sd": "000002",
+                "home_sst": 1,
+                "home_sd": "000003"
+              }
+            ]
+          }
+        ],
+        "nssf_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "pathutil_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "openapi_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "enabled": true,
+        "sid": "nssf1",
+
+        "state": {
+          "oper_status": "down"
+        }
+      }
+    ]
+  },
+
+  "free5gc:pcfs": {
+    "service": [
+      {
+        "name": "PCF",
+        "sbi": {
+            "scheme": "http",
+            "register_ipv4": "10.100.200.8",
+            "binding_ipv4": "10.100.200.8",
+            "port": 8000
+        },
+        "time_format": "2019-01-02 15:04:05",
+        "default_bdt_ref_id": "BdtPolicyId-",
+        "nrf_uri": "http://10.100.200.6:8000",
+        "mongo_name": "free5gc",
+        "mongo_uri": "mongodb://db:27017",
+        "service_list": [
+          {
+            "service_name": "npcf-am-policy-control"
+          },
+          {
+            "service_name": "npcf-smpolicycontrol",
+            "supp_feat": "3fff"
+          },
+          {
+            "service_name": "npcf-bdtpolicycontrol"
+          },
+          {
+            "service_name": "npcf-policyauthorization",
+            "supp_feat": "3"
+          },
+          {
+            "service_name": "npcf-eventexposure"
+          },
+          {
+            "service_name": "npcf-ue-policy-control"
+          }
+        ],
+        "enabled": true,
+        "sid": "pcf1",
+        "pcf_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "pathutil_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "openapi_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+
+        "state": {
+          "oper_status": "down"
+        }
+      }
+    ]
+  },
+
+  "free5gc:smfs": {
+    "service": [
+      {
+        "name": "SMF",
+        "sbi": {
+            "scheme": "http",
+            "register_ipv4": "10.100.200.9",
+            "binding_ipv4": "10.100.200.9",
+            "port": 8000,
+            "tls_pem": "config/TLS/smf.pem",
+            "tls_key": "config/TLS/smf.key"
+        },
+        "nrf_uri": "http://10.100.200.6:8000",
+        "pfcp": {
+          "listen_addr": "10.100.200.9",
+          "external_addr": "10.100.200.9",
+          "node_id": "10.100.200.9"
+        },
+        "service_name_list": [
+            "nsmf-pdusession",
+            "nsmf-event-exposure",
+            "nsmf-oam"
+        ],
+        "snssai_infos": [
+          {
+            "snssai_id": "1:010203",
+            "sst": 1,
+            "sd": "010203",
+            "dnn_infos": [
+              {
+                  "dnn": "internet",
+                  "dns_ipv4": "8.8.8.8"
+              }
+            ]
+          },
+          {
+            "snssai_id": "1:112233",
+            "sst": 1,
+            "sd": "112233",
+            "dnn_infos": [
+              {
+                  "dnn": "internet",
+                  "dns_ipv4": "8.8.8.8"
+              }
+            ]
+          }
+        ],
+        "up_nodes": [
+          {
+            "name": "gNB1",
+            "type": "AN"
+          },
+          {
+            "name": "UPF",
+            "type": "UPF",
+            "node_id": "10.100.200.12",
+            "addr": "10.100.200.12",
+            "snssai_upf_infos": [
+              {
+                  "snssai_id": "1:010203",
+                  "sst": 1,
+                  "sd": "010203",
+                  "dnn_upf_info_list": [
+                    {
+                        "dnn": "internet",
+                        "pools": [
+                          "10.60.0.0/16"
+                        ]
+                    }
+                  ]
+              },
+              {
+                  "snssai_id": "1:112233",
+                  "sst": 1,
+                  "sd": "112233",
+                  "dnn_upf_info_list": [
+                    {
+                        "dnn": "internet",
+                        "pools": [
+                          "10.61.0.0/16"
+                        ]
+                    }
+                  ]
+              }
+            ],
+            "interfaces": [
+              {
+                  "name": "n3",
+                  "interface_type": "N3",
+                  "endpoints": [
+                    "10.100.200.12"
+                  ],
+                  "network_instances": [
+                    "internet"
+                  ]
+              }
+            ]
+          }
+        ],
+        "links": [
+          {
+              "link_id": "gNB1:UPF",
+              "A": "gNB1",
+              "B": "UPF"
+          }
+        ],
+        "enabled": true,
+        "sid": "smf1",
+
+        "ue_routing": {
+          "ue_routing_info": [
+            {
+              "group": "UE1",
+              "members": [
+                "imsi-208930000007487"
+              ],
+              "topology": [
+                {
+                  "link_id": "gNB1:BranchingUPF",
+                  "A": "gNB1",
+                  "B": "BranchingUPF"
+                },
+                {
+                  "link_id": "BranchingUPF:AnchorUPF1",
+                  "A": "BranchingUPF",
+                  "B": "AnchorUPF1"
+                }
+              ],
+              "specific_path": [
+                {
+                  "dest": "10.60.0.103/32",
+                  "path": ["BranchingUPF", "AnchorUPF2"]
+                }
+              ]
+            },
+            {
+              "group": "UE2",
+              "members": [
+                "imsi-208930000007486"
+              ],
+              "topology": [
+                {
+                  "link_id": "gNB1:BranchingUPF",
+                  "A": "gNB1",
+                  "B": "BranchingUPF"
+                },
+                {
+                  "link_id": "BranchingUPF:AnchorUPF1",
+                  "A": "BranchingUPF",
+                  "B": "AnchorUPF1"
+                }
+              ],
+              "specific_path": [
+                {
+                  "dest": "10.0.0.11/32",
+                  "path": ["BranchingUPF", "AnchorUPF2"]
+                }
+              ]
+            }
+          ],
+
+          "route_profile": [
+            {
+                "profile_id": "MEC1",
+                "forwarding_policy_id": "10"
+            }
+          ],
+
+          "pfd_data_for_app": [
+            {
+                "application_id": "edge",
+                "pfds": [
+                  {
+                    "pfd_id": "pfd1",
+                    "flow_descriptions": [
+                      "permit out ip from 10.60.0.1 8080 to any"
+                    ]
+                  }
+                ]
+            }
+          ]
+        },
+
+        "smf_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "nas_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "ngap_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "aper_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "pathutil_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "openapi_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "pfcp_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+
+        "state": {
+          "oper_status": "down"
+        }
+      }
+    ]
+  },
+
+  "free5gc:udms": {
+    "service": [
+      {
+        "sbi": {
+            "scheme": "http",
+            "register_ipv4": "10.100.200.10",
+            "binding_ipv4": "10.100.200.10",
+            "port": 8000,
+            "tls_pem": "config/TLS/udm.pem",
+            "tls_key": "config/TLS/udm.key"
+        },
+        "sid": "udm1",
+        "nrf_uri": "http://10.100.200.6:8000",
+        "enabled": true,
+        "service_name_list": [
+          "nudm-sdm",
+          "nudm-uecm",
+          "nudm-ueau",
+          "nudm-ee",
+          "nudm-pp"
+        ],
+        "udm_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "openapi_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "pathutil_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+
+        "state": {
+          "oper_status": "down"
+        }
+      }
+    ]
+  },
+
+  "free5gc:udrs": {
+    "service": [
+      {
+        "sbi": {
+            "scheme": "http",
+            "register_ipv4": "10.100.200.11",
+            "binding_ipv4": "10.100.200.11",
+            "port": 8000
+        },
+        "nrf_uri": "http://10.100.200.6:8000",
+        "mongo_name": "free5gc",
+        "mongo_uri": "mongodb://db:27017",
+        "enabled": true,
+        "sid": "udr1",
+        "udr_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "mongo_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "openapi_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+        "pathutil_logger": {
+          "debug_level": "info",
+          "report_caller": false
+        },
+
+        "state": {
+          "oper_status": "down"
+        }
+      }
+    ]
+  },
+
+  "free5gc:upfs": {
+    "service": [
+      {
+        "sid": "upf1",
+        "cmi_binding_ipv4": "10.100.200.12",
+        "cmi_port": 8081,
+        "nrf_uri": "http://10.100.200.6:8000",
+        "debug_level": "warning",
+        "report_caller": false,
+        "node_id": "10.100.200.12",
+        "pfcp_ip_list": [
+          "10.100.200.12"
+        ],
+
+        "gtpu_list": [
+          {
+            "addr": "0.0.0.0"
+          }
+        ],
+        "dnn_list": [
+          {
+            "dnn": "internet",
+            "cidr": "10.60.0.0/16"
+          }
+        ],
+        "enabled": true,
+        "state": {
+          "oper_status": "down"
+        }
+      }
+    ]
+  }
+}
