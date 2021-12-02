@@ -1,0 +1,36 @@
+mongo:
+  uri: mongodb://db:27017
+
+mano:
+  mode: thin
+  sbis:
+    amf:
+      amf1: http://amf1:8000
+    ausf:
+      ausf1: http://ausf1:8000
+    n3iwf:
+      n3iwf1: http://n3iwf1:8000
+    nrf:
+      nrf1: http://nrf1:8000
+    nssf:
+      nssf1: http://nssf1:8000
+    pcf:
+      pcf1: http://pcf1:8000
+    smf:
+      smf1: http://smf1:8000
+    udm:
+      udm1: http://udm1:8000
+    udr:
+      udr1: http://udr1:8000
+    upf:
+      upf1: udp://upf1:8081
+
+# default options; can be used for UERANSIM
+plmn: 20893
+msisdn: 3
+len: 15
+uenum: 3
+opc: 8e27b6af0e692e750f32667a3b14605d
+sst: 1
+sdlist: 010203,112233
+

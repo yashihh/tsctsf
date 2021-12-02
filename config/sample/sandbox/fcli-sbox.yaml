@@ -1,0 +1,6 @@
+mano:
+  mode: sandbox
+  sandbox:
+    dir: .
+    yang: ./yang.json  # this is related to sandbox dir
+

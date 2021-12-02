@@ -1,0 +1,23 @@
+version: '2.4'
+
+services:
+  ueransim:
+    privileged: true
+    container_name: ueransim
+    entrypoint: /free5gc/entrypoint.sh
+    image: localhost:12345/ueransim
+    working_dir: /free5gc
+    volumes:
+      - ./ueransim/:/free5gc
+    cap_add:
+      - NET_ADMIN
+    networks:
+      sandbox_privnet:
+        ipv4_address: 10.100.200.111
+
+networks:
+  sandbox_privnet:
+    external: true
+
+volumes:
+  dbdata:
