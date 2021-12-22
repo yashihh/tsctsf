@@ -1463,20 +1463,15 @@ func TestPDUSessionReleaseAbnormal(t *testing.T) {
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
 
-	// wait 10 ms
-	time.Sleep(65 * time.Second)
-
-	// //send N1 PDU Session Release Ack PDU session release complete
-	// pdu = nasTestpacket.GetUlNasTransport_PduSessionReleaseComplete(10, nasMessage.ULNASTransportRequestTypeExistingPduSession, "internet", &sNssai)
-	// pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
-	// assert.Nil(t, err)
-	// sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
-	// assert.Nil(t, err)
-	// _, err = conn.Write(sendMsg)
-	// assert.Nil(t, err)
+	// Just test registration no occur panic
+	// send InitialUeMessage(Registration Request)(imsi-2089300007487)
+	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
+	assert.Nil(t, err)
+	_, err = conn.Write(sendMsg)
+	assert.Nil(t, err)
 
 	// wait result
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	// delete test data
 	test.DelAuthSubscriptionToMongoDB(ue.Supi)

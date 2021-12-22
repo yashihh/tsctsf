@@ -436,7 +436,7 @@ func smfConfig(testID string) error {
 
 	smf_factory.SmfConfig = smf_factory.Config{
 		Info: &smf_factory.Info{
-			Version:     "1.0.5",
+			Version:     "1.0.6",
 			Description: "SMF initial single test configuration",
 		},
 		Configuration: &smf_factory.Configuration{
@@ -544,6 +544,16 @@ func smfConfig(testID string) error {
 					A: "gNB1",
 					B: "UPF",
 				}},
+			},
+			T3591: &smf_factory.TimerValue{
+				Enable:        true,
+				ExpireTime:    5 * time.Second,
+				MaxRetryTimes: 2,
+			},
+			T3592: &smf_factory.TimerValue{
+				Enable:        true,
+				ExpireTime:    5 * time.Second,
+				MaxRetryTimes: 2,
 			},
 			NrfUri: "http://127.0.0.10:8000",
 		},
