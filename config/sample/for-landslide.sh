@@ -63,8 +63,12 @@ if [ $NEWIP_ENABLE -eq 1 ]; then
 fi
 
 if [ $N3IWF_ENABLE -eq 1 ]; then
-    IKE_BIND_IP=$AMF_N2_IP
-    AMF_N2_IP=127.0.0.18
+    if [ $NEWIP_ENABLE -eq 1 ]; then
+        IKE_BIND_IP=172.22.255.99
+    else
+        IKE_BIND_IP=172.16.2.99
+    fi
+    AMF_N2_IP="${IKE_BIND_IP}\n    - ${AMF_N2_IP}"
     UPF_N3_IP=127.0.0.8
 fi
 
