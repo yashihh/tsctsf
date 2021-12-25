@@ -7,6 +7,7 @@ PCAP_MODE=0
 N3IWF_ENABLE=0
 
 PID_LIST=()
+echo $$ > run.pid
 
 if [ $# -ne 0 ]; then
     while [ $# -gt 0 ]; do
@@ -102,6 +103,8 @@ fi
 
 function terminate()
 {
+    rm run.pid
+    echo "Receive SIGINT, terminating..."
     if [ $N3IWF_ENABLE -ne 0 ]; then
         sudo ip xfrm state > ${LOG_PATH}NWu_SA_state.log
         sudo ip xfrm state flush
