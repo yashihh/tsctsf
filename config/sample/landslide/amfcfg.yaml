@@ -47,10 +47,14 @@ configuration:
   security:  # NAS security parameters
     integrityOrder: # the priority of integrity algorithms
       - NIA2
-      # - NIA0
+      - NIA0
+      - NIA1
+      - NIA3
     cipheringOrder: # the priority of ciphering algorithms
       - NEA0
-      # - NEA2
+      - NEA1
+      - NEA2
+      - NEA3
   networkName:  # the name of this core network
     full: free5GC
     short: free
