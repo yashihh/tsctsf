@@ -7,6 +7,7 @@ PCAP_MODE=0
 N3IWF_ENABLE=0
 
 PID_LIST=()
+echo $$ > run.pid
 
 if [ $# -ne 0 ]; then
     while [ $# -gt 0 ]; do
@@ -69,12 +70,17 @@ if [ $PCAP_MODE -ne 0 ]; then
             ;;
     esac
 
-    PID_LIST+=($!)
+    SUDO_TCPDUMP_PID=$!
     sleep 0.1
+    TCPDUMP_PID=$(pgrep -P $SUDO_TCPDUMP_PID)
+    PID_LIST+=($SUDO_TCPDUMP_PID $TCPDUMP_PID)
 fi
 
 sudo -E ./NFs/upf/build/bin/free5gc-upfd -c ./config/upfcfg.yaml -l ${LOG_PATH}upf.log -g ${LOG_PATH}${LOG_NAME} &
-PID_LIST+=($!)
+SUDO_UPF_PID=$!
+sleep 0.1
+UPF_PID=$(pgrep -P $SUDO_UPF_PID)
+PID_LIST+=($SUDO_UPF_PID $UPF_PID)
 
 sleep 1
 
@@ -102,15 +108,20 @@ fi
 
 function terminate()
 {
+    rm run.pid
+    echo "Receive SIGINT, terminating..."
     if [ $N3IWF_ENABLE -ne 0 ]; then
         sudo ip xfrm state > ${LOG_PATH}NWu_SA_state.log
         sudo ip xfrm state flush
         sudo ip xfrm policy flush
     fi
-    sudo kill -SIGTERM ${PID_LIST[${#PID_LIST[@]}-2]} ${PID_LIST[${#PID_LIST[@]}-1]}
-
+    
+    for ((i=${#PID_LIST[@]}-1;i>=0;i--)); do
+        sudo kill -SIGTERM ${PID_LIST[i]}
+    done
     sleep 2
 }
 
 trap terminate SIGINT
 wait ${PID_LIST}
+exit 0
