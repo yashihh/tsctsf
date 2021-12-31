@@ -33,9 +33,3 @@ logger:
   PCF:
     debugLevel: info
     ReportCaller: false
-  PathUtil:
-    debugLevel: info
-    ReportCaller: false
-  OpenApi:
-    debugLevel: info
-    ReportCaller: false
