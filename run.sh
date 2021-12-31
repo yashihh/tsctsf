@@ -37,6 +37,26 @@ if [ $# -ne 0 ]; then
     done
 fi
 
+function terminate()
+{
+    rm run.pid
+    echo "Receive SIGINT, terminating..."
+    if [ $N3IWF_ENABLE -ne 0 ]; then
+        sudo ip xfrm state > ${LOG_PATH}NWu_SA_state.log
+        sudo ip xfrm state flush
+        sudo ip xfrm policy flush
+    fi
+    
+    for ((i=${#PID_LIST[@]}-1;i>=0;i--)); do
+        sudo kill -SIGTERM ${PID_LIST[i]}
+    done
+    sleep 2
+    wait ${PID_LIST}
+    exit 0
+}
+
+trap terminate SIGINT
+
 LOG_PATH=${LOG_PATH%/}"/"${TODAY}"/"
 echo "log path: $LOG_PATH"
 
@@ -106,22 +126,5 @@ if [ $N3IWF_ENABLE -ne 0 ]; then
     PID_LIST+=($SUDO_N3IWF_PID $N3IWF_PID)
 fi
 
-function terminate()
-{
-    rm run.pid
-    echo "Receive SIGINT, terminating..."
-    if [ $N3IWF_ENABLE -ne 0 ]; then
-        sudo ip xfrm state > ${LOG_PATH}NWu_SA_state.log
-        sudo ip xfrm state flush
-        sudo ip xfrm policy flush
-    fi
-    
-    for ((i=${#PID_LIST[@]}-1;i>=0;i--)); do
-        sudo kill -SIGTERM ${PID_LIST[i]}
-    done
-    sleep 2
-}
-
-trap terminate SIGINT
 wait ${PID_LIST}
 exit 0

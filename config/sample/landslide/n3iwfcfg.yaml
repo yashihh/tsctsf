@@ -41,7 +41,7 @@ configuration:
 
   # --- Bind Interfaces ---
   IKEBindAddress: # IP address of Nwu interface (IKE) on this N3IWF
-    172.16.2.100
+    <IKE_BIND_IP>
 
   IPSecInterfaceAddress: # IP address of IPSec virtual interface (IPsec tunnel enpoint on this N3IWF)
     10.0.0.1
