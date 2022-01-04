@@ -277,7 +277,7 @@ func amfConfig(testID string) error {
 
 	amf_factory.AmfConfig = amf_factory.Config{
 		Info: &amf_factory.Info{
-			Version:     "1.0.7",
+			Version:     "1.0.8",
 			Description: "AMF initial test configuration",
 		},
 		Configuration: &amf_factory.Configuration{
@@ -312,7 +312,7 @@ func amfConfig(testID string) error {
 					Mcc: "208",
 					Mnc: "93",
 				},
-				Tac: "1",
+				Tac: "000001",
 			}},
 			PlmnSupportList: []amf_factory.PlmnSupportItem{{
 				PlmnId: &models.PlmnId{
@@ -363,9 +363,9 @@ func amfConfig(testID string) error {
 					Mcsi:    0,
 				},
 			},
-			T3502Value:                      720,
-			T3512Value:                      3600,
-			Non3gppDeregistrationTimerValue: 3240,
+			T3502Value:             720,
+			T3512Value:             3600,
+			Non3gppDeregTimerValue: 3240,
 			T3513: amf_factory.TimerValue{
 				Enable:        true,
 				ExpireTime:    6000000000,
