@@ -5,23 +5,23 @@ info:
 configuration:
   sid: udm1 # CMI service ID
   serviceNameList: # the SBI services provided by this UDM, refer to TS 29.503
-    - nudm-sdm
-    - nudm-uecm
-    - nudm-ueau
-    - nudm-ee
-    - nudm-pp
+    - nudm-sdm # Nudm_SubscriberDataManagement service
+    - nudm-uecm # Nudm_UEContextManagement service
+    - nudm-ueau # Nudm_UEAuthenticationManagement service
+    - nudm-ee # Nudm_EventExposureManagement service
+    - nudm-pp # Nudm_ParameterProvisionDataManagement service
   sbi: # Service-based interface information
     scheme: http # the protocol for sbi (http or https)
     registerIPv4: 10.100.200.10 # IP used to register to NRF
     bindingIPv4: 10.100.200.10  # IP used to bind the service
     port: 8000 # Port used to bind the service
-    tls:
+    tls: # the local path of TLS key
       pem: config/TLS/udm.pem # UDM TLS Certificate
       key: config/TLS/udm.key # UDM TLS Private key
   nrfUri: http://10.100.200.6:8000 # a valid URI of NRF
 
   # test data set from TS33501-f60 Annex C.4
-  SuciProfile:
+  SuciProfile: # Home Network Public Key ID = slice index +1
     - ProtectionScheme: 1 # Protect Scheme: Profile A
       PrivateKey: c53c22208b61860b06c62e5406a7b330c2b577aa5558981510d128247d38bd1d
       PublicKey: 5a8d38864820197c3394b92613b20b91633cbd897119273bf8e4a6f4eec0a650

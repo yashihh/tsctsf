@@ -391,6 +391,11 @@ func amfConfig(testID string) error {
 				ExpireTime:    6000000000,
 				MaxRetryTimes: 4,
 			},
+			T3570: amf_factory.TimerValue{
+				Enable:        true,
+				ExpireTime:    6000000000,
+				MaxRetryTimes: 4,
+			},
 		},
 		Logger: &logger_util.Logger{
 			AMF: &logger_util.LogSetting{

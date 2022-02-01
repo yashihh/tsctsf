@@ -14,6 +14,10 @@ configuration:
   debugLevel: warning
   ReportCaller: false
 
+  # packetBufferHoldTime should be longer than Paging retry-out time of AMF.
+  # unit: seconds
+  packetBufferHoldTime: 30
+
   node_id: 10.100.200.12
 
   # The IP list of the N4 interface on this UPF (Can't set to 0.0.0.0)
