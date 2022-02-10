@@ -173,7 +173,7 @@ then
     sleep 10
 
     # Run N3IWF
-    cd NFs/n3iwf && sudo -E $GOROOT/bin/go run cmd/main.go &
+    sudo -E ./bin/n3iwf -c ./config/n3iwfcfg.test.yaml &
     sleep 5
 
     # Run Test UE

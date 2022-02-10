@@ -1,5 +1,5 @@
 info:
-  version: 1.0.1
+  version: 1.0.2
   description: N3IWF initial local configuration
 
 configuration:
@@ -34,30 +34,34 @@ configuration:
                     1
                   SD:
                     112233
+
+  # --- N2 Interfaces ---
   AMFSCTPAddresses: # the IP list of N2 interfaces (SCTP) on AMF when using NGAP
     - IP:
       - 127.0.0.18
-
-
-  # --- Bind Interfaces ---
-  IKEBindAddress: # IP address of Nwu interface (IKE) on this N3IWF
-    172.16.2.100
-
-  IPSecInterfaceAddress: # IP address of IPSec virtual interface (IPsec tunnel enpoint on this N3IWF)
-    10.0.0.1
-
-  IPSecInterfaceMark: # IPSec virtual interface mark (Any value except to 0, default value is 7 if not defined)
-    5
-
-  GTPBindAddress: # IP address of N3 interface (GTP) on this N3IWF
-    127.0.0.33
-
   NASTCPPort: # TCP port which the NAS listens on
     20000
 
+  # --- Nwu Interfaces ---
+  IKEBindInterfaceName: # Nwu interface name (IKE) on this N3IWF
+    ens39
+  IKEBindAddress: # Nwu interface  IP address (IKE) on this N3IWF
+    172.16.2.100
+  IPSecTunnelAddress: # Tunnel IP address of XFRM interface on this N3IWF
+    10.0.0.1
+  UEIPAddressRange: # IP address pool allocated to UE in IPSec tunnel
+    10.0.0.0/24
+  XFRMInterfaceName: # Prefix of XFRM interface name created by N3IWF
+    xfrmi
+  XFRMInterfaceID: # XFRM interface if_id for IPSec routing (Any value except to 0, default value is 7 if not defined)
+    1
+
+  # --- N3 Interfaces ---
+  GTPBindAddress: # IP address of N3 interface (GTP) on this N3IWF
+    127.0.0.33
+
   FQDN: # FQDN of this N3IWF
     n3iwf.free5gc.org
-
 
   # --- Security ---
   PrivateKey: # Private key file path
@@ -69,15 +73,12 @@ configuration:
   Certificate: # Certificate file path
     config/TLS/n3iwf.pem
 
-  UEIPAddressRange: # IP address allocated to UE in IPSec tunnel
-    10.0.0.0/24
-
 # the kind of log output
   # debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
   # ReportCaller: enable the caller report or not, value: true or false
 logger:
   N3IWF: # The default log level is DEBUG to print SA keys. Please change it to INFO when deployed.
-    debugLevel: debug
+    debugLevel: trace
     ReportCaller: false
   NGAP:
     debugLevel: info
