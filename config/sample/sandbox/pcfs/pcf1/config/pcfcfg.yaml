@@ -27,7 +27,7 @@ configuration:
     - serviceName: npcf-ue-policy-control   # Npcf_UEPolicyControl service
   mongodb:       # the mongodb connected by this PCF
     name: free5gc                  # name of the mongodb
-    url: mongodb://localhost:27017 # a valid URL of the mongodb
+    url: mongodb://db:27017 # a valid URL of the mongodb
   locality: area1 # Name of the location where a set of AMF, SMF, PCF and UPFs are located
 
 # the kind of log output
