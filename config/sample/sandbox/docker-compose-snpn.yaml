@@ -163,7 +163,7 @@ services:
   smf1:
     container_name: smf1
     image: 10.10.0.50:5000/cht/free5gc/free5gc-smf-snpn
-    command: /bin/smf -c ./config/smfcfg.yaml -uerouting ./config/uerouting.yaml
+    command: /bin/smf -c ./config/smfcfg.yaml -u ./config/uerouting.yaml
     working_dir: /free5gc
     expose:
       - "8000"

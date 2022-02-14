@@ -4,15 +4,14 @@ services:
   upf1:
     container_name: upf1
     image: ${REPO}/free5gc-upf:${TAG} 
-    command:  sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 && iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE && ./free5gc-upfd -c ../config/upfcfg.yaml"
+    command:  sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 && iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE && ./free5gc-upfd -c ./config/upfcfg.yaml"
     volumes:
-      - ${SANDBOX_DIR}/upfs/upf1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/upfs/upf1/config/upfcfg.yaml:/free5gc/config/upfcfg.yaml
       - ./share_host_container:/share_host_container
     cap_add:
       - NET_ADMIN
     ports:
       - "2152:2152/udp"
-
     networks:
       privnet:
         aliases:
@@ -43,11 +42,11 @@ services:
   nrf1:
     container_name: nrf
     image: ${REPO}/free5gc-nrf:${TAG}
-    command: ./nrf -c ../config/nrfcfg.yaml
+    command: ./nrf
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/nrfs/nrf1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/nrfs/nrf1/config/nrfcfg.yaml:/free5gc/config/nrfcfg.yaml
     environment:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: release
@@ -69,12 +68,12 @@ services:
   amf1:
     container_name: amf
     image: ${REPO}/free5gc-amf:${TAG}
-    command: ./amf -c ../config/amfcfg.yaml
+    command: ./amf
     expose:
       - "8000"
  #     - "38412/sctp"
     volumes:
-      - ${SANDBOX_DIR}/amfs/amf1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/amfs/amf1/config/amfcfg.yaml:/free5gc/config/amfcfg.yaml
     environment:
       GIN_MODE: release
     networks:
@@ -93,16 +92,15 @@ services:
     depends_on:
       nrf1:
         condition: service_healthy
-        
 
   ausf1:
     container_name: ausf
     image: ${REPO}/free5gc-ausf:${TAG}
-    command: ./ausf -c ../config/ausfcfg.yaml
+    command: ./ausf
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/ausfs/ausf1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/ausfs/ausf1/config/ausfcfg.yaml:/free5gc/config/ausfcfg.yaml
     environment:
       GIN_MODE: release
     networks:
@@ -110,7 +108,6 @@ services:
         aliases:
           - ausf.free5gc.org
         ipv4_address: ${AUSF_IP}
-
     depends_on:
       nrf1:
         condition: service_healthy
@@ -118,11 +115,11 @@ services:
   nssf1:
     container_name: nssf
     image: ${REPO}/free5gc-nssf:${TAG}
-    command: ./nssf -c ../config/nssfcfg.yaml
+    command: ./nssf
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/nssfs/nssf1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/nssfs/nssf1/config/nssfcfg.yaml:/free5gc/config/nssfcfg.yaml
     environment:
       GIN_MODE: release
     networks:
@@ -137,11 +134,11 @@ services:
   pcf1:
     container_name: pcf
     image: ${REPO}/free5gc-pcf:${TAG}
-    command: ./pcf -c ../config/pcfcfg.yaml
+    command: ./pcf
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/pcfs/pcf1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/pcfs/pcf1/config/pcfcfg.yaml:/free5gc/config/pcfcfg.yaml
     environment:
       GIN_MODE: release
     networks:
@@ -156,11 +153,12 @@ services:
   smf1:
     container_name: smf
     image: ${REPO}/free5gc-smf:${TAG}
-    command: ./smf -c ../config/smfcfg.yaml -uerouting ../config/uerouting.yaml
+    command: ./smf
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/smfs/smf1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/smfs/smf1/config/smfcfg.yaml:/free5gc/config/smfcfg.yaml
+      - ${SANDBOX_DIR}/smfs/smf1/config/uerouting.yaml:/free5gc/config/uerouting.yaml
     environment:
       GIN_MODE: release
     networks:
@@ -168,7 +166,6 @@ services:
         aliases:
           - smf.free5gc.org
         ipv4_address: ${SMF_IP}
-
     depends_on:
       nrf1:
         condition: service_healthy
@@ -178,11 +175,11 @@ services:
   udm1:
     container_name: udm
     image: ${REPO}/free5gc-udm:${TAG}
-    command: ./udm -c ../config/udmcfg.yaml
+    command: ./udm
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/udms/udm1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/udms/udm1/config/udmcfg.yaml:/free5gc/config/udmcfg.yaml
     environment:
       GIN_MODE: release
     networks:
@@ -199,11 +196,11 @@ services:
   udr1:
     container_name: udr
     image: ${REPO}/free5gc-udr:${TAG}
-    command: ./udr -c ../config/udrcfg.yaml
+    command: ./udr
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/udrs/udr1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/udrs/udr1/config/udrcfg.yaml:/free5gc/config/udrcfg.yaml
     environment:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: release
@@ -223,7 +220,7 @@ services:
     image: ${REPO}/free5gc-n3iwf:${TAG}
     command: sh -c "./n3iwf-ipsec.sh"
     volumes:
-      - ${SANDBOX_DIR}/nwiwfs/n3iwf1/config/:/free5gc/config/
+      - ${SANDBOX_DIR}/nwiwfs/n3iwf1/config/n3iwfcfg.yaml:/free5gc/config/n3iwfcfg.yaml
     environment:
       GIN_MODE: release
     cap_add:
