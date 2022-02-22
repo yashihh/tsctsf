@@ -104,7 +104,7 @@ PID_LIST+=($SUDO_UPF_PID $UPF_PID)
 
 sleep 1
 
-NF_LIST="nrf amf smf udr pcf udm nssf ausf"
+NF_LIST="nrf amf smf udr pcf udm nssf ausf bsf"
 
 export GIN_MODE=release
 
