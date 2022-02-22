@@ -18,7 +18,7 @@ UPF_N4_IP=127.0.0.8
 IUPF_N9_IP=172.16.9.100
 PSAUPF_N4_IP=172.16.4.101
 PSAUPF_N9_IP=172.16.9.101
-IKE_BIND_IP=$AMF_N2_IP
+IKE_BIND_IP=172.16.2.99
 
 if [ $# -ne 0 ]; then
     while [ $# -gt 0 ]; do
@@ -68,8 +68,6 @@ if [ $N3IWF_ENABLE -eq 1 ]; then
     else
         IKE_BIND_IP=172.16.2.99
     fi
-    AMF_N2_IP="${IKE_BIND_IP}\n    - ${AMF_N2_IP}"
-    UPF_N3_IP=127.0.0.8
 fi
 
 if [ $PSAUPF_ENABLE -eq 1 ]; then
@@ -86,6 +84,7 @@ if [ $FREE5GC_IUPF_ENABLE -eq 1 ]; then
 fi
 
 sed -i "s/<AMF_NGAP_IP>/$AMF_N2_IP/g" $DEST_DIR/amfcfg.yaml
+sed -i "s/<AMF_NGAP_IP>/$AMF_N2_IP/g" $DEST_DIR/n3iwfcfg.yaml
 sed -i "s/<IKE_BIND_IP>/$IKE_BIND_IP/g" $DEST_DIR/n3iwfcfg.yaml
 
 sed -i "s/<SMF_N4>/$SMF_N4_IP/g" $DEST_DIR/smfcfg.yaml
