@@ -38,13 +38,13 @@ configuration:
   # --- N2 Interfaces ---
   AMFSCTPAddresses: # the IP list of N2 interfaces (SCTP) on AMF when using NGAP
     - IP:
-      - 127.0.0.18
+      - <AMF_NGAP_IP>
   NASTCPPort: # TCP port which the NAS listens on
     20000
 
   # --- Nwu Interfaces ---
   IKEBindInterfaceName: # Nwu interface name (IKE) on this N3IWF
-    ens39
+    ens192
   IKEBindAddress: # Nwu interface  IP address (IKE) on this N3IWF
     <IKE_BIND_IP>
   IPSecTunnelAddress: # Tunnel IP address of XFRM interface on this N3IWF

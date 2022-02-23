@@ -45,6 +45,8 @@ function terminate()
         sudo ip xfrm state > ${LOG_PATH}NWu_SA_state.log
         sudo ip xfrm state flush
         sudo ip xfrm policy flush
+        sudo ip link del ipsec0
+        sudo ip link del xfrmi-default
     fi
     
     for ((i=${#PID_LIST[@]}-1;i>=0;i--)); do
@@ -115,10 +117,6 @@ for NF in ${NF_LIST}; do
 done
 
 if [ $N3IWF_ENABLE -ne 0 ]; then
-    sudo ip link add name ipsec0 type vti local 172.16.2.100 remote 0.0.0.0 key 5
-    sudo ip addr add 10.0.0.1/24 dev ipsec0
-    sudo ip link set ipsec0 up
-
     sudo ./bin/n3iwf -c ./config/n3iwfcfg.yaml -l ${LOG_PATH}n3iwf.log -lc ${LOG_PATH}${LOG_NAME} &
     SUDO_N3IWF_PID=$!
     sleep 1

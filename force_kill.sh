@@ -8,5 +8,7 @@ done
 
 sudo killall tcpdump
 sudo ip link del upfgtp
+sudo ip link del ipsec0
+sudo ip link del xfrmi-default
 sudo rm /dev/mqueue/*
 
