@@ -647,7 +647,7 @@ func applyXFRMRule(ue_is_initiator bool, ifId uint32, childSecurityAssociation *
 	return nil
 }
 
-func pduSessionEstablishmentRequest(
+func sendPduSessionEstablishmentRequest(
 	pduSessionId uint8,
 	ue *RanUeContext,
 	n3Info *context.N3IWFUe,
@@ -702,7 +702,7 @@ func pduSessionEstablishmentRequest(
 
 	encryptedPayload, ok := ikeMessage.Payloads[0].(*message.Encrypted)
 	if !ok {
-		return ifaces, errors.New("Received pakcet is not and encrypted payload")
+		return ifaces, errors.New("Received pakcet is not an encrypted payload")
 	}
 	decryptedIKEPayload, err := decryptProcedure(ikeSA, ikeMessage, encryptedPayload)
 	if err != nil {
@@ -915,14 +915,12 @@ func TestNon3GPPUE(t *testing.T) {
 
 	n3iwfUDPAddr, err := net.ResolveUDPAddr("udp", n3iwfInfo_IPSecIfaceAddr+":500")
 	if err != nil {
-		t.Errorf("Resolve UDP address %s fail: %+v", n3iwfInfo_IPSecIfaceAddr+":500", err)
-		return
+		t.Fatalf("Resolve UDP address %s fail: %+v", n3iwfInfo_IPSecIfaceAddr+":500", err)
 	}
 	udpConnection, err := setupUDPSocket()
 
 	if err != nil {
-		t.Errorf("Setup UDP socket Fail: %+v", err)
-		return
+		t.Fatalf("Setup UDP socket Fail: %+v", err)
 	}
 
 	// IKE_SA_INIT
@@ -949,8 +947,7 @@ func TestNon3GPPUE(t *testing.T) {
 	generator := new(big.Int).SetUint64(handler.Group14Generator)
 	factor, ok := new(big.Int).SetString(handler.Group14PrimeString, 16)
 	if !ok {
-		t.Errorf("Generate key exchange data failed")
-		return
+		t.Fatalf("Generate key exchange data failed")
 	}
 	secert := handler.GenerateRandomNumber()
 	localPublicKeyExchangeValue := new(big.Int).Exp(generator, secert, factor).Bytes()
@@ -965,26 +962,22 @@ func TestNon3GPPUE(t *testing.T) {
 	// Send to N3IWF
 	ikeMessageData, err := ikeMessage.Encode()
 	if err != nil {
-		t.Errorf("Encode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Encode IKE Message fail: %+v", err)
 	}
 	if _, err := udpConnection.WriteToUDP(ikeMessageData, n3iwfUDPAddr); err != nil {
-		t.Errorf("Write IKE maessage fail: %+v", err)
-		return
+		t.Fatalf("Write IKE maessage fail: %+v", err)
 	}
 
 	// Receive N3IWF reply
 	buffer := make([]byte, 65535)
 	n, _, err := udpConnection.ReadFromUDP(buffer)
 	if err != nil {
-		t.Errorf("Read IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Read IKE Message fail: %+v", err)
 	}
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
-		t.Errorf("Decode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Decode IKE Message fail: %+v", err)
 	}
 
 	var sharedKeyExchangeData []byte
@@ -1024,8 +1017,7 @@ func TestNon3GPPUE(t *testing.T) {
 	}
 
 	if err := generateKeyForIKESA(ikeSecurityAssociation); err != nil {
-		t.Errorf("Generate key for IKE SA failed: %+v", err)
-		return
+		t.Fatalf("Generate key for IKE SA failed: %+v", err)
 	}
 
 	n3ue.N3IWFIKESecurityAssociation = ikeSecurityAssociation
@@ -1061,19 +1053,16 @@ func TestNon3GPPUE(t *testing.T) {
 	tsr.TrafficSelectors.BuildIndividualTrafficSelector(message.TS_IPV4_ADDR_RANGE, 0, 0, 65535, []byte{0, 0, 0, 0}, []byte{255, 255, 255, 255})
 
 	if err := encryptProcedure(ikeSecurityAssociation, ikePayload, ikeMessage); err != nil {
-		t.Errorf("Encrypting IKE message failed: %+v", err)
-		return
+		t.Fatalf("Encrypting IKE message failed: %+v", err)
 	}
 
 	// Send to N3IWF
 	ikeMessageData, err = ikeMessage.Encode()
 	if err != nil {
-		t.Errorf("Encode IKE message failed: %+v", err)
-		return
+		t.Fatalf("Encode IKE message failed: %+v", err)
 	}
 	if _, err := udpConnection.WriteToUDP(ikeMessageData, n3iwfUDPAddr); err != nil {
-		t.Errorf("Write IKE message failed: %+v", err)
-		return
+		t.Fatalf("Write IKE message failed: %+v", err)
 	}
 
 	n3ue.CreateHalfChildSA(n3ue.N3IWFIKESecurityAssociation.InitiatorMessageID, binary.BigEndian.Uint32(inboundSPI), -1)
@@ -1081,26 +1070,22 @@ func TestNon3GPPUE(t *testing.T) {
 	// Receive N3IWF reply
 	n, _, err = udpConnection.ReadFromUDP(buffer)
 	if err != nil {
-		t.Errorf("Read IKE message failed: %+v", err)
-		return
+		t.Fatalf("Read IKE message failed: %+v", err)
 	}
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
-		t.Errorf("Decode IKE message failed: %+v", err)
-		return
+		t.Fatalf("Decode IKE message failed: %+v", err)
 	}
 
 	encryptedPayload, ok := ikeMessage.Payloads[0].(*message.Encrypted)
 	if !ok {
-		t.Errorf("Received payload is not an encrypted payload")
-		return
+		t.Fatalf("Received payload is not an encrypted payload")
 	}
 
 	decryptedIKEPayload, err := decryptProcedure(ikeSecurityAssociation, ikeMessage, encryptedPayload)
 	if err != nil {
-		t.Errorf("Decrypt IKE message failed: %+v", err)
-		return
+		t.Fatalf("Decrypt IKE message failed: %+v", err)
 	}
 
 	var eapIdentifier uint8
@@ -1152,45 +1137,38 @@ func TestNon3GPPUE(t *testing.T) {
 	eap.EAPTypeData.BuildEAPExpanded(message.VendorID3GPP, message.VendorTypeEAP5G, eapVendorTypeData)
 
 	if err := encryptProcedure(ikeSecurityAssociation, ikePayload, ikeMessage); err != nil {
-		t.Errorf("Encrypt IKE message failed: %+v", err)
-		return
+		t.Fatalf("Encrypt IKE message failed: %+v", err)
 	}
 
 	// Send to N3IWF
 	ikeMessageData, err = ikeMessage.Encode()
 	if err != nil {
-		t.Errorf("Encode IKE message failed: %+v", err)
-		return
+		t.Fatalf("Encode IKE message failed: %+v", err)
 	}
 	if _, err := udpConnection.WriteToUDP(ikeMessageData, n3iwfUDPAddr); err != nil {
-		t.Errorf("Write IKE message failed: %+v", err)
-		return
+		t.Fatalf("Write IKE message failed: %+v", err)
 	}
 
 	// Receive N3IWF reply
 	n, _, err = udpConnection.ReadFromUDP(buffer)
 	if err != nil {
-		t.Errorf("Read IKE message failed: %+v", err)
-		return
+		t.Fatalf("Read IKE message failed: %+v", err)
 	}
 
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
-		t.Errorf("Decode IKE message failed: %+v", err)
-		return
+		t.Fatalf("Decode IKE message failed: %+v", err)
 	}
 
 	encryptedPayload, ok = ikeMessage.Payloads[0].(*message.Encrypted)
 	if !ok {
-		t.Errorf("Received payload is not an encrypted payload")
-		return
+		t.Fatalf("Received payload is not an encrypted payload")
 	}
 
 	decryptedIKEPayload, err = decryptProcedure(ikeSecurityAssociation, ikeMessage, encryptedPayload)
 	if err != nil {
-		t.Errorf("Decrypt IKE message failed: %+v", err)
-		return
+		t.Fatalf("Decrypt IKE message failed: %+v", err)
 	}
 
 	var eapReq *message.EAP
@@ -1198,24 +1176,21 @@ func TestNon3GPPUE(t *testing.T) {
 
 	eapReq, ok = decryptedIKEPayload[0].(*message.EAP)
 	if !ok {
-		t.Errorf("Received packet is not an EAP payload")
-		return
+		t.Fatalf("Received packet is not an EAP payload")
 	}
 
 	var decodedNAS *nas.Message
 
 	eapExpanded, ok = eapReq.EAPTypeData[0].(*message.EAPExpanded)
 	if !ok {
-		t.Errorf("The EAP data is not an EAP expended.")
-		return
+		t.Fatalf("The EAP data is not an EAP expended.")
 	}
 
 	// Decode NAS - Authentication Request
 	nasData := eapExpanded.VendorData[4:]
 	decodedNAS = new(nas.Message)
 	if err := decodedNAS.PlainNasDecode(&nasData); err != nil {
-		t.Errorf("Decode plain NAS fail: %+v", err)
-		return
+		t.Fatalf("Decode plain NAS fail: %+v", err)
 	}
 
 	// Calculate for RES*
@@ -1249,52 +1224,46 @@ func TestNon3GPPUE(t *testing.T) {
 
 	err = encryptProcedure(ikeSecurityAssociation, ikePayload, ikeMessage)
 	if err != nil {
-		t.Errorf("Encrypt IKE message failed: %+v", err)
-		return
+		t.Fatalf("Encrypt IKE message failed: %+v", err)
 	}
 
 	// Send to N3IWF
 	ikeMessageData, err = ikeMessage.Encode()
 	if err != nil {
-		t.Errorf("Encode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Encode IKE Message fail: %+v", err)
 	}
 	_, err = udpConnection.WriteToUDP(ikeMessageData, n3iwfUDPAddr)
 	if err != nil {
-		t.Errorf("Write IKE message failed: %+v", err)
-		return
+		t.Fatalf("Write IKE message failed: %+v", err)
 	}
 
 	// Receive N3IWF reply
 	n, _, err = udpConnection.ReadFromUDP(buffer)
 	if err != nil {
-		t.Errorf("Read IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Read IKE Message fail: %+v", err)
 	}
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
-		t.Errorf("Decode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Decode IKE Message fail: %+v", err)
 	}
 	encryptedPayload, ok = ikeMessage.Payloads[0].(*message.Encrypted)
 	if !ok {
-		t.Error("Received pakcet is not and encrypted payload")
-		return
+		t.Fatal("Received pakcet is not an encrypted payload")
 	}
 	decryptedIKEPayload, err = decryptProcedure(ikeSecurityAssociation, ikeMessage, encryptedPayload)
 	if err != nil {
-		t.Errorf("Decrypt IKE message failed: %+v", err)
+		t.Fatalf("Decrypt IKE message failed: %+v", err)
 		return
 	}
 	eapReq, ok = decryptedIKEPayload[0].(*message.EAP)
 	if !ok {
-		t.Error("Received packet is not an EAP payload")
+		t.Fatal("Received packet is not an EAP payload")
 		return
 	}
 	eapExpanded, ok = eapReq.EAPTypeData[0].(*message.EAPExpanded)
 	if !ok {
-		t.Error("Received packet is not an EAP expended payload")
+		t.Fatal("Received packet is not an EAP expended payload")
 		return
 	}
 
@@ -1330,52 +1299,44 @@ func TestNon3GPPUE(t *testing.T) {
 
 	err = encryptProcedure(ikeSecurityAssociation, ikePayload, ikeMessage)
 	if err != nil {
-		t.Errorf("Encrypt IKE message failed: %+v", err)
-		return
+		t.Fatalf("Encrypt IKE message failed: %+v", err)
 	}
 
 	// Send to N3IWF
 	ikeMessageData, err = ikeMessage.Encode()
 	if err != nil {
-		t.Errorf("Encode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Encode IKE Message fail: %+v", err)
 	}
 	_, err = udpConnection.WriteToUDP(ikeMessageData, n3iwfUDPAddr)
 	if err != nil {
-		t.Errorf("Write IKE message failed: %+v", err)
-		return
+		t.Fatalf("Write IKE message failed: %+v", err)
 	}
 
 	// Receive N3IWF reply
 	n, _, err = udpConnection.ReadFromUDP(buffer)
 	if err != nil {
-		t.Errorf("Read IKE Message fail: %+v", err)
+		t.Fatalf("Read IKE Message fail: %+v", err)
 		return
 	}
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
-		t.Errorf("Decode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Decode IKE Message fail: %+v", err)
 	}
 	encryptedPayload, ok = ikeMessage.Payloads[0].(*message.Encrypted)
 	if !ok {
-		t.Error("Received pakcet is not and encrypted payload")
-		return
+		t.Fatal("Received pakcet is not an encrypted payload")
 	}
 	decryptedIKEPayload, err = decryptProcedure(ikeSecurityAssociation, ikeMessage, encryptedPayload)
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	eapReq, ok = decryptedIKEPayload[0].(*message.EAP)
 	if !ok {
-		t.Error("Received packet is not an EAP payload")
-		return
+		t.Fatal("Received packet is not an EAP payload")
 	}
 	if eapReq.Code != message.EAPCodeSuccess {
-		t.Error("Not Success")
-		return
+		t.Fatal("Not Success")
 	}
 
 	// IKE_AUTH - Authentication
@@ -1395,43 +1356,37 @@ func TestNon3GPPUE(t *testing.T) {
 
 	err = encryptProcedure(ikeSecurityAssociation, ikePayload, ikeMessage)
 	if err != nil {
-		t.Errorf("Encrypt IKE message failed: %+v", err)
-		return
+		t.Fatalf("Encrypt IKE message failed: %+v", err)
 	}
 
 	// Send to N3IWF
 	ikeMessageData, err = ikeMessage.Encode()
 	if err != nil {
-		t.Errorf("Encode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Encode IKE Message fail: %+v", err)
 	}
 	_, err = udpConnection.WriteToUDP(ikeMessageData, n3iwfUDPAddr)
 	if err != nil {
-		t.Errorf("Write IKE message failed: %+v", err)
-		return
+		t.Fatalf("Write IKE message failed: %+v", err)
 	}
 
 	// Receive N3IWF reply
 	n, _, err = udpConnection.ReadFromUDP(buffer)
 	if err != nil {
-		t.Errorf("Read IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Read IKE Message fail: %+v", err)
 	}
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
-		t.Errorf("Decode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Decode IKE Message fail: %+v", err)
 	}
 	encryptedPayload, ok = ikeMessage.Payloads[0].(*message.Encrypted)
 	if !ok {
-		t.Error("Received pakcet is not and encrypted payload")
-		return
+		t.Fatal("Received pakcet is not an encrypted payload")
 	}
 	decryptedIKEPayload, err = decryptProcedure(ikeSecurityAssociation, ikeMessage, encryptedPayload)
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
+
 	}
 
 	// AUTH, SAr2, TSi, Tsr, N(NAS_IP_ADDRESS), N(NAS_TCP_PORT)
@@ -1479,23 +1434,20 @@ func TestNon3GPPUE(t *testing.T) {
 	childSecurityAssociationContext, err := n3ue.CompleteChildSA(
 		0x01, OutboundSPI, n3ue.N3IWFIKESecurityAssociation.IKEAuthResponseSA)
 	if err != nil {
-		t.Errorf("Create child security association context failed: %+v", err)
-		return
+		t.Fatalf("Create child security association context failed: %+v", err)
 	}
 	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContext,
 		responseTrafficSelectorInitiator.TrafficSelectors[0],
 		responseTrafficSelectorResponder.TrafficSelectors[0])
 
 	if err != nil {
-		t.Errorf("Parse IP address to child security association failed: %+v", err)
-		return
+		t.Fatalf("Parse IP address to child security association failed: %+v", err)
 	}
 	// Select TCP traffic
 	childSecurityAssociationContext.SelectedIPProtocol = unix.IPPROTO_TCP
 
 	if err := generateKeyForChildSA(ikeSecurityAssociation, childSecurityAssociationContext); err != nil {
-		t.Errorf("Generate key for child SA failed: %+v", err)
-		return
+		t.Fatalf("Generate key for child SA failed: %+v", err)
 	}
 
 	var linkIPSec netlink.Link
@@ -1503,13 +1455,12 @@ func TestNon3GPPUE(t *testing.T) {
 	// Setup interface for ipsec
 	newXfrmiName := fmt.Sprintf("%s-default", n3ueInfo_XfrmiName)
 	if linkIPSec, err = setupIPsecXfrmi(newXfrmiName, n3ueInfo_IPSecIfaceName, n3ueInfo_XfrmiId, ueInnerAddr); err != nil {
-		t.Errorf("Setup XFRM interface %s fail: %+v", newXfrmiName, err)
-		return
+		t.Fatalf("Setup XFRM interface %s fail: %+v", newXfrmiName, err)
 	}
 
 	defer func() {
 		if err := netlink.LinkDel(linkIPSec); err != nil {
-			t.Errorf("Delete XFRM interface %s fail: %+v", newXfrmiName, err)
+			t.Fatalf("Delete XFRM interface %s fail: %+v", newXfrmiName, err)
 		} else {
 			t.Logf("Delete XFRM interface: %s", newXfrmiName)
 		}
@@ -1517,8 +1468,7 @@ func TestNon3GPPUE(t *testing.T) {
 
 	// Aplly XFRM rules
 	if err = applyXFRMRule(true, n3ueInfo_XfrmiId, childSecurityAssociationContext); err != nil {
-		t.Errorf("Applying XFRM rules failed: %+v", err)
-		return
+		t.Fatalf("Applying XFRM rules failed: %+v", err)
 	}
 
 	defer func() {
@@ -1531,23 +1481,24 @@ func TestNon3GPPUE(t *testing.T) {
 	}
 	tcpConnWithN3IWF, err := net.DialTCP("tcp", localTCPAddr, n3iwfNASAddr)
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 
 	nasEnv := make([]byte, 65535)
 
 	n, err = tcpConnWithN3IWF.Read(nasEnv)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return
 	}
 
-	nasEnv, n = DecapNasPduFromEnvelope(nasEnv[:n])
+	nasEnv, n, err = DecapNasPduFromEnvelope(nasEnv[:n])
+	if err != nil {
+		t.Fatal(err)
+	}
 	nasMsg, err := NASDecode(ue, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, nasEnv[:n])
 	if err != nil {
-		t.Errorf("NAS Decode Fail: %+v", err)
-		return
+		t.Fatalf("NAS Decode Fail: %+v", err)
 	}
 
 	spew.Config.Indent = "\t"
@@ -1558,12 +1509,12 @@ func TestNon3GPPUE(t *testing.T) {
 	pdu = nasTestpacket.GetRegistrationComplete(nil)
 	pdu, err = EncodeNasPduInEnvelopeWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return
 	}
 	_, err = tcpConnWithN3IWF.Write(pdu)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return
 	}
 
@@ -1580,37 +1531,35 @@ func TestNon3GPPUE(t *testing.T) {
 	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(pduSessionId, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet", &sNssai)
 	pdu, err = EncodeNasPduInEnvelopeWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return
 	}
 	_, err = tcpConnWithN3IWF.Write(pdu)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return
 	}
 
 	// Receive N3IWF reply
 	n, _, err = udpConnection.ReadFromUDP(buffer)
 	if err != nil {
-		t.Errorf("Read IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Read IKE Message fail: %+v", err)
 	}
 	ikeMessage.Payloads.Reset()
 	err = ikeMessage.Decode(buffer[:n])
 	if err != nil {
-		t.Errorf("Decode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Decode IKE Message fail: %+v", err)
 	}
 	t.Logf("IKE message exchange type: %d", ikeMessage.ExchangeType)
 	t.Logf("IKE message ID: %d", ikeMessage.MessageID)
 	encryptedPayload, ok = ikeMessage.Payloads[0].(*message.Encrypted)
 	if !ok {
-		t.Error("Received pakcet is not and encrypted payload")
+		t.Fatal("Received pakcet is not an encrypted payload")
 		return
 	}
 	decryptedIKEPayload, err = decryptProcedure(ikeSecurityAssociation, ikeMessage, encryptedPayload)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return
 	}
 
@@ -1675,20 +1624,17 @@ func TestNon3GPPUE(t *testing.T) {
 	ikePayload.BuildNonce(localNonce)
 
 	if err := encryptProcedure(ikeSecurityAssociation, ikePayload, ikeMessage); err != nil {
-		t.Errorf("Encrypt IKE message failed: %+v", err)
-		return
+		t.Fatalf("Encrypt IKE message failed: %+v", err)
 	}
 
 	// Send to N3IWF
 	ikeMessageData, err = ikeMessage.Encode()
 	if err != nil {
-		t.Errorf("Encode IKE Message fail: %+v", err)
-		return
+		t.Fatalf("Encode IKE Message fail: %+v", err)
 	}
 	_, err = udpConnection.WriteToUDP(ikeMessageData, n3iwfUDPAddr)
 	if err != nil {
-		t.Errorf("Write IKE message failed: %+v", err)
-		return
+		t.Fatalf("Write IKE message failed: %+v", err)
 	}
 
 	n3ue.CreateHalfChildSA(n3ue.N3IWFIKESecurityAssociation.ResponderMessageID, binary.BigEndian.Uint32(inboundSPI), -1)
@@ -1696,37 +1642,33 @@ func TestNon3GPPUE(t *testing.T) {
 		n3ue.N3IWFIKESecurityAssociation.ResponderMessageID, OutboundSPI, responseSecurityAssociation)
 
 	if err != nil {
-		t.Errorf("Create child security association context failed: %+v", err)
-		return
+		t.Fatalf("Create child security association context failed: %+v", err)
 	}
 	err = parseIPAddressInformationToChildSecurityAssociation(childSecurityAssociationContextUserPlane, responseTrafficSelectorResponder.TrafficSelectors[0], responseTrafficSelectorInitiator.TrafficSelectors[0])
 	if err != nil {
-		t.Errorf("Parse IP address to child security association failed: %+v", err)
-		return
+		t.Fatalf("Parse IP address to child security association failed: %+v", err)
 	}
 	// Select GRE traffic
 	childSecurityAssociationContextUserPlane.SelectedIPProtocol = unix.IPPROTO_GRE
 
 	if err := generateKeyForChildSA(ikeSecurityAssociation, childSecurityAssociationContextUserPlane); err != nil {
-		t.Errorf("Generate key for child SA failed: %+v", err)
-		return
+		t.Fatalf("Generate key for child SA failed: %+v", err)
 	}
 
 	// Aplly XFRM rules
 	if err = applyXFRMRule(false, n3ueInfo_XfrmiId, childSecurityAssociationContextUserPlane); err != nil {
-		t.Errorf("Applying XFRM rules failed: %+v", err)
-		return
+		t.Fatalf("Applying XFRM rules failed: %+v", err)
 	}
 
 	var pduAddress net.IP
 
 	// Read NAS from N3IWF
 	if n, err := tcpConnWithN3IWF.Read(buffer); err != nil {
-		t.Errorf("Read NAS Message Fail:%+v", err)
+		t.Fatalf("Read NAS Message Fail:%+v", err)
 	} else {
 		nasMsg, err := DecodePDUSessionEstablishmentAccept(ue, n, buffer)
 		if err != nil {
-			t.Errorf("DecodePDUSessionEstablishmentAccept Fail: %+v", err)
+			t.Fatalf("DecodePDUSessionEstablishmentAccept Fail: %+v", err)
 		}
 
 		spew.Config.Indent = "\t"
@@ -1734,7 +1676,7 @@ func TestNon3GPPUE(t *testing.T) {
 		t.Log("Dump DecodePDUSessionEstablishmentAccept:\n", nasStr)
 		pduAddress, err = GetPDUAddress(nasMsg.GsmMessage.PDUSessionEstablishmentAccept)
 		if err != nil {
-			t.Errorf("GetPDUAddress Fail: %+v", err)
+			t.Fatalf("GetPDUAddress Fail: %+v", err)
 		}
 
 		t.Logf("PDU Address: %s", pduAddress.String())
@@ -1745,8 +1687,7 @@ func TestNon3GPPUE(t *testing.T) {
 	newGREName := fmt.Sprintf("%s-id-%d", n3ueInfo_GreIfaceName, n3ueInfo_XfrmiId)
 
 	if linkGRE, err = setupGreTunnel(newGREName, newXfrmiName, ueInnerAddr.IP, upIPAddr, pduAddress, QoSInfo, t); err != nil {
-		t.Errorf("Setup GRE tunnel %s Fail %+v", newGREName, err)
-		return
+		t.Fatalf("Setup GRE tunnel %s Fail %+v", newGREName, err)
 	}
 
 	defer func() {
@@ -1763,8 +1704,7 @@ func TestNon3GPPUE(t *testing.T) {
 		},
 	}
 	if err := netlink.RouteAdd(upRoute); err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 
 	for i := 1; i <= 3; i++ {
@@ -1773,8 +1713,8 @@ func TestNon3GPPUE(t *testing.T) {
 			err    error
 		)
 		t.Logf("%d times PDU Session Est Request Start", i+1)
-		if ifaces, err = pduSessionEstablishmentRequest(pduSessionId+uint8(i), ue, n3ue, ikeSecurityAssociation, udpConnection, tcpConnWithN3IWF, t); err != nil {
-			t.Errorf("Session Est Request Fail: %+v", err)
+		if ifaces, err = sendPduSessionEstablishmentRequest(pduSessionId+uint8(i), ue, n3ue, ikeSecurityAssociation, udpConnection, tcpConnWithN3IWF, t); err != nil {
+			t.Fatalf("Session Est Request Fail: %+v", err)
 		} else {
 			t.Logf("Create %d interfaces", len(ifaces))
 		}
@@ -1782,7 +1722,7 @@ func TestNon3GPPUE(t *testing.T) {
 		defer func() {
 			for _, iface := range ifaces {
 				if err := netlink.LinkDel(iface); err != nil {
-					t.Errorf("Delete interface %s fail: %+v", iface.Attrs().Name, err)
+					t.Fatalf("Delete interface %s fail: %+v", iface.Attrs().Name, err)
 				} else {
 					t.Logf("Delete interface: %s", iface.Attrs().Name)
 				}
@@ -1793,7 +1733,7 @@ func TestNon3GPPUE(t *testing.T) {
 	// Ping remote
 	pinger, err := ping.NewPinger("10.60.0.101")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return
 	}
 
@@ -1824,7 +1764,7 @@ func TestNon3GPPUE(t *testing.T) {
 
 	stats := pinger.Statistics()
 	if stats.PacketsSent != stats.PacketsRecv {
-		t.Error("Ping Failed")
+		t.Fatal("Ping Failed")
 		return
 	}
 }

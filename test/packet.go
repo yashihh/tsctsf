@@ -21,7 +21,11 @@ func DecodePDUSessionEstablishmentAccept(ue *RanUeContext, length int, buffer []
 		return nil, fmt.Errorf("Empty buffer")
 	}
 
-	nasEnv, n := DecapNasPduFromEnvelope(buffer[:length])
+	nasEnv, n, err := DecapNasPduFromEnvelope(buffer[:length])
+	if err != nil {
+		return nil, err
+	}
+
 	nasMsg, err := NASDecode(ue, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, nasEnv[:n])
 	if err != nil {
 		return nil, fmt.Errorf("NAS Decode Fail: %+v", err)
@@ -121,16 +125,19 @@ func EncodeNasPduInEnvelopeWithSecurity(ue *RanUeContext, pdu []byte, securityHe
 
 }
 
-func DecapNasPduFromEnvelope(envelop []byte) ([]byte, int) {
+func DecapNasPduFromEnvelope(envelop []byte) ([]byte, int, error) {
 	// According to TS 24.502 8.2.4 and TS 24.502 9.4,
 	// a NAS message envelope = Length | NAS Message
 
 	// Get NAS Message Length
 	nasLen := binary.BigEndian.Uint16(envelop[:2])
+	if uint16(len(envelop)) < 2+nasLen {
+		return envelop, 0, fmt.Errorf("NAS message envelope need to more than 2 bytes")
+	}
 	nasMsg := make([]byte, nasLen)
 	copy(nasMsg, envelop[2:2+nasLen])
 
-	return nasMsg, int(nasLen)
+	return nasMsg, int(nasLen), nil
 }
 
 func GetUEContextReleaseComplete(amfUeNgapID int64, ranUeNgapID int64, pduSessionIDList []int64) ([]byte, error) {
