@@ -43,7 +43,9 @@ func DecodePDUSessionEstablishmentAccept(ue *RanUeContext, length int, buffer []
 
 // This function is used for nas packet
 func GetPDUAddress(accept *nasMessage.PDUSessionEstablishmentAccept) (net.IP, error) {
-	if addr := accept.PDUAddress; addr != nil {
+	if accept == nil {
+		return nil, fmt.Errorf("PDUSessionEstablishmentAccept is nil")
+	} else if addr := accept.PDUAddress; addr != nil {
 		PDUSessionTypeValue := addr.GetPDUSessionTypeValue()
 		if PDUSessionTypeValue == nasMessage.PDUSessionTypeIPv4 {
 			ip := net.IP(addr.Octet[1:5])
@@ -129,10 +131,13 @@ func DecapNasPduFromEnvelope(envelop []byte) ([]byte, int, error) {
 	// According to TS 24.502 8.2.4 and TS 24.502 9.4,
 	// a NAS message envelope = Length | NAS Message
 
+	if uint16(len(envelop)) < 2 {
+		return envelop, 0, fmt.Errorf("NAS message envelope is less than 2 bytes")
+	}
 	// Get NAS Message Length
 	nasLen := binary.BigEndian.Uint16(envelop[:2])
 	if uint16(len(envelop)) < 2+nasLen {
-		return envelop, 0, fmt.Errorf("NAS message envelope need to more than 2 bytes")
+		return envelop, 0, fmt.Errorf("NAS message envelope is less than the sum of 2 and naslen")
 	}
 	nasMsg := make([]byte, nasLen)
 	copy(nasMsg, envelop[2:2+nasLen])
