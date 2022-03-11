@@ -242,5 +242,4 @@ func NASDecode(ue *RanUeContext, securityHeaderType uint8, payload []byte) (msg 
 		fmt.Println("err", err)
 		return msg, err
 	}
-
 }
