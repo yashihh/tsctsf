@@ -4,12 +4,57 @@ import (
 
 	// "bitbucket.org/free5gc-team/openapi/models"
 
+	"encoding/binary"
+	"fmt"
+	"net"
 	"test/ngapTestpacket"
 
 	"bitbucket.org/free5gc-team/nas"
 	"bitbucket.org/free5gc-team/nas/nasMessage"
 	"bitbucket.org/free5gc-team/ngap"
 )
+
+// This function is used for nas packet
+func DecodePDUSessionEstablishmentAccept(ue *RanUeContext, length int, buffer []byte) (*nas.Message, error) {
+
+	if length == 0 {
+		return nil, fmt.Errorf("Empty buffer")
+	}
+
+	nasEnv, n, err := DecapNasPduFromEnvelope(buffer[:length])
+	if err != nil {
+		return nil, err
+	}
+
+	nasMsg, err := NASDecode(ue, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, nasEnv[:n])
+	if err != nil {
+		return nil, fmt.Errorf("NAS Decode Fail: %+v", err)
+	}
+
+	// Retrieve GSM from GmmMessage.DLNASTransport.PayloadContainer and decode
+	payloadContainer := nasMsg.GmmMessage.DLNASTransport.PayloadContainer
+	byteArray := payloadContainer.Buffer[:payloadContainer.Len]
+	if err := nasMsg.GsmMessageDecode(&byteArray); err != nil {
+		return nil, fmt.Errorf("NAS Decode Fail: %+v", err)
+	}
+
+	return nasMsg, nil
+}
+
+// This function is used for nas packet
+func GetPDUAddress(accept *nasMessage.PDUSessionEstablishmentAccept) (net.IP, error) {
+	if accept == nil {
+		return nil, fmt.Errorf("PDUSessionEstablishmentAccept is nil")
+	} else if addr := accept.PDUAddress; addr != nil {
+		PDUSessionTypeValue := addr.GetPDUSessionTypeValue()
+		if PDUSessionTypeValue == nasMessage.PDUSessionTypeIPv4 {
+			ip := net.IP(addr.Octet[1:5])
+			return ip, nil
+		}
+	}
+
+	return nil, fmt.Errorf("PDUAddress is nil")
+}
 
 func GetNGSetupRequest(gnbId []byte, bitlength uint64, name string) ([]byte, error) {
 	message := ngapTestpacket.BuildNGSetupRequest()
@@ -80,6 +125,24 @@ func EncodeNasPduInEnvelopeWithSecurity(ue *RanUeContext, pdu []byte, securityHe
 	}
 	return NASEnvelopeEncode(ue, m, securityContextAvailable, newSecurityContext)
 
+}
+
+func DecapNasPduFromEnvelope(envelop []byte) ([]byte, int, error) {
+	// According to TS 24.502 8.2.4 and TS 24.502 9.4,
+	// a NAS message envelope = Length | NAS Message
+
+	if uint16(len(envelop)) < 2 {
+		return envelop, 0, fmt.Errorf("NAS message envelope is less than 2 bytes")
+	}
+	// Get NAS Message Length
+	nasLen := binary.BigEndian.Uint16(envelop[:2])
+	if uint16(len(envelop)) < 2+nasLen {
+		return envelop, 0, fmt.Errorf("NAS message envelope is less than the sum of 2 and naslen")
+	}
+	nasMsg := make([]byte, nasLen)
+	copy(nasMsg, envelop[2:2+nasLen])
+
+	return nasMsg, int(nasLen), nil
 }
 
 func GetUEContextReleaseComplete(amfUeNgapID int64, ranUeNgapID int64, pduSessionIDList []int64) ([]byte, error) {
