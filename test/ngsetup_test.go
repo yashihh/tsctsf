@@ -20,6 +20,8 @@ import (
 	ausf_service "bitbucket.org/free5gc-team/ausf/pkg/service"
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/ngap"
+	bsf_factory "bitbucket.org/free5gc-team/bsf/pkg/factory"
+	bsf_service "bitbucket.org/free5gc-team/bsf/pkg/service"
 	nrf_factory "bitbucket.org/free5gc-team/nrf/pkg/factory"
 	nrf_service "bitbucket.org/free5gc-team/nrf/pkg/service"
 	nssf_factory "bitbucket.org/free5gc-team/nssf/pkg/factory"
@@ -48,6 +50,7 @@ var NFs = []app.NetworkFunction{
 	&udm_service.UDM{},
 	&nssf_service.NSSF{},
 	&ausf_service.AUSF{},
+	&bsf_service.BSF{},
 	//&n3iwf_service.N3IWF{},
 }
 
@@ -105,6 +108,10 @@ func init() {
 
 		if err := ausfConfig(); err != nil {
 			fmt.Printf("AUSF Config failed: %v\n", err)
+		}
+
+		if err := bsfConfig(); err != nil {
+			fmt.Printf("BSF Config failed: %v\n", err)
 		}
 
 		for _, service := range NFs {
@@ -1401,6 +1408,47 @@ func ausfConfig() error {
 	if _, err := ausf_factory.AusfConfig.Validate(); err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func bsfConfig() error {
+	bsf_factory.BsfConfig = bsf_factory.Config{
+		Info: &bsf_factory.Info{
+			Version:     "1.0.0",
+			Description: "BSF initial test configuration",
+		},
+		Configuration: &bsf_factory.Configuration{
+			Sbi: &bsf_factory.Sbi{
+				Scheme:       "http",
+				RegisterIPv4: "127.0.0.21",
+				BindingIPv4:  "127.0.0.21",
+				Port:         8000,
+				Tls: &bsf_factory.Tls{
+					Pem: "config/TLS/bsf.pem",
+					Key: "config/TLS/bsf.key",
+				},
+			},
+			ServiceNameList: []string{
+				"nbsf-management",
+			},
+			NrfUri: "http://127.0.0.10:8000",
+		},
+		Logger: &logger_util.Logger{
+			BSF: &logger_util.LogSetting{
+				DebugLevel:   "info",
+				ReportCaller: false,
+			},
+		},
+	}
+
+	if err := bsf_factory.CheckConfigVersion(); err != nil {
+		return err
+	}
+
+	// if _, err := bsf_factory.BsfConfig.Validate(); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

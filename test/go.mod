@@ -6,20 +6,22 @@ require (
 	bitbucket.org/free5gc-team/amf v0.0.0
 	bitbucket.org/free5gc-team/aper v0.0.0-20210812055911-3c0f9b418266
 	bitbucket.org/free5gc-team/ausf v0.0.0
+	bitbucket.org/free5gc-team/bsf v0.0.0
 	bitbucket.org/free5gc-team/n3iwf v0.0.0
-	bitbucket.org/free5gc-team/nas v0.0.0-20211116041141-def2de648f05
-	bitbucket.org/free5gc-team/ngap v0.0.0-20211014134938-795d0e95d472
+	bitbucket.org/free5gc-team/nas v0.0.0-20220321031018-649c3b9d4eef
+	bitbucket.org/free5gc-team/ngap v0.0.0-20220318005908-d05ca4df677d
 	bitbucket.org/free5gc-team/nrf v0.0.0
 	bitbucket.org/free5gc-team/nssf v0.0.0
-	bitbucket.org/free5gc-team/openapi v0.0.0-20211014134522-20e0d874611c
+	bitbucket.org/free5gc-team/openapi v0.0.0-20220309072330-923e8c97eac7
 	bitbucket.org/free5gc-team/pcf v0.0.0
 	bitbucket.org/free5gc-team/smf v0.0.0
 	bitbucket.org/free5gc-team/udm v0.0.0
 	bitbucket.org/free5gc-team/udr v0.0.0
-	bitbucket.org/free5gc-team/util v0.0.0-20210819050407-27603454f4e4
+	bitbucket.org/free5gc-team/util v0.0.0-20220318010554-04d4720b6e4b
 	git.cs.nctu.edu.tw/calee/sctp v1.1.0
 	github.com/antihax/optional v1.0.0
 	github.com/calee0219/fatal v0.0.1
+	github.com/davecgh/go-spew v1.1.1
 	github.com/gin-gonic/gin v1.7.3
 	github.com/go-ping/ping v0.0.0-20210506233800-ff8be3320020
 	github.com/google/uuid v1.3.0
@@ -36,6 +38,7 @@ require (
 replace (
 	bitbucket.org/free5gc-team/amf => ../NFs/amf
 	bitbucket.org/free5gc-team/ausf => ../NFs/ausf
+	bitbucket.org/free5gc-team/bsf => ../NFs/bsf
 	bitbucket.org/free5gc-team/n3iwf => ../NFs/n3iwf
 	bitbucket.org/free5gc-team/nrf => ../NFs/nrf
 	bitbucket.org/free5gc-team/nssf => ../NFs/nssf
