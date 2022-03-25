@@ -74,26 +74,29 @@ function terminate()
         fi
         sudo ip xfrm policy flush
         sudo ip xfrm state flush
-        sudo ip link del veth2
         sudo ip netns del ${UENS}
-
-        # Remove all GRE interfaces
-        GREs=$(ip link show type gre | awk 'NR%2==1 {print $2}' | cut -d @ -f 1)
-        for GRE in ${GREs}; do
-            sudo ip link del ${GRE}
-        done
-
-        # Remove all XFRM interfaces
-        XFRMIs=$(ip link show type xfrm | awk 'NR%2==1 {print $2}' | cut -d @ -f 1)
-        for XFRMI in ${XFRMIs}; do
-            sudo ip link del ${XFRMI}
-        done
-
+        removeN3iwfInterfaces
+        sudo ip link del veth2
         sudo killall n3iwf
         killall test.test
     fi
 
     sleep 5
+}
+
+function removeN3iwfInterfaces()
+{
+    # Remove all GRE interfaces
+    GREs=$(ip link show type gre | awk 'NR%2==1 {print $2}' | cut -d @ -f 1)
+    for GRE in ${GREs}; do
+        sudo ip link del ${GRE}
+    done
+
+    # Remove all XFRM interfaces
+    XFRMIs=$(ip link show type xfrm | awk 'NR%2==1 {print $2}' | cut -d @ -f 1)
+    for XFRMI in ${XFRMIs}; do
+        sudo ip link del ${XFRMI}
+    done
 }
 
 function handleSIGINT()
@@ -166,6 +169,7 @@ sleep 2
 
 if [[ "$1" == "TestNon3GPP" ]]
 then
+    removeN3iwfInterfaces
     # setup N3UE's namespace, interfaces for IPsec
     setupN3ueEnv
     if [ ${DUMP_NS} ]
