@@ -9,6 +9,10 @@ done
 sudo killall tcpdump
 sudo ip link del upfgtp
 sudo ip link del ipsec0
-sudo ip link del xfrmi-default
+XFRMI_LIST=($(ip link | grep xfrmi | awk -F'[:,@]' '{print $2}'))
+for XFRMI_IF in "${XFRMI_LIST[@]}"
+do
+    sudo ip link del $XFRMI_IF
+done
 sudo rm /dev/mqueue/*
 

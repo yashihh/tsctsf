@@ -46,7 +46,11 @@ function terminate()
         sudo ip xfrm state flush
         sudo ip xfrm policy flush
         sudo ip link del ipsec0
-        sudo ip link del xfrmi-default
+        XFRMI_LIST=($(ip link | grep xfrmi | awk -F'[:,@]' '{print $2}'))
+        for XFRMI_IF in "${XFRMI_LIST[@]}"
+        do
+            sudo ip link del $XFRMI_IF
+        done
     fi
     
     for ((i=${#PID_LIST[@]}-1;i>=0;i--)); do
