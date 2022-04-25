@@ -27,7 +27,8 @@ configuration:
   # --- N2 Interfaces ---
   AMFSCTPAddresses: # the IP list of N2 interfaces (SCTP) on AMF when using NGAP
     - IP:
-      - 192.168.1.10
+        - 192.168.1.10
+      Port: 38412
   NASTCPPort: 20000 # TCP port which the NAS listens on
 
   # --- Nwu Interfaces ---
