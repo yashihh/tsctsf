@@ -115,6 +115,7 @@ func init() {
 		}
 
 		for _, service := range NFs {
+			service.SetLogLevel()
 			go service.Start()
 			time.Sleep(200 * time.Millisecond)
 		}
@@ -523,7 +524,7 @@ func smfConfig(testID string) error {
 								Sd:  "010203",
 							},
 							DnnUpfInfoList: []*smf_factory.DnnUpfInfoItem{{
-								Dnn:      "internet",
+								Dnn: "internet",
 								DnaiList: dnaiList,
 								Pools: []*smf_factory.UEIPPool{{
 									Cidr: "10.60.0.0/16",
