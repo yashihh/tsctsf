@@ -6,7 +6,6 @@ require (
 	bitbucket.org/free5gc-team/amf v0.0.0
 	bitbucket.org/free5gc-team/aper v0.0.0-20220401145518-cfd1a7865d35
 	bitbucket.org/free5gc-team/ausf v0.0.0
-	bitbucket.org/free5gc-team/bsf v0.0.0
 	bitbucket.org/free5gc-team/n3iwf v0.0.0
 	bitbucket.org/free5gc-team/nas v0.0.0-20220321031018-649c3b9d4eef
 	bitbucket.org/free5gc-team/ngap v0.0.0-20220401150948-ee175234d5fb
@@ -38,7 +37,6 @@ require (
 replace (
 	bitbucket.org/free5gc-team/amf => ../NFs/amf
 	bitbucket.org/free5gc-team/ausf => ../NFs/ausf
-	bitbucket.org/free5gc-team/bsf => ../NFs/bsf
 	bitbucket.org/free5gc-team/n3iwf => ../NFs/n3iwf
 	bitbucket.org/free5gc-team/nrf => ../NFs/nrf
 	bitbucket.org/free5gc-team/nssf => ../NFs/nssf

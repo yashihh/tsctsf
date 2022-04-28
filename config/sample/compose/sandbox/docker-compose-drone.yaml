@@ -215,25 +215,6 @@ services:
       nrf1:
         condition: service_healthy
 
-  bsf1:
-    container_name: bsf
-    image: ${REPO}/free5gc-bsf:${TAG}
-    command: ./bsf
-    expose:
-      - "8000"
-    volumes:
-      - ${SANDBOX_DIR}/bsfs/bsf1/config/bsfcfg.yaml:/free5gc/config/bsfcfg.yaml
-    environment:
-      GIN_MODE: release
-    networks:
-      privnet:
-        aliases:
-          - bsf.free5gc.org
-        ipv4_address: ${BSF_IP}
-    depends_on:
-      nrf1:
-        condition: service_healthy
-
   n3iwf1:
     container_name: n3iwf
     image: ${REPO}/free5gc-n3iwf:${TAG}
