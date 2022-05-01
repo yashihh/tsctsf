@@ -16,7 +16,7 @@ require (
 	bitbucket.org/free5gc-team/smf v0.0.0
 	bitbucket.org/free5gc-team/udm v0.0.0
 	bitbucket.org/free5gc-team/udr v0.0.0
-	bitbucket.org/free5gc-team/util v0.0.0-20220414055829-5031e5f9cfe8
+	bitbucket.org/free5gc-team/util v0.0.0-20220501150925-a07647243fa5
 	git.cs.nctu.edu.tw/calee/sctp v1.1.0
 	github.com/antihax/optional v1.0.0
 	github.com/calee0219/fatal v0.0.1
@@ -28,7 +28,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/urfave/cli v1.22.5
 	github.com/vishvananda/netlink v1.1.0
-	go.mongodb.org/mongo-driver v1.7.1
+	go.mongodb.org/mongo-driver v1.8.4
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf
 	gopkg.in/yaml.v2 v2.4.0
