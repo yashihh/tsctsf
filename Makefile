@@ -3,9 +3,8 @@ GO_SRC_PATH = NFs
 C_BUILD_PATH = build
 ROOT_PATH = $(shell pwd)
 
-NF = $(GO_NF) $(C_NF)
+NF = $(GO_NF)
 GO_NF = amf ausf nrf nssf pcf smf udm udr n3iwf go-upf
-C_NF = upf
 
 WEBCONSOLE = webconsole
 
@@ -49,15 +48,6 @@ $(GO_BIN_PATH)/%: $(NF_GO_FILES)
 
 vpath %.go $(addprefix $(GO_SRC_PATH)/, $(GO_NF))
 
-$(C_NF): % :
-	@echo "Start building $@...."
-	cd $(GO_SRC_PATH)/$@ && \
-	rm -rf $(C_BUILD_PATH) && \
-	mkdir -p $(C_BUILD_PATH) && \
-	cd ./$(C_BUILD_PATH) && \
-	cmake .. && \
-	make -j$(nproc)
-
 $(WEBCONSOLE): $(WEBCONSOLE)/$(GO_BIN_PATH)/$(WEBCONSOLE)
 
 $(WEBCONSOLE)/$(GO_BIN_PATH)/$(WEBCONSOLE): $(WEBCONSOLE)/server.go  $(WEBCONSOLE_GO_FILES)
@@ -72,6 +62,5 @@ $(WEBCONSOLE)/$(GO_BIN_PATH)/$(WEBCONSOLE): $(WEBCONSOLE)/server.go  $(WEBCONSOL
 
 clean:
 	rm -rf $(addprefix $(GO_BIN_PATH)/, $(GO_NF))
-	rm -rf $(addprefix $(GO_SRC_PATH)/, $(addsuffix /$(C_BUILD_PATH), $(C_NF)))
 	rm -rf $(WEBCONSOLE)/$(GO_BIN_PATH)/$(WEBCONSOLE)
 
