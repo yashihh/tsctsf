@@ -25,9 +25,9 @@
 [submodule "udr"]
 	path = NFs/udr
 	url = https://bitbucket.org/free5gc-team/udr.git
-[submodule "go-upf"]
-	path = NFs/go-upf
-	url = https://bitbucket.org/free5gc-team/upf.git
+[submodule "upf"]
+    path = NFs/upf
+    url = https://bitbucket.org/free5gc-team/go-upf.git
 [submodule "webconsole"]
 	path = webconsole
 	url = https://bitbucket.org/free5gc-team/webconsole.git

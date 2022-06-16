@@ -98,15 +98,15 @@ for i in $(seq -f "%02g" 1 $UPF_NUM); do
         TCPDUMP_PID_[${i}]=$(sudo ip netns pids "${UPFNS}${i}")
     fi
 
-    sed -i -e "s/10.200.200.10./10.200.200.1${i}/g" ./config/goupfcfg.testulcl.yaml
+    sed -i -e "s/10.200.200.10./10.200.200.1${i}/g" ./config/upfcfg.testulcl.yaml
     if [ ${i} -eq 02 ]; then
-        sed -i -e "s/internet/internet2/g" ./config/goupfcfg.testulcl.yaml
+        sed -i -e "s/internet/internet2/g" ./config/upfcfg.testulcl.yaml
     else
-        sed -i -e "s/internet2/internet/g" ./config/goupfcfg.testulcl.yaml
+        sed -i -e "s/internet2/internet/g" ./config/upfcfg.testulcl.yaml
     fi
-    sudo -E ip netns exec "${UPFNS}${i}" ./bin/go-upf -c ./config/goupfcfg.testulcl.yaml &
+    sudo -E ip netns exec "${UPFNS}${i}" ./bin/go-upf -c ./config/upfcfg.testulcl.yaml &
     sleep 1
-    sed -i -e "s/internet2/internet/g" ./config/goupfcfg.testulcl.yaml
+    sed -i -e "s/internet2/internet/g" ./config/upfcfg.testulcl.yaml
 done
 
 cd test
