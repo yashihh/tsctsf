@@ -36,3 +36,6 @@ free5gc.zip
 
 # VS Code Workspace config
 *.code-workspace
+
+# gtp5g tool used to show PDR
+test/libgtp5gnl

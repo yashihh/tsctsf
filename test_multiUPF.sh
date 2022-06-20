@@ -118,6 +118,10 @@ $F5GC_DIR/bin/smf -c "${CONF_DIR}/multiUPF/smfcfg.ulcl.yaml" -u "${CONF_DIR}/mul
 PID_LIST+=($!)
 
 cd test
+# git clone libgtp5gnl
+# libgtp5gnl will be used to show PDR/FAR during testing
+../infra/make_libgtp5gnl.sh 
+
 $GOROOT/bin/go test -v -vet=off -ueCount 4 -upfNum ${UPF_NUM} -run $1 -args noinit
 
 for ((idx=${#PID_LIST[@]}-1;idx>=0;idx--)); do
