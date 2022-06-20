@@ -1218,17 +1218,6 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 	_, err = conn.Write(sendMsg)
 	assert.Nil(t, err)
 
-	// time.Sleep(1000 * time.Millisecond)
-
-	// Send Pdu Session Establishment Release Request
-	pdu = nasTestpacket.GetUlNasTransport_PduSessionReleaseRequest(10)
-	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
-	assert.Nil(t, err)
-	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
-	assert.Nil(t, err)
-	_, err = conn.Write(sendMsg)
-	assert.Nil(t, err)
-
 	time.Sleep(1000 * time.Millisecond)
 	// send N2 Resource Release Ack(PDUSession Resource Release Response)
 	sendMsg, err = test.GetPDUSessionResourceReleaseResponse(ue.AmfUeNgapId, ue.RanUeNgapId)
