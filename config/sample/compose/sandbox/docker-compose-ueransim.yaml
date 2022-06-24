@@ -12,11 +12,11 @@ services:
     cap_add:
       - NET_ADMIN
     networks:
-      sandbox_privnet:
+      sandbox_sbinet:
         ipv4_address: 10.100.200.111
 
 networks:
-  sandbox_privnet:
+  sandbox_sbinet:
     external: true
 
 volumes:

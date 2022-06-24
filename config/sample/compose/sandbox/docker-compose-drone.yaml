@@ -13,7 +13,7 @@ services:
     ports:
       - "2152:2152/udp"
     networks:
-      privnet:
+      sbinet:
         aliases:
           - upf1.free5gc.org
         ipv4_address: ${UPF_IP}
@@ -29,7 +29,7 @@ services:
     volumes:
       - dbdata:/data/db
     networks:
-      privnet:
+      sbinet:
         aliases:
           - db
     healthcheck:
@@ -51,7 +51,7 @@ services:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: release
     networks:
-      privnet:
+      sbinet:
         aliases:
           - nrf.free5gc.org
         ipv4_address: ${NRF_IP}
@@ -77,7 +77,7 @@ services:
     environment:
       GIN_MODE: release
     networks:
-      privnet:
+      sbinet:
         aliases:
           - amf.free5gc.org
         ipv4_address: ${AMF_IP}
@@ -104,7 +104,7 @@ services:
     environment:
       GIN_MODE: release
     networks:
-      privnet:
+      sbinet:
         aliases:
           - ausf.free5gc.org
         ipv4_address: ${AUSF_IP}
@@ -123,7 +123,7 @@ services:
     environment:
       GIN_MODE: release
     networks:
-      privnet:
+      sbinet:
         aliases:
           - nssf.free5gc.org
         ipv4_address: ${NSSFS_IP}
@@ -142,7 +142,7 @@ services:
     environment:
       GIN_MODE: release
     networks:
-      privnet:
+      sbinet:
         aliases:
           - pcf.free5gc.org
         ipv4_address: ${PCF_IP}
@@ -162,7 +162,7 @@ services:
     environment:
       GIN_MODE: release
     networks:
-      privnet:
+      sbinet:
         aliases:
           - smf.free5gc.org
         ipv4_address: ${SMF_IP}
@@ -183,7 +183,7 @@ services:
     environment:
       GIN_MODE: release
     networks:
-      privnet:
+      sbinet:
         aliases:
           - udm.free5gc.org
         ipv4_address: ${UDM_IP}
@@ -205,7 +205,7 @@ services:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: release
     networks:
-      privnet:
+      sbinet:
         aliases:
           - udr.free5gc.org
         ipv4_address: ${UDR_IP}
@@ -226,7 +226,7 @@ services:
     cap_add:
       - NET_ADMIN
     networks:
-      privnet:
+      sbinet:
         aliases:
           - n3iwf.free5gc.org
         ipv4_address: ${N3IWF_IP}
@@ -239,7 +239,7 @@ services:
         condition: service_started
 
 networks:
-  privnet:
+  sbinet:
     ipam:
       driver: default
       config:
