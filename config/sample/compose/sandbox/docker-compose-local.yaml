@@ -13,7 +13,7 @@ services:
     ports:
       - "2152:2152/udp"
     networks:
-      privnet:
+      sbinet:
         aliases:
           - upf1.free5gc.org
         ipv4_address: 10.100.200.12
@@ -29,7 +29,7 @@ services:
     volumes:
       - dbdata:/data/db
     networks:
-      privnet:
+      sbinet:
         aliases:
           - db
         ipv4_address: 10.100.200.109
@@ -54,7 +54,7 @@ services:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: debug
     networks:
-      privnet:
+      sbinet:
         aliases:
           - nrf1.free5gc.org
         ipv4_address: 10.100.200.6
@@ -83,7 +83,7 @@ services:
     cap_add:
       - NET_ADMIN
     networks:
-      privnet:
+      sbinet:
         aliases:
           - amf1.free5gc.org
         ipv4_address: 10.100.200.3
@@ -111,7 +111,7 @@ services:
     environment:
       GIN_MODE: debug
     networks:
-      privnet:
+      sbinet:
         aliases:
           - ausf1.free5gc.org
         ipv4_address: 10.100.200.4
@@ -131,7 +131,7 @@ services:
     environment:
       GIN_MODE: debug
     networks:
-      privnet:
+      sbinet:
         aliases:
           - nssf1.free5gc.org
         ipv4_address: 10.100.200.7
@@ -151,7 +151,7 @@ services:
     environment:
       GIN_MODE: debug
     networks:
-      privnet:
+      sbinet:
         aliases:
           - pcf1.free5gc.org
         ipv4_address: 10.100.200.8
@@ -172,7 +172,7 @@ services:
     environment:
       GIN_MODE: debug
     networks:
-      privnet:
+      sbinet:
         aliases:
           - smf.free5gc.org
         ipv4_address: 10.100.200.9
@@ -194,7 +194,7 @@ services:
     environment:
       GIN_MODE: debug
     networks:
-      privnet:
+      sbinet:
         aliases:
           - udm1.free5gc.org
         ipv4_address: 10.100.200.10
@@ -217,7 +217,7 @@ services:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: debug
     networks:
-      privnet:
+      sbinet:
         aliases:
           - udr1.free5gc.org
         ipv4_address: 10.100.200.11
@@ -235,7 +235,7 @@ services:
     volumes:
       - ./fcli/:/free5gc
     networks:
-      privnet:
+      sbinet:
         ipv4_address: 10.100.200.110
     depends_on:
       db:
@@ -252,14 +252,14 @@ services:
     cap_add:
       - NET_ADMIN
     networks:
-      privnet:
+      sbinet:
         ipv4_address: 10.100.200.111
     depends_on:
       amf1:
         condition: service_healthy
 
 networks:
-  privnet:
+  sbinet:
     ipam:
       driver: default
       config:
