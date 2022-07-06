@@ -52,7 +52,7 @@ export GIN_MODE=release
 function terminate()
 {
     sleep 3
-    sudo killall -15 upf
+    sudo killall -15 go-upf
 
     if [ ${DUMP_NS} ]
     then
@@ -163,7 +163,7 @@ then
     sudo -E tcpdump -U -i lo -w ${PCAP_PATH}/default_ns.pcap &
 fi
 
-${EXEC_UPFNS} ./bin/upf -c ./config/upfcfg.test.yaml &
+${EXEC_UPFNS} ./bin/go-upf -c ./config/upfcfg.test.yaml &
 sleep 2
 
 if [[ "$1" == "TestNon3GPP" ]]

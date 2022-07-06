@@ -104,7 +104,7 @@ for i in $(seq -f "%02g" 1 $UPF_NUM); do
     else
         sed -i -e "s/internet2/internet/g" ./config/upfcfg.testulcl.yaml
     fi
-    sudo -E ip netns exec "${UPFNS}${i}" ./bin/upf -c ./config/upfcfg.testulcl.yaml &
+    sudo -E ip netns exec "${UPFNS}${i}" ./bin/go-upf -c ./config/upfcfg.testulcl.yaml &
     sleep 1
     sed -i -e "s/internet2/internet/g" ./config/upfcfg.testulcl.yaml
 done
@@ -113,7 +113,7 @@ cd test
 $GOROOT/bin/go test -v -vet=off -run $1
 
 sleep 3
-sudo killall -15 upf
+sudo killall -15 go-upf
 sleep 1
 
 cd ../..
