@@ -1,23 +1,26 @@
 version: '2.4'
 
 services:
-  upf1:
-    container_name: upf1
-    image: ${REPO}/free5gc-upf:${TAG} 
-    command:  sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 && iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE && ./free5gc-upfd -c ./config/upfcfg.yaml"
+  goupf:
+    container_name: goupf
+    image: ${REPO}/free5gc-go-upf:${TAG} 
+    command: sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 && iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE && ./go-upf"
     volumes:
-      - ${SANDBOX_DIR}/upfs/upf1/config/upfcfg.yaml:/free5gc/config/upfcfg.yaml
+      - ${SANDBOX_DIR}/goupfcfg.yaml:/free5gc/config/goupfcfg.yaml
       - ./share_host_container:/share_host_container
+    ports:
+    - "2152:2152/udp"
     cap_add:
       - NET_ADMIN
-    ports:
-      - "2152:2152/udp"
     networks:
-      sbinet:
+      privnet:
         aliases:
-          - upf1.free5gc.org
-        ipv4_address: ${UPF_IP}
-  
+          - goupf.free5gc.org
+        ipv4_address: ${GO_UPF_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
   db:
     container_name: mongodb
     image: mongo:4.4
@@ -29,7 +32,7 @@ services:
     volumes:
       - dbdata:/data/db
     networks:
-      sbinet:
+      privnet:
         aliases:
           - db
     healthcheck:
@@ -46,12 +49,12 @@ services:
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/nrfs/nrf1/config/nrfcfg.yaml:/free5gc/config/nrfcfg.yaml
+      - ${SANDBOX_DIR}/nrfcfg.yaml:/free5gc/config/nrfcfg.yaml
     environment:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: release
     networks:
-      sbinet:
+      privnet:
         aliases:
           - nrf.free5gc.org
         ipv4_address: ${NRF_IP}
@@ -73,11 +76,11 @@ services:
       - "8000"
  #     - "38412/sctp"
     volumes:
-      - ${SANDBOX_DIR}/amfs/amf1/config/amfcfg.yaml:/free5gc/config/amfcfg.yaml
+      - ${SANDBOX_DIR}/amfcfg.yaml:/free5gc/config/amfcfg.yaml
     environment:
       GIN_MODE: release
     networks:
-      sbinet:
+      privnet:
         aliases:
           - amf.free5gc.org
         ipv4_address: ${AMF_IP}
@@ -100,11 +103,11 @@ services:
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/ausfs/ausf1/config/ausfcfg.yaml:/free5gc/config/ausfcfg.yaml
+      - ${SANDBOX_DIR}/ausfcfg.yaml:/free5gc/config/ausfcfg.yaml
     environment:
       GIN_MODE: release
     networks:
-      sbinet:
+      privnet:
         aliases:
           - ausf.free5gc.org
         ipv4_address: ${AUSF_IP}
@@ -119,11 +122,11 @@ services:
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/nssfs/nssf1/config/nssfcfg.yaml:/free5gc/config/nssfcfg.yaml
+      - ${SANDBOX_DIR}/nssfcfg.yaml:/free5gc/config/nssfcfg.yaml
     environment:
       GIN_MODE: release
     networks:
-      sbinet:
+      privnet:
         aliases:
           - nssf.free5gc.org
         ipv4_address: ${NSSFS_IP}
@@ -138,11 +141,11 @@ services:
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/pcfs/pcf1/config/pcfcfg.yaml:/free5gc/config/pcfcfg.yaml
+      - ${SANDBOX_DIR}/pcfcfg.yaml:/free5gc/config/pcfcfg.yaml
     environment:
       GIN_MODE: release
     networks:
-      sbinet:
+      privnet:
         aliases:
           - pcf.free5gc.org
         ipv4_address: ${PCF_IP}
@@ -157,19 +160,19 @@ services:
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/smfs/smf1/config/smfcfg.yaml:/free5gc/config/smfcfg.yaml
-      - ${SANDBOX_DIR}/smfs/smf1/config/uerouting.yaml:/free5gc/config/uerouting.yaml
+      - ${SANDBOX_DIR}/smfcfg.yaml:/free5gc/config/smfcfg.yaml
+      - ${SANDBOX_DIR}/uerouting.yaml:/free5gc/config/uerouting.yaml
     environment:
       GIN_MODE: release
     networks:
-      sbinet:
+      privnet:
         aliases:
           - smf.free5gc.org
         ipv4_address: ${SMF_IP}
     depends_on:
       nrf1:
         condition: service_healthy
-      upf1:
+      goupf:
         condition: service_started 
 
   udm1:
@@ -179,11 +182,11 @@ services:
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/udms/udm1/config/udmcfg.yaml:/free5gc/config/udmcfg.yaml
+      - ${SANDBOX_DIR}/udmcfg.yaml:/free5gc/config/udmcfg.yaml
     environment:
       GIN_MODE: release
     networks:
-      sbinet:
+      privnet:
         aliases:
           - udm.free5gc.org
         ipv4_address: ${UDM_IP}
@@ -196,16 +199,16 @@ services:
   udr1:
     container_name: udr
     image: ${REPO}/free5gc-udr:${TAG}
-    command: ./udr
+    command: ./udr -c ./config/udrcfg.yaml
     expose:
       - "8000"
     volumes:
-      - ${SANDBOX_DIR}/udrs/udr1/config/udrcfg.yaml:/free5gc/config/udrcfg.yaml
+      - ${SANDBOX_DIR}/udrcfg.yaml:/free5gc/config/udrcfg.yaml
     environment:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: release
     networks:
-      sbinet:
+      privnet:
         aliases:
           - udr.free5gc.org
         ipv4_address: ${UDR_IP}
@@ -220,13 +223,14 @@ services:
     image: ${REPO}/free5gc-n3iwf:${TAG}
     command: sh -c "./n3iwf-ipsec.sh"
     volumes:
-      - ${SANDBOX_DIR}/nwiwfs/n3iwf1/config/n3iwfcfg.yaml:/free5gc/config/n3iwfcfg.yaml
+      - ${SANDBOX_DIR}/n3iwfs/n3iwf1/config/n3iwfcfg.yaml:/free5gc/config/n3iwfcfg.yaml
+      - ${SANDBOX_DIR}/n3iwfs/n3iwf1/config/n3iwf-ipsec.sh:/free5gc/n3iwf/n3iwf-ipsec.sh
     environment:
       GIN_MODE: release
     cap_add:
       - NET_ADMIN
     networks:
-      sbinet:
+      privnet:
         aliases:
           - n3iwf.free5gc.org
         ipv4_address: ${N3IWF_IP}
@@ -235,15 +239,28 @@ services:
         condition: service_healthy
       smf1:
         condition: service_started
-      upf1:
+      goupf:
         condition: service_started
 
+
 networks:
-  sbinet:
+  privnet:
     ipam:
       driver: default
       config:
         - subnet: 10.100.200.0/24
+  n3network:
+    external:
+      name: n3network
+  n6network:
+    external:
+      name: n6network
+  n7network:
+    external:
+      name: n7network
+  n9network:
+    external:
+      name: n9network
 
 volumes:
   dbdata:

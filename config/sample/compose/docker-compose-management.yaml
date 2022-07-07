@@ -1,0 +1,40 @@
+version: '2.0'
+
+services:
+  fcli:
+    container_name: fcli
+    image: ${REPO}/free5gc-fcli:${TAG}
+    #image: fcli
+    command: bash -c "service ssh start; tail -f /dev/null"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock 
+      - /var/log/journal/:/var/log/journal 
+      - /opt/free5gc/pcap:/opt/free5gc/pcap
+      - /opt/free5gc/packing:/opt/free5gc/packing
+      - /opt/free5gc/sandbox:/opt/free5gc/sandbox
+      - /opt/free5gc/start_time:/opt/free5gc/start_time
+    ports:
+      - "2222:22"
+    networks:
+      privnet:
+        aliases:
+          - fcli.free5gc.org
+  webconsole:
+    container_name: webconsole
+    image: ${REPO}/free5gc-webconsole:${TAG}
+    #image: fcli
+    command: "./webconsole"
+    volumes:
+      - ${SANDBOX_DIR}/webuicfg.yaml:/free5gc/config/webuicfg.yaml
+    ports:
+      - "5000:5000"
+    networks:
+      privnet:
+        aliases:
+          - webconsole.free5gc.org    
+ 
+
+networks:
+  privnet:
+    external: true
+    name: "sandbox_privnet"
