@@ -41,8 +41,7 @@ configuration:
           sd: <S_NSSAI_SD_1> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
         - sst: <S_NSSAI_SST_2> # Slice/Service Type (uinteger, range: 0~255)
           sd: <S_NSSAI_SD_2> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
-  supportDnnList:  # the DNN (Data Network Name) list supported by this AMF
-    - <DNN_LIST>
+  supportDnnList:  [<DNN_LIST>] # the DNN (Data Network Name) list supported by this AMF
   nrfUri: http://<SBI_PREFIX>.10:8000 # a valid URI of NRF
   security:  # NAS security parameters
     # the priority of integrity algorithms
