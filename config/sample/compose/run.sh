@@ -36,6 +36,12 @@ do_start() {
         docker-compose up -d
     elif [ "x${MODEL}" == "xgoupf" ]; then
         dcf="docker-compose-goupf-multi-DNN.yaml"
+
+        # AWS
+        if [ "x${ENV}" != "xdrone" ]; then
+            dcf="docker-compose-goupf.yaml"
+        fi
+
         sleep 1
         docker-compose --env-file ${WORKING_DIR}/dockerComposeEnv -f $dcf up -d
     elif [ "x${MODEL}" == "xgogtpu" ]; then
@@ -63,7 +69,14 @@ do_stop() {
     if [ "x${MODEL}" == "xcupf" ]; then
         docker-compose down --remove-orphans
     elif [ "x${MODEL}" == "xgoupf" ]; then
-        docker-compose -f docker-compose-goupf.yaml down --remove-orphans
+        dcf="docker-compose-goupf-multi-DNN.yaml"
+
+        # AWS
+        if [ "x${ENV}" != "xdrone" ]; then
+            dcf="docker-compose-goupf.yaml"
+        fi
+
+        docker-compose -f $dcf down --remove-orphans
     elif [ "x${MODEL}" == "xgogtpu" ]; then
         docker-compose -f docker-compose-gtpu.yaml down --remove-orphans
     fi
