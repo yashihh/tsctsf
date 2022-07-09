@@ -49,11 +49,15 @@ GTPU_N6_IP=<N6_NETWORK_PREFIX>.100
 #####################################
 # Data Network
 #####################################
-MEC_DNN_1=
+MEC_DNN_CMT_1=#
+MEC_DNN_1=mec
+DNAI_LIST_CMT_1=
 DNAI_LIST_1=mec
 
-MEC_DNN_2=
+MEC_DNN_CMT_2=#
+MEC_DNN_2=mec
 DNAI_LIST_2=mec
+DNAI_LIST_CMT_2=
 
 #####################################
 # IP Addresses
