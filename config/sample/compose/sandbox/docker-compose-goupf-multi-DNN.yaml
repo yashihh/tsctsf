@@ -54,9 +54,9 @@ services:
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
       route del default gw 172.16.31.1 &&
       route add default gw 172.16.61.1 &&
-      ./go-upf"
+      ./upf"
     volumes:
-      - ${SANDBOX_DIR}/goupf1cfg.yaml:/free5gc/config/goupfcfg.yaml
+      - ${SANDBOX_DIR}/goupf1cfg.yaml:/free5gc/config/upfcfg.yaml
       - ./share_host_container:/share_host_container
     expose:
       - "2152"
@@ -87,9 +87,9 @@ services:
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
       route del default gw 172.16.31.1 &&
       route add default gw 172.16.62.1 &&
-      ./go-upf"
+      ./upf"
     volumes:
-      - ${SANDBOX_DIR}/goupf2cfg.yaml:/free5gc/config/goupfcfg.yaml
+      - ${SANDBOX_DIR}/goupf2cfg.yaml:/free5gc/config/upfcfg.yaml
       - ./share_host_container:/share_host_container
     ports:
       - "2152:2152/udp"
@@ -122,9 +122,9 @@ services:
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
       route del default gw 172.16.32.1 &&
       route add default gw 172.16.63.1 &&
-      ./go-upf"
+      ./upf"
     volumes:
-      - ${SANDBOX_DIR}/goupf3cfg.yaml:/free5gc/config/goupfcfg.yaml
+      - ${SANDBOX_DIR}/goupf3cfg.yaml:/free5gc/config/upfcfg.yaml
       - ./share_host_container:/share_host_container
     expose:
       - "2152"
@@ -151,9 +151,9 @@ services:
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
       route del default gw 172.16.32.1 &&
       route add default gw 172.16.64.1 &&
-      ./go-upf"
+      ./upf"
     volumes:
-      - ${SANDBOX_DIR}/goupf4cfg.yaml:/free5gc/config/goupfcfg.yaml
+      - ${SANDBOX_DIR}/goupf4cfg.yaml:/free5gc/config/upfcfg.yaml
       - ./share_host_container:/share_host_container
     expose:
       - "2152"
