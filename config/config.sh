@@ -13,25 +13,9 @@ USAGE_MSG="Usage: \n\
            \t\t${0} -landslide -newip \n\
            \t\t${0} -landslide -n3iwf \n\
            \t\t${0} -landslide -n3iwf -newip \n\
-           \t\t${0} -landslide -dpdk \n\
-           \t\t${0} -landslide -dpdk -nat \n\
-           \t\t${0} -landslide -dpdk -40g \n\
-           \t\t${0} -landslide -dpdk -newip \n\
-           \t\t${0} -landslide -dpdk -40g -newip \n\
            \t\t${0} -landslide -free5gc_iupf \n\
-           \t\t${0} -landslide -free5gc_iupf -dpdk \n\
-           \t\t${0} -landslide -free5gc_iupf -dpdk -40g \n\
            \t\t${0} -landslide -free5gc_iupf -dnai \n\
-           \t\t${0} -landslide -free5gc_iupf -dpdk -dnai \n\
-           \t\t${0} -landslide -free5gc_iupf -dpdk -40g -dnai \n\
            \t\t${0} -landslide -psaupf \n\
-           \t\t${0} -landslide -free5gc_iupf -dpdk_psaupf \n\
-           \t\t${0} -landslide -free5gc_iupf -dpdk -dpdk_psaupf \n\
-           \t\t${0} -landslide -free5gc_iupf -dpdk -40g -dpdk_psaupf \n\
-           \t\t${0} -landslide -free5gc_iupf -dnai -dpdk_psaupf \n\
-           \t\t${0} -landslide -free5gc_iupf -dpdk -dnai -dpdk_psaupf \n\
-           \t\t${0} -landslide -free5gc_iupf -dpdk -40g -dnai -dpdk_psaupf \n\
-           \t\t${0} -landslide -psaupf -dpdk \n\
            Compose:\t${0} -compose"
 
 # echo -e $USAGE_MSG
@@ -41,12 +25,6 @@ if [ $# -ne 0 ]; then
         case $1 in
             -landslide)
                 LANDSLIDE=true
-                ;;
-            -dpdk)
-                DPDK=true
-                ;;
-            -nat)
-                NAT=true
                 ;;
             -n3iwf)
                 N3IWF=true
@@ -60,14 +38,8 @@ if [ $# -ne 0 ]; then
             -psaupf)
                 PSAUPF=true
                 ;;
-            -dpdk_psaupf)
-                DPDKPSA=true
-                ;;
             -dnai)
                 DNAI=true
-                ;;
-            -40g)
-                FORTYG=true
                 ;;
             -compose)
                 COMPOSE=true
@@ -91,18 +63,14 @@ if [ $# -ne 0 ]; then
 fi
 
 PARA_FILE=''
-# MODE order: landslide dpdk nat n3iwf newip iupf psaupf dpdk_psaupf dnai 40g
+# MODE order: landslide n3iwf newip iupf psaupf dnai
 [ "$COMPOSE" = true ] && PARA_FILE="compose"
 [ "$LANDSLIDE" = true ] && PARA_FILE="${PARA_FILE}landslide"
-[ "$DPDK" = true ] && PARA_FILE="${PARA_FILE}_dpdk"
-[ "$NAT" = true ] && PARA_FILE="${PARA_FILE}_nat"
-[ "$FORTYG" = true ] && PARA_FILE="${PARA_FILE}_40g"
 [ "$N3IWF" = true ] && PARA_FILE="${PARA_FILE}_n3iwf"
 [ "$NEWIP" = true ] && PARA_FILE="${PARA_FILE}_newip"
 [ "$IUPF" = true ] && PARA_FILE="${PARA_FILE}_iupf"
 [ "$PSAUPF" = true ] && PARA_FILE="${PARA_FILE}_psaupf"
 [ "$DNAI" = true ] && PARA_FILE="${PARA_FILE}_dnai"
-[ "$DPDKPSA" = true ] && PARA_FILE="${PARA_FILE}_dpdk_psaupf"
 
 if [[ -n $PARA_FILE ]]; then
     if [ "$P_MODE" = true ]; then
@@ -166,14 +134,9 @@ STATIC_IP_POOLS_4=${STATIC_IP_POOLS_4:-"10.64.100.0/24"}
 
 NIA_LIST=${NIA_LIST:-"NIA2"}
 NEA_LIST=${NEA_LIST:-"NEA0"}
-MTU=${MTU:-"1358"}
-NAT=${NAT:-"false"}
-N6_GW=${N6_GW:-""}
 
 SBI_PREFIX=${SBI_PREFIX-""}
 NRF_CMT=${NRF_CMT-""}
-
-DPDK_CPUS=${DPDK_CPUS:-0~11}
 
 AMF_N2_IP=${AMF_N2_IP:-127.0.0.18}
 SMF_N4_IP=${SMF_N4_IP:-127.0.0.7}
@@ -182,19 +145,10 @@ UPF_N4_IP=${UPF_N4_IP:-127.0.0.8}
 UPF_SBI_IP=${UPF_SBI_IP:-127.0.0.8}
 PSAUPF_N4_IP=${PSAUPF_N4_IP:-172.16.4.111}
 PSAUPF_N9_IP=${PSAUPF_N9_IP:-172.16.9.111}
-GTPU_N3_IP=${GTPU_N3_IP:-127.0.0.8}
-GTPU_N6_IP=${GTPU_N6_IP:-172.16.6.110}
-GTPU_N9_IP=${GTPU_N9_IP:-172.16.9.110}
 IUPF_N3_IP=${IUPF_N3_IP:-172.16.3.110}
 IUPF_N4_IP=${IUPF_N4_IP:-172.16.4.110}
 IUPF_N9_IP=${IUPF_N9_IP:-172.16.9.110}
 IKE_BIND_IP=${IKE_BIND_IP:-172.16.2.110}
-
-N3_DPDK_PORT=${N3_DPDK_PORT:-0}
-N6_DPDK_PORT=${N6_DPDK_PORT:-1}
-N9_DPDK_PORT=${N9_DPDK_PORT:-2}
-
-GTPU_N9_ENABLE=${GTPU_N9_ENABLE:-false}
 
 HOST_IP=${HOST_IP:-""}
 MONGO_DB=${MONGO_DB:-"localhost"}
@@ -232,10 +186,9 @@ fi
 mkdir -p $DEST_DIR
 rm -f $DEST_DIR/*.yaml
 cp $TEMPLATE_DIR/*.template.yaml $DEST_DIR
-cp $TEMPLATE_DIR/*.template.json $DEST_DIR
 cd $SCRIPT_DIR
 
-for template_file in $(ls $DEST_DIR/ | grep -E 'template.yaml|template.json'); do
+for template_file in $(ls $DEST_DIR/ | grep -E 'template.yaml); do
     newfile=$(echo $DEST_DIR/$template_file | sed 's/.template//g')
     mv $DEST_DIR/$template_file $newfile
 done
@@ -247,7 +200,7 @@ elif [ "$COMPOSE" = true ]; then # COMPOSE
     cp $TEMPLATE_DIR/smfcfg.compose_template.yaml ${DEST_DIR}/smfcfg.yaml
 fi
 
-for yaml_file in $(ls ${DEST_DIR}/ | grep -E '.yaml|.json'); do
+for yaml_file in $(ls ${DEST_DIR}/ | grep -E '.yaml); do
     yaml_file=$DEST_DIR/$yaml_file
     sed -i "s/<MCC>/$MCC/g" $yaml_file
     sed -i "s/<MNC>/$MNC/g" $yaml_file
@@ -275,7 +228,6 @@ for yaml_file in $(ls ${DEST_DIR}/ | grep -E '.yaml|.json'); do
     sed -i "s/<NIA_LIST>/$NIA_LIST/g" $yaml_file
     sed -i "s/<NEA_LIST>/$NEA_LIST/g" $yaml_file
     sed -i "s/<MTU>/$MTU/g" $yaml_file
-    sed -i "s/<NAT>/$NAT/g" $yaml_file
     sed -i "s/<N6_GW>/$N6_GW/g" $yaml_file
 
     sed -i "s,<IP_POOLS_1>,$IP_POOLS_1,g" $yaml_file
@@ -298,14 +250,6 @@ for yaml_file in $(ls ${DEST_DIR}/ | grep -E '.yaml|.json'); do
     sed -i "s/<UPF_N3_IP>/$UPF_N3_IP/g" $yaml_file
     sed -i "s/<UPF_N4_IP>/$UPF_N4_IP/g" $yaml_file
     sed -i "s/<UPF_SBI_IP>/$UPF_SBI_IP/g" $yaml_file
-    sed -i "s/<DPDK_CPUS>/$DPDK_CPUS/g" $yaml_file
-    sed -i "s/<GTPU_N3_IP>/$GTPU_N3_IP/g" $yaml_file
-    sed -i "s/<GTPU_N6_IP>/$GTPU_N6_IP/g" $yaml_file
-    sed -i "s/<GTPU_N9_IP>/$GTPU_N9_IP/g" $yaml_file
-    sed -i "s/<N3_DPDK_PORT>/$N3_DPDK_PORT/g" $yaml_file
-    sed -i "s/<N6_DPDK_PORT>/$N6_DPDK_PORT/g" $yaml_file
-    sed -i "s/<N9_DPDK_PORT>/$N9_DPDK_PORT/g" $yaml_file
-    sed -i "s/<GTPU_N9_ENABLE>/$GTPU_N9_ENABLE/g" $yaml_file
     sed -i "s/<IUPF_N3_IP>/$IUPF_N3_IP/g" $yaml_file
     sed -i "s/<IUPF_N4_IP>/$IUPF_N4_IP/g" $yaml_file
     sed -i "s/<IUPF_N9_IP>/$IUPF_N9_IP/g" $yaml_file
