@@ -1,0 +1,480 @@
+version: '2.4'
+
+# Topology looks like this:
+
+services:
+  DN1:
+    container_name: DN1
+    image: ${REPO}/data-network-host:${TAG}
+    command: >
+      sh -c "tail -f /dev/null"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      n6net1:
+        ipv4_address: ${DN1_IP}
+  DN2:
+    container_name: DN2
+    image: ${REPO}/data-network-host:${TAG}
+    command: >
+      sh -c "tail -f /dev/null"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      n6net2:
+        ipv4_address: ${DN2_IP}
+  DN3:
+    container_name: DN3
+    image: ${REPO}/data-network-host:${TAG}
+    command: >
+      sh -c "tail -f /dev/null"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      n6net3:
+        ipv4_address: ${DN3_IP}
+  DN4:
+    container_name: DN4
+    image: ${REPO}/data-network-host:${TAG}
+    command: >
+      sh -c "tail -f /dev/null"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      n6net4:
+        ipv4_address: ${DN4_IP}
+
+  # 1st Slice: Slice Differenciator: 010203. Includes upf1 + upf2 + smf1
+  # upf1 + upf2 = ULCL; upf1: iUPF / upf2: psa-upf
+  upf1:
+    container_name: goupf
+    image: ${REPO}/free5gc-go-upf:${TAG}
+    command: > 
+      sh -c "iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
+      iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
+      route del default gw 172.16.31.1 &&
+      route add default gw 172.16.61.1 &&
+      ./upf"
+    volumes:
+      - ${SANDBOX_DIR}/goupf1cfg.yaml:/free5gc/config/upfcfg.yaml
+      - ./share_host_container:/share_host_container
+    expose:
+      - "2152"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      sbinet:
+        ipv4_address: ${UPF1_SBI_IP}
+      n3net1:
+        ipv4_address: ${UPF1_N3_IP}
+      n4net1:
+        ipv4_address: ${UPF1_N4_IP}
+      n6net1:
+        ipv4_address: ${UPF1_N6_IP}
+      n9net1:
+        ipv4_address: ${UPF1_N9_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+      upf2:
+        condition: service_started
+
+  upf2:
+    container_name: psa-goupf
+    image: ${REPO}/free5gc-go-upf:${TAG}
+    command: >
+      sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
+      iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
+      route del default gw 172.16.31.1 &&
+      route add default gw 172.16.62.1 &&
+      ./upf"
+    volumes:
+      - ${SANDBOX_DIR}/goupf2cfg.yaml:/free5gc/config/upfcfg.yaml
+      - ./share_host_container:/share_host_container
+    ports:
+      - "2152:2152/udp"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      sbinet:
+        ipv4_address: ${UPF2_SBI_IP}
+      n3net1:
+        ipv4_address: ${UPF2_N3_IP}
+      n4net1:
+        ipv4_address: ${UPF2_N4_IP}
+      n6net2:
+        ipv4_address: ${UPF2_N6_IP}
+      n9net1:
+        ipv4_address: ${UPF2_N9_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  # 2nd Slice: Slice Differenciator: 111213. Includes upf3 + upf4 + smf2
+  # Multi-DNN:
+  #   DNN: "Internet1", UPF3
+  #   DNN: "Internet2", UPF4
+  upf3:
+    container_name: goupf3
+    image: ${REPO}/free5gc-go-upf:${TAG}
+    command: >
+      sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
+      iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
+      route del default gw 172.16.32.1 &&
+      route add default gw 172.16.63.1 &&
+      ./upf"
+    volumes:
+      - ${SANDBOX_DIR}/goupf3cfg.yaml:/free5gc/config/upfcfg.yaml
+      - ./share_host_container:/share_host_container
+    expose:
+      - "2152"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      sbinet:
+        ipv4_address: ${UPF3_SBI_IP}
+      n3net2:
+        ipv4_address: ${UPF3_N3_IP}
+      n4net2:
+        ipv4_address: ${UPF3_N4_IP}
+      n6net3:
+        ipv4_address: ${UPF3_N6_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  upf4:
+    container_name: goupf4
+    image: ${REPO}/free5gc-go-upf:${TAG}
+    command: >
+      sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
+      iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
+      route del default gw 172.16.32.1 &&
+      route add default gw 172.16.64.1 &&
+      ./upf"
+    volumes:
+      - ${SANDBOX_DIR}/goupf4cfg.yaml:/free5gc/config/upfcfg.yaml
+      - ./share_host_container:/share_host_container
+    expose:
+      - "2152"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      sbinet:
+        ipv4_address: ${UPF4_SBI_IP}
+      n3net2:
+        ipv4_address: ${UPF4_N3_IP}
+      n4net2:
+        ipv4_address: ${UPF4_N4_IP}
+      n6net4:
+        ipv4_address: ${UPF4_N6_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  db:
+    container_name: mongodb
+    image: mongo:4.4
+    command: mongod --port 27017
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    volumes:
+      - dbdata:/data/db
+    networks:
+      sbinet:
+        aliases:
+          - db
+    healthcheck:
+      test: ["CMD", "mongo", "localhost:27017/free5gc",  "--eval" , "'db.getCollectionNames()'"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  nrf1:
+    container_name: nrf
+    image: ${REPO}/free5gc-nrf:${TAG}
+    command: ./nrf
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/nrfcfg.yaml:/free5gc/config/nrfcfg.yaml
+    environment:
+      DB_URI: mongodb://db/free5gc
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - nrf.free5gc.org
+        ipv4_address: ${NRF_IP}
+    healthcheck:
+      test: ["CMD", "curl", "${NRF_IP}:8000"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      db:
+        condition: service_healthy
+
+  amf1:
+    container_name: amf
+    image: ${REPO}/free5gc-amf:${TAG}
+    command: ./amf
+    expose:
+      - "8000"
+ #     - "38412/sctp"
+    volumes:
+      - ${SANDBOX_DIR}/amfcfg.yaml:/free5gc/config/amfcfg.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - amf.free5gc.org
+        ipv4_address: ${AMF_IP}
+    ports:
+      - "38412:38412/sctp"
+    healthcheck:
+      test: ["CMD", "netstat", "--sctp",  "|" , "grep 38412"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  ausf1:
+    container_name: ausf
+    image: ${REPO}/free5gc-ausf:${TAG}
+    command: ./ausf
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/ausfcfg.yaml:/free5gc/config/ausfcfg.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - ausf.free5gc.org
+        ipv4_address: ${AUSF_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  nssf1:
+    container_name: nssf
+    image: ${REPO}/free5gc-nssf:${TAG}
+    command: ./nssf
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/nssfcfg.yaml:/free5gc/config/nssfcfg.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - nssf.free5gc.org
+        ipv4_address: ${NSSFS_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  pcf1:
+    container_name: pcf
+    image: ${REPO}/free5gc-pcf:${TAG}
+    command: ./pcf
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/pcfcfg.yaml:/free5gc/config/pcfcfg.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - pcf.free5gc.org
+        ipv4_address: ${PCF_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  smf1:
+    container_name: smf1
+    image: ${REPO}/free5gc-smf:${TAG}
+    command: ./smf
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/smf1cfg.yaml:/free5gc/config/smfcfg.yaml
+      - ${SANDBOX_DIR}/uerouting.yaml:/free5gc/config/uerouting.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - smf1.free5gc.org
+        ipv4_address: ${SMF1_SBI_IP}
+      n4net1:
+        ipv4_address: ${SMF1_N4_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+      upf1:
+        condition: service_started
+      upf2:
+        condition: service_started
+
+  smf2:
+    container_name: smf2
+    image: ${REPO}/free5gc-smf:${TAG}
+    command: ./smf
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/smf2cfg.yaml:/free5gc/config/smfcfg.yaml
+      - ${SANDBOX_DIR}/uerouting.yaml:/free5gc/config/uerouting.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - smf2.free5gc.org
+        ipv4_address: ${SMF2_SBI_IP}
+      n4net2:
+        ipv4_address: ${SMF2_N4_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+      upf3:
+        condition: service_started
+      upf4:
+        condition: service_started
+
+  udm1:
+    container_name: udm
+    image: ${REPO}/free5gc-udm:${TAG}
+    command: ./udm
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/udmcfg.yaml:/free5gc/config/udmcfg.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - udm.free5gc.org
+        ipv4_address: ${UDM_IP}
+    depends_on:
+      db:
+        condition: service_healthy
+      nrf1:
+        condition: service_healthy
+
+  udr1:
+    container_name: udr
+    image: ${REPO}/free5gc-udr:${TAG}
+    command: ./udr -c ./config/udrcfg.yaml
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/udrcfg.yaml:/free5gc/config/udrcfg.yaml
+    environment:
+      DB_URI: mongodb://db/free5gc
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - udr.free5gc.org
+        ipv4_address: ${UDR_IP}
+    depends_on:
+      db:
+        condition: service_healthy
+      nrf1:
+        condition: service_healthy
+
+  # n3iwf1:
+  #   container_name: n3iwf
+  #   image: ${REPO}/free5gc-n3iwf:${TAG}
+  #   command: sh -c "./n3iwf-ipsec.sh"
+  #   volumes:
+  #     - ${SANDBOX_DIR}/n3iwfs/n3iwf1/config/n3iwfcfg.yaml:/free5gc/config/n3iwfcfg.yaml
+  #     - ${SANDBOX_DIR}/n3iwfs/n3iwf1/config/n3iwf-ipsec.sh:/free5gc/n3iwf/n3iwf-ipsec.sh
+  #   environment:
+  #     GIN_MODE: release
+  #   cap_add:
+  #     - NET_ADMIN
+  #   networks:
+  #     sbinet:
+  #       aliases:
+  #         - n3iwf.free5gc.org
+  #       ipv4_address: ${N3IWF_IP}
+  #   depends_on:
+  #     amf1:
+  #       condition: service_healthy
+  #     smf1:
+  #       condition: service_started
+  #     goupf:
+  #       condition: service_started
+
+
+networks:
+  sbinet:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SBI_PREFIX}.0/24
+  n3net1:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N3_NET1_PREFIX}.0/24
+  n3net2:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N3_NET2_PREFIX}.0/24
+  n4net1:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N4_NET1_PREFIX}.0/24
+  n4net2:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N4_NET2_PREFIX}.0/24
+  n6net1:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N6_NET1_PREFIX}.0/24
+  n6net2:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N6_NET2_PREFIX}.0/24
+  n6net3:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N6_NET3_PREFIX}.0/24
+  n6net4:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N6_NET4_PREFIX}.0/24
+  n9net1:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N9_NET1_PREFIX}.0/24
+
+volumes:
+  dbdata:
