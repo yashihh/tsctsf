@@ -28,6 +28,6 @@
 [submodule "webconsole"]
 	path = webconsole
 	url = https://bitbucket.org/free5gc-team/webconsole.git
-[submodule "NFs/go-upf"]
-	path = NFs/go-upf
+[submodule "NFs/upf"]
+	path = NFs/upf
 	url = https://bitbucket.org/free5gc-team/go-upf.git

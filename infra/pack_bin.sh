@@ -40,15 +40,15 @@ BIN_ROOT="${ROOT_PARENT}/${BIN_FOLDER_NAME}"
 TGZ_FILE_NAME="${BIN_FOLDER_NAME}.tgz"
 
 echo "Pack the binary..."
-mkdir -p ${BIN_ROOT}/NFs/go-upf/build/utlt_logger
-mkdir -p ${BIN_ROOT}/NFs/go-upf/build/updk/src/third_party/libgtp5gnl/lib
+mkdir -p ${BIN_ROOT}/NFs/upf/build/utlt_logger
+mkdir -p ${BIN_ROOT}/NFs/upf/build/updk/src/third_party/libgtp5gnl/lib
 mkdir -p ${BIN_ROOT}/webconsole
 cp -rf bin ${BIN_ROOT}
 cp -rf config ${BIN_ROOT}
-cp -rf NFs/go-upf/build/bin ${BIN_ROOT}/NFs/go-upf/build
-cp -rf NFs/go-upf/build/config ${BIN_ROOT}/NFs/go-upf
-cp -rf NFs/go-upf/build/utlt_logger/liblogger.so ${BIN_ROOT}/NFs/go-upf/build/utlt_logger
-cp -rf NFs/go-upf/build/updk/src/third_party/libgtp5gnl/lib/libgtp5gnl.so* ${BIN_ROOT}/NFs/go-upf/build/updk/src/third_party/libgtp5gnl/lib
+cp -rf NFs/upf/build/bin ${BIN_ROOT}/NFs/upf/build
+cp -rf NFs/upf/build/config ${BIN_ROOT}/NFs/upf
+cp -rf NFs/upf/build/utlt_logger/liblogger.so ${BIN_ROOT}/NFs/upf/build/utlt_logger
+cp -rf NFs/upf/build/updk/src/third_party/libgtp5gnl/lib/libgtp5gnl.so* ${BIN_ROOT}/NFs/upf/build/updk/src/third_party/libgtp5gnl/lib
 cp -rf webconsole/bin ${BIN_ROOT}/webconsole
 cp -rf webconsole/config ${BIN_ROOT}/webconsole
 cp -rf webconsole/public ${BIN_ROOT}/webconsole
