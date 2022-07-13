@@ -188,7 +188,7 @@ rm -f $DEST_DIR/*.yaml
 cp $TEMPLATE_DIR/*.template.yaml $DEST_DIR
 cd $SCRIPT_DIR
 
-for template_file in $(ls $DEST_DIR/ | grep -E 'template.yaml); do
+for template_file in $(ls $DEST_DIR/ | grep -E template.yaml); do
     newfile=$(echo $DEST_DIR/$template_file | sed 's/.template//g')
     mv $DEST_DIR/$template_file $newfile
 done
@@ -200,7 +200,7 @@ elif [ "$COMPOSE" = true ]; then # COMPOSE
     cp $TEMPLATE_DIR/smfcfg.compose_template.yaml ${DEST_DIR}/smfcfg.yaml
 fi
 
-for yaml_file in $(ls ${DEST_DIR}/ | grep -E '.yaml); do
+for yaml_file in $(ls ${DEST_DIR}/ | grep -E .yaml); do
     yaml_file=$DEST_DIR/$yaml_file
     sed -i "s/<MCC>/$MCC/g" $yaml_file
     sed -i "s/<MNC>/$MNC/g" $yaml_file
