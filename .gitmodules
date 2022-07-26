@@ -28,6 +28,9 @@
 [submodule "upf"]
 	path = NFs/upf
 	url = https://bitbucket.org/free5gc-team/go-upf.git
+[submodule "nef"]
+	path = NFs/nef
+	url = https://bitbucket.org/free5gc-team/nef.git
 [submodule "webconsole"]
 	path = webconsole
 	url = https://bitbucket.org/free5gc-team/webconsole.git
