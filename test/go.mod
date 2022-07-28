@@ -21,6 +21,7 @@ require (
 	github.com/antihax/optional v1.0.0
 	github.com/calee0219/fatal v0.0.1
 	github.com/davecgh/go-spew v1.1.1
+	github.com/free5gc/util v1.0.3
 	github.com/gin-gonic/gin v1.7.3
 	github.com/go-ping/ping v0.0.0-20210506233800-ff8be3320020
 	github.com/google/uuid v1.3.0
