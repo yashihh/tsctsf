@@ -15,7 +15,6 @@ import (
 	"test/nasTestpacket"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/free5gc/util/ueauth"
 	"github.com/go-ping/ping"
 	"github.com/stretchr/testify/assert"
 	"github.com/vishvananda/netlink"
@@ -30,6 +29,7 @@ import (
 	"bitbucket.org/free5gc-team/nas/nasType"
 	"bitbucket.org/free5gc-team/nas/security"
 	"bitbucket.org/free5gc-team/openapi/models"
+	"bitbucket.org/free5gc-team/util/ueauth"
 )
 
 var (
