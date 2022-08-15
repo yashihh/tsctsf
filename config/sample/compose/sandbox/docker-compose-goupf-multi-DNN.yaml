@@ -304,6 +304,25 @@ services:
       nrf1:
         condition: service_healthy
 
+  nef1:
+    container_name: nef
+    image: ${REPO}/free5gc-nef:${TAG}
+    command: ./nef
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/nefcfg.yaml:/free5gc/config/nefcfg.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - nef.free5gc.org
+        ipv4_address: ${NEF_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
   smf1:
     container_name: smf1
     image: ${REPO}/free5gc-smf:${TAG}
