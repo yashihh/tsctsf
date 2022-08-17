@@ -294,6 +294,10 @@ for yaml_file in $(ls ${DEST_DIR}/ | grep -E .yaml); do
     sed -i "s/<DN3_IP>/$DN3_IP/g" $yaml_file
     sed -i "s/<DN4_IP>/$DN4_IP/g" $yaml_file
 
+    sed -i "s|<PFD_SERVICE_APP_ID>|$PFD_SERVICE_APP_ID|g" $yaml_file
+    sed -i "s|<PFD_SERVICE_PROTOCOL>|$PFD_SERVICE_PROTOCOL|g" $yaml_file
+    sed -i "s|<PFD_SERVICE_CIDR>|$PFD_SERVICE_CIDR|g" $yaml_file
+    sed -i "s|<PFD_SERVICE_PORT>|$PFD_SERVICE_PORT|g" $yaml_file
 done
 
 echo Done
