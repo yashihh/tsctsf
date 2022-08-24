@@ -36,6 +36,7 @@ TEMPLATE_FILES+=" smfcfg.template.yaml"   # Compose[AWS, go-gtpu(TBD)], Landslid
 #TEMPLATE_FILES+=" goupfcfg.gtpu.template.yaml"
 #TEMPLATE_FILES+=" gtpucfg.template.yaml"
 #TEMPLATE_FILES+=" nat.template.json"
+TEMPLATE_FILES+=" nefcfg.template.yaml"
 TEMPLATE_FILES+=" webuicfg.template.yaml"
 
 if [ -f $ADMIN_RC_TMP ]; then
