@@ -163,10 +163,10 @@ if [[ -n $PARA_FILE ]]; then
         override_default_param $TMP_COMPOSE
         rm $TMP_COMPOSE
 
-        TEMPLATE_FILES+=" goupf1cfg.template.yaml"
-        TEMPLATE_FILES+=" goupf2cfg.template.yaml"
-        TEMPLATE_FILES+=" goupf3cfg.template.yaml"
-        TEMPLATE_FILES+=" goupf4cfg.template.yaml"
+        TEMPLATE_FILES+=" upf1cfg.template.yaml"
+        TEMPLATE_FILES+=" upf2cfg.template.yaml"
+        TEMPLATE_FILES+=" upf3cfg.template.yaml"
+        TEMPLATE_FILES+=" upf4cfg.template.yaml"
         TEMPLATE_FILES+=" smf1cfg.template.yaml"
         TEMPLATE_FILES+=" smf2cfg.template.yaml"
         TEMPLATE_FILES+=" smfcfg.compose_template.yaml"
