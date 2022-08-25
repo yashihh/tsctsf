@@ -30,6 +30,7 @@ TEMPLATE_FILES+=" udmcfg.template.yaml"
 TEMPLATE_FILES+=" udrcfg.template.yaml"
 TEMPLATE_FILES+=" uerouting.template.yaml"
 TEMPLATE_FILES+=" n3iwfcfg.template.yaml"
+TEMPLATE_FILES+=" upfcfg.template.yaml"   # not used in case of "compose"
 TEMPLATE_FILES+=" smfcfg.template.yaml"   # Compose[AWS, go-gtpu(TBD)], Landslide
 TEMPLATE_FILES+=" nefcfg.template.yaml"
 TEMPLATE_FILES+=" webuicfg.template.yaml"
@@ -146,7 +147,6 @@ if [[ -n $PARA_FILE ]]; then
         override_default_param $TMP_LANDSLIDE
         rm $TMP_LANDSLIDE
 
-        TEMPLATE_FILES+=" upfcfg.template.yaml"
         TEMPLATE_FILES+=" smfcfg.iupf_template.yaml"
     elif [ "$COMPOSE" = true ]; then
         echo "COMPOSE=$COMPOSE"
@@ -177,7 +177,6 @@ else
     echo "COMPOSE=$COMPOSE"
     echo "P_MODE=$P_MODE"
     echo "ADMIN_RC=$ADMIN_RC"
-    TEMPLATE_FILES+=" upfcfg.template.yaml"
     cp  $ADMIN_RC $ADMIN_RC_TMP
 fi
 
