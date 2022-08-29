@@ -50,11 +50,6 @@ configuration:
               <MEC_DNN_1_ITEM>
               - dnn: <DNN_1>
                 dnaiList: <DNAI_LIST_1>
-              - dnn: <DNN_1>
-                pools:
-                  - cidr: <IP_POOLS_1>
-                staticPools:
-                  - cidr: <STATIC_IP_POOLS_1>
         interfaces: # Interface list for this UPF (Now only support 1 interface for 1 type)
           - interfaceType: N3 # the type of the interface (N3 or N9)
             endpoints: # the IP address of this N3/N9 interface on this UPF
