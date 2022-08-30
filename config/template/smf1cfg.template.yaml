@@ -47,14 +47,13 @@ configuration:
               sst: <S_NSSAI_SST_1> # Slice/Service Type (uinteger, range: 0~255)
               sd: <S_NSSAI_SD_1> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
             dnnUpfInfoList: # DNN information list for this S-NSSAI
-              <MEC_DNN_1_ITEM>
               - dnn: <DNN_1>
                 dnaiList: <DNAI_LIST_1>
         interfaces: # Interface list for this UPF (Now only support 1 interface for 1 type)
           - interfaceType: N3 # the type of the interface (N3 or N9)
             endpoints: # the IP address of this N3/N9 interface on this UPF
               - <UPF1_N3_IP>
-            networkInstances: [<MEC_DNN_LIST><DNN_1>] # Data Network Name (DNN)
+            networkInstances: [<DNN_1>] # Data Network Name (DNN)
           - interfaceType: N9 # the type of the interface (N3 or N9)
             endpoints: # the IP address of this N3/N9 interface on this UPF
               - <UPF1_N9_IP>
