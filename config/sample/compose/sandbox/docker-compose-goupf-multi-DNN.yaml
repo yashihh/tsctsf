@@ -56,7 +56,7 @@ services:
       route add default gw 172.16.61.1 &&
       ./upf"
     volumes:
-      - ${SANDBOX_DIR}/goupf1cfg.yaml:/free5gc/config/upfcfg.yaml
+      - ${SANDBOX_DIR}/upf1cfg.yaml:/free5gc/config/upfcfg.yaml
       - ./share_host_container:/share_host_container
     expose:
       - "2152"
@@ -89,7 +89,7 @@ services:
       route add default gw 172.16.62.1 &&
       ./upf"
     volumes:
-      - ${SANDBOX_DIR}/goupf2cfg.yaml:/free5gc/config/upfcfg.yaml
+      - ${SANDBOX_DIR}/upf2cfg.yaml:/free5gc/config/upfcfg.yaml
       - ./share_host_container:/share_host_container
     ports:
       - "2152:2152/udp"
@@ -124,7 +124,7 @@ services:
       route add default gw 172.16.63.1 &&
       ./upf"
     volumes:
-      - ${SANDBOX_DIR}/goupf3cfg.yaml:/free5gc/config/upfcfg.yaml
+      - ${SANDBOX_DIR}/upf3cfg.yaml:/free5gc/config/upfcfg.yaml
       - ./share_host_container:/share_host_container
     expose:
       - "2152"
@@ -153,7 +153,7 @@ services:
       route add default gw 172.16.64.1 &&
       ./upf"
     volumes:
-      - ${SANDBOX_DIR}/goupf4cfg.yaml:/free5gc/config/upfcfg.yaml
+      - ${SANDBOX_DIR}/upf4cfg.yaml:/free5gc/config/upfcfg.yaml
       - ./share_host_container:/share_host_container
     expose:
       - "2152"
@@ -300,6 +300,25 @@ services:
         aliases:
           - pcf.free5gc.org
         ipv4_address: ${PCF_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+
+  nef1:
+    container_name: nef
+    image: ${REPO}/free5gc-nef:${TAG}
+    command: ./nef
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/nefcfg.yaml:/free5gc/config/nefcfg.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - nef.free5gc.org
+        ipv4_address: ${NEF_IP}
     depends_on:
       nrf1:
         condition: service_healthy
