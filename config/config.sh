@@ -137,7 +137,7 @@ if [[ -n $PARA_FILE ]]; then
         echo "LANDSLIDE=$LANDSLIDE"
         TMP_LANDSLIDE=`mktemp`
         ADMIN_RC=$SCRIPT_DIR/parameter/landslide/$PARA_FILE
-        cp  $ADMIN_RC  $TMP_LANDSLIDE
+        cp $ADMIN_RC  $TMP_LANDSLIDE
         # TODO: Check whether we still need the following two lines?
         VARIABLES_FILE=$SCRIPT_DIR/parameter/landslide/defaults
         replace_variables  $TMP_LANDSLIDE  $VARIABLES_FILE
@@ -156,7 +156,7 @@ if [[ -n $PARA_FILE ]]; then
         else
             ADMIN_RC=$SCRIPT_DIR/parameter/compose.template
         fi
-        cp  $ADMIN_RC $TMP_COMPOSE
+        cp $ADMIN_RC $TMP_COMPOSE
         VARIABLES_FILE=$SCRIPT_DIR/parameter/netprefix.compose
         replace_variables  $TMP_COMPOSE $VARIABLES_FILE
         cp $DEFAULT_PARAM  $ADMIN_RC_TMP
@@ -177,7 +177,10 @@ else
     echo "COMPOSE=$COMPOSE"
     echo "P_MODE=$P_MODE"
     echo "ADMIN_RC=$ADMIN_RC"
-    cp  $ADMIN_RC $ADMIN_RC_TMP
+    TMP_PARAM=`mktemp`
+    cp $ADMIN_RC $TMP_PARAM
+    cp $DEFAULT_PARAM  $ADMIN_RC_TMP
+    override_default_param $TMP_PARAM
 fi
 
 
