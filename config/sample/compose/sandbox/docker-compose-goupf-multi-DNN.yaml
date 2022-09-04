@@ -47,8 +47,8 @@ services:
   # 1st Slice: Slice Differenciator: 010203. Includes upf1 + upf2 + smf1
   # upf1 + upf2 = ULCL; upf1: iUPF / upf2: psa-upf
   upf1:
-    container_name: goupf
-    image: ${REPO}/free5gc-go-upf:${TAG}
+    container_name: upf
+    image: ${REPO}/free5gc-upf:${TAG}
     command: > 
       sh -c "iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
@@ -80,8 +80,8 @@ services:
         condition: service_started
 
   upf2:
-    container_name: psa-goupf
-    image: ${REPO}/free5gc-go-upf:${TAG}
+    container_name: psa-upf
+    image: ${REPO}/free5gc-upf:${TAG}
     command: >
       sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
@@ -115,8 +115,8 @@ services:
   #   DNN: "Internet1", UPF3
   #   DNN: "Internet2", UPF4
   upf3:
-    container_name: goupf3
-    image: ${REPO}/free5gc-go-upf:${TAG}
+    container_name: upf3
+    image: ${REPO}/free5gc-upf:${TAG}
     command: >
       sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
@@ -144,8 +144,8 @@ services:
         condition: service_healthy
 
   upf4:
-    container_name: goupf4
-    image: ${REPO}/free5gc-go-upf:${TAG}
+    container_name: upf4
+    image: ${REPO}/free5gc-upf:${TAG}
     command: >
       sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
