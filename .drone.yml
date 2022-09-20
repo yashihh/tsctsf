@@ -1,0 +1,35 @@
+kind: pipeline
+type: docker
+name: docker-image-release
+steps:
+- name: relaese_nf_images
+  pull: never
+  image: drone/release-image
+  environment:
+      DOCKER_PW:
+        from_secret: docker_passwd
+  volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+      - name: ssh_key
+        path: /root/.ssh
+      - name: cert_path
+        path: /etc/docker/certs.d/
+  commands:
+    - git submodule init && git submodule sync && git submodule update 
+    - ./make-nf-images.sh $DOCKER_PW
+  when:
+    branch:
+      - develop
+    event:
+       - push
+volumes:
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
+  - name: ssh_key
+    host:
+      path: /root/.ssh
+  - name: cert_path
+    host:
+      path: /etc/docker/certs.d/
