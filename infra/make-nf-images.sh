@@ -1,6 +1,5 @@
 #!/usr/bin/env bash                                                                       
-ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && cd .. && pwd )"
-F5GC_DIR=${ROOT_DIR}/tmp/free5gc
+F5GC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null  && pwd )/../"
 echo "$F5GC_DIR"
 
 NFs=$( ls ${F5GC_DIR}/NFs )
@@ -33,7 +32,7 @@ for d in $NFs; do (
     echo "(In $(pwd))"
     echo docker build  --build-arg DEBUG_TOOLS=true -t ${REGISTRY_URL}:${REGISTRY_PORT}/free5gc-$d .
     docker build  --build-arg DEBUG_TOOLS=true -t ${REGISTRY_URL}:${REGISTRY_PORT}/free5gc-$d .
-    ocker push  ${REGISTRY_URL}:${REGISTRY_PORT}/free5gc-$d 
+    docker push  ${REGISTRY_URL}:${REGISTRY_PORT}/free5gc-$d 
     cd - 
   fi 
 ); done
