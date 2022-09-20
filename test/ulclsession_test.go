@@ -9,11 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"test"
 	"test/consumerTestdata/UDM/TestGenAuthData"
 	"test/nasTestpacket"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	// ausf_context "github.com/free5gc/ausf/context"
 	"bitbucket.org/free5gc-team/nas"
@@ -231,7 +232,7 @@ func testULCLSessionBase(t *testing.T, ueCount int, upfNum int) {
 
 		// check PDR and FAR start(For ULCL)
 		dir, _ := os.Getwd()
-		cmdPath := dir + "/libgtp5gnl/tools/"
+		cmdPath := dir + "/go-gtp5gnl/bin/"
 		gtp5gTunnelCmdPath := filepath.Clean(cmdPath)
 
 		for ns_num := 1; ns_num < upfNum+1; ns_num++ {
