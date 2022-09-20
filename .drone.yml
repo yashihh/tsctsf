@@ -1,6 +1,7 @@
 kind: pipeline
 type: docker
 name: docker-image-release
+
 steps:
 - name: relaese_nf_images
   pull: never
@@ -17,7 +18,9 @@ steps:
         path: /etc/docker/certs.d/
   commands:
     - git submodule init && git submodule sync && git submodule update 
+    - cd infra
     - ./make-nf-images.sh $DOCKER_PW
+    - cd -
   when:
     branch:
       - develop
@@ -33,3 +36,5 @@ volumes:
   - name: cert_path
     host:
       path: /etc/docker/certs.d/
+node:
+  type: dpdk
