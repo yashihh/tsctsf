@@ -1,4 +1,5 @@
 # Toolchain
+
 # Go vendor
 vendor/
 # Goland project folder
@@ -38,7 +39,7 @@ free5gc.zip
 *.code-workspace
 
 # gtp5g tool used to show PDR
-test/libgtp5gnl
+test/go-gtp5gnl
 
 # config.sh
 .adminrc.tmp
