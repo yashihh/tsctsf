@@ -43,7 +43,16 @@ services:
     networks:
       n6net4:
         ipv4_address: ${DN4_IP}
-
+  DN5:
+    container_name: DN5
+    image: ${REPO}/data-network-host:${TAG}
+    command: >
+      sh -c "tail -f /dev/null"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      n6net5:
+        ipv4_address: ${DN5_IP}
   # 1st Slice: Slice Differenciator: 010203. Includes upf1 + upf2 + smf1
   # upf1 + upf2 = ULCL; upf1: iUPF / upf2: psa-upf
   upf1:
@@ -168,6 +177,37 @@ services:
         ipv4_address: ${UPF4_N4_IP}
       n6net4:
         ipv4_address: ${UPF4_N6_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+  
+  # 3rd Slice: Slice Differenciator: "". Includes upf5 + smf3
+  #   DNN: "Internet", UPF5
+  upf5:
+    container_name: upf5
+    image: ${REPO}/saviah-upf:${TAG}
+    command: >
+      sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
+      iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
+      route del default gw 172.16.33.1 &&
+      route add default gw 172.16.65.1 &&
+      ./upf"
+    volumes:
+      - ${SANDBOX_DIR}/upf5cfg.yaml:/free5gc/config/upfcfg.yaml
+      - ./share_host_container:/share_host_container
+    expose:
+      - "2152"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      sbinet:
+        ipv4_address: ${UPF5_SBI_IP}
+      n3net3:
+        ipv4_address: ${UPF5_N3_IP}
+      n4net3:
+        ipv4_address: ${UPF5_N4_IP}
+      n6net5:
+        ipv4_address: ${UPF5_N6_IP}
     depends_on:
       nrf1:
         condition: service_healthy
@@ -374,6 +414,30 @@ services:
         condition: service_started
       upf4:
         condition: service_started
+  
+  smf3:
+    container_name: smf3
+    image: ${REPO}/saviah-smf:${TAG}
+    command: ./smf
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/smf3cfg.yaml:/free5gc/config/smfcfg.yaml
+      - ${SANDBOX_DIR}/uerouting.yaml:/free5gc/config/uerouting.yaml
+    environment:
+      GIN_MODE: release
+    networks:
+      sbinet:
+        aliases:
+          - smf3.free5gc.org
+        ipv4_address: ${SMF3_SBI_IP}
+      n4net3:
+        ipv4_address: ${SMF3_N4_IP}
+    depends_on:
+      nrf1:
+        condition: service_healthy
+      upf5:
+        condition: service_started
 
   udm1:
     container_name: udm
@@ -459,6 +523,11 @@ networks:
       driver: default
       config:
         - subnet: ${N3_NET2_PREFIX}.0/24
+  n3net3:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N3_NET3_PREFIX}.0/24
   n4net1:
     ipam:
       driver: default
@@ -469,6 +538,11 @@ networks:
       driver: default
       config:
         - subnet: ${N4_NET2_PREFIX}.0/24
+  n4net3:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N4_NET3_PREFIX}.0/24
   n6net1:
     ipam:
       driver: default
@@ -489,6 +563,11 @@ networks:
       driver: default
       config:
         - subnet: ${N6_NET4_PREFIX}.0/24
+  n6net5:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${N6_NET5_PREFIX}.0/24
   n9net1:
     ipam:
       driver: default
