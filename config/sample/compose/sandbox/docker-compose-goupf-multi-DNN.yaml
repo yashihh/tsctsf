@@ -58,7 +58,7 @@ services:
   upf1:
     container_name: upf
     image: ${REPO}/free5gc-upf:${TAG}
-    command: > 
+    command: >
       sh -c "iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
       route del default gw 172.16.31.1 &&
@@ -180,7 +180,7 @@ services:
     depends_on:
       nrf1:
         condition: service_healthy
-  
+
   # 3rd Slice: Slice Differenciator: "". Includes upf5 + smf3
   #   DNN: "Internet", UPF5
   upf5:
@@ -414,7 +414,7 @@ services:
         condition: service_started
       upf4:
         condition: service_started
-  
+
   smf3:
     container_name: smf3
     image: ${REPO}/saviah-smf:${TAG}
@@ -482,30 +482,39 @@ services:
       nrf1:
         condition: service_healthy
 
-  # n3iwf1:
-  #   container_name: n3iwf
-  #   image: ${REPO}/free5gc-n3iwf:${TAG}
-  #   command: sh -c "./n3iwf-ipsec.sh"
-  #   volumes:
-  #     - ${SANDBOX_DIR}/n3iwfs/n3iwf1/config/n3iwfcfg.yaml:/free5gc/config/n3iwfcfg.yaml
-  #     - ${SANDBOX_DIR}/n3iwfs/n3iwf1/config/n3iwf-ipsec.sh:/free5gc/n3iwf/n3iwf-ipsec.sh
-  #   environment:
-  #     GIN_MODE: release
-  #   cap_add:
-  #     - NET_ADMIN
-  #   networks:
-  #     sbinet:
-  #       aliases:
-  #         - n3iwf.free5gc.org
-  #       ipv4_address: ${N3IWF_IP}
-  #   depends_on:
-  #     amf1:
-  #       condition: service_healthy
-  #     smf1:
-  #       condition: service_started
-  #     goupf:
-  #       condition: service_started
-
+  n3iwf1:
+    user: root # for xfrm
+    container_name: n3iwf
+    image: ${REPO}/free5gc-n3iwf:${TAG}
+    command: ./n3iwf -c ./config/n3iwfcfg.yaml
+    expose:
+      - "8000"
+    volumes:
+      - ${SANDBOX_DIR}/n3iwfcfg.yaml:/free5gc/config/n3iwfcfg.yaml
+      - ${SANDBOX_DIR}/TLS/n3iwf.key:/free5gc/config/TLS/n3iwf.key
+      - ${SANDBOX_DIR}/TLS/n3iwf.pem:/free5gc/config/TLS/n3iwf.pem
+    environment:
+      GIN_MODE: release
+    cap_add:
+      - NET_ADMIN
+    networks:
+      sbinet:
+        aliases:
+          - n3iwf.free5gc.org
+        ipv4_address: ${N3IWF_IP}
+      nwucp_network:
+        aliases:
+          - n3iwf.nwucp.free5gc.org
+        ipv4_address: ${N3IWF_IKE_BIND_IP}
+      n3net1:
+        ipv4_address: ${N3IWF_N3_IP}
+    depends_on:
+      amf1:
+        condition: service_healthy
+      smf1:
+        condition: service_started
+      upf1:
+        condition: service_started
 
 networks:
   sbinet:
@@ -573,6 +582,11 @@ networks:
       driver: default
       config:
         - subnet: ${N9_NET1_PREFIX}.0/24
+  nwucp_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${IKE_NET_PREFIX}.0/24
 
 volumes:
   dbdata:

@@ -4,6 +4,11 @@ SCRIPT_DIR="$(
     cd -- "$(dirname "$0")" >/dev/null 2>&1
     pwd -P
 )"
+
+if [ -f ${SCRIPT_DIR}/host ]; then
+    HOST_IP=$(cat ${SCRIPT_DIR}/host)
+fi
+
 TEMPLATE_DIR=$SCRIPT_DIR/template
 DEFAULT_PARAM=$SCRIPT_DIR/parameter/default
 ADMIN_RC=$DEFAULT_PARAM
@@ -34,6 +39,7 @@ TEMPLATE_FILES+=" upfcfg.template.yaml"   # not used in case of "compose"
 TEMPLATE_FILES+=" smfcfg.template.yaml"   # Compose[AWS, go-gtpu(TBD)], Landslide
 TEMPLATE_FILES+=" nefcfg.template.yaml"
 TEMPLATE_FILES+=" webuicfg.template.yaml"
+TEMPLATE_FILES+=" n3iwfcfg.compose_template.yaml"
 
 if [ -f $ADMIN_RC_TMP ]; then
     rm $ADMIN_RC_TMP
@@ -205,12 +211,12 @@ handle_DNN_lists() {
         DNN_LIST="${DNN_1},${DNN_2}"
     fi
     echo -e "\nDNN_LIST=$DNN_LIST" >> $ADMIN_RC_TMP
-    
+
     if [ "x$MEC_DNN_1" != "x" ]; then
         MEC_DNN_1_ITEM="- dnn: $MEC_DNN_1"
         MEC_DNN_LIST="$MEC_DNN_1,"
     fi
-    
+
     if [ "x$MEC_DNN_2" != "x" ]; then
         MEC_DNN_2_ITEM="- dnn: $MEC_DNN_2"
         if [ "x$MEC_DNN_2" != "x$MEC_DNN_1" ]; then
@@ -229,19 +235,20 @@ collect_cfg_template_files() {
     for FILE in $TEMPLATE_FILES ; do
         cp $TEMPLATE_DIR/$FILE  $DEST_DIR
     done
-    
+
     cd $SCRIPT_DIR
     for template_file in $(ls $DEST_DIR/ | grep -E 'template.yaml|template.json'); do
         newfile=$(echo $DEST_DIR/$template_file | sed 's/.template//g')
         mv $DEST_DIR/$template_file $newfile
     done
-    
+
     if [ "$F5GC_IUPF" = true ]; then
         mv $DEST_DIR/smfcfg.iupf.yaml ${DEST_DIR}/smfcfg.yaml
     elif [ "$LANDSLIDE" = true ]; then
         rm $DEST_DIR/smfcfg.iupf.yaml
     elif [ "$COMPOSE" = true ]; then # COMPOSE
         cp $TEMPLATE_DIR/smfcfg.compose_template.yaml ${DEST_DIR}/smfcfg.yaml
+        cp $TEMPLATE_DIR/n3iwfcfg.compose_template.yaml ${DEST_DIR}/n3iwfcfg.yaml
     fi
 }
 
@@ -250,7 +257,7 @@ replace_template_variables() {
     sed -i '/^$/d' $ADMIN_RC_TMP
     source $ADMIN_RC_TMP
     VARS=(`cut -d = -f1 $ADMIN_RC_TMP | awk NF`)
-    
+
     #DBG_VARS=true
     for yaml_file in $(ls ${DEST_DIR}/ | grep -E '.yaml|.json'); do
         yaml_file=$DEST_DIR/$yaml_file

@@ -1,5 +1,5 @@
 # Notes:
-# - Adding env varialbes: 
+# - Adding env varialbes:
 #    be sure it substitutes in config.sh, gen_resource.sh
 
 MODE="Compose"
@@ -16,7 +16,6 @@ SBI_PREFIX=<SBI_PREFIX>
 AMF_N2_IP=0.0.0.0
 #SMF_N4_IP=<SBI_PREFIX>.7
 MQTT_IP=<SBI_PREFIX>.15
-#IKE_BIND_IP=<IKE_NETWORK_PREFIX>.100
 MONGO_DB=db
 
 # uerouting.yaml
@@ -114,3 +113,6 @@ UPF5_SBI_IP=<SBI_PREFIX>.65
 UPF5_N3_IP=<N3_NET3_PREFIX>.65
 UPF5_N4_IP=<N4_NET3_PREFIX>.65
 UPF5_N6_IP=<N6_NET5_PREFIX>.65
+
+N3IWF_IKE_BIND_IP=<IKE_NET_PREFIX>.71
+N3IWF_N3_IP=<N3_NET1_PREFIX>.71

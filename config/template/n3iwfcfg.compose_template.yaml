@@ -27,8 +27,7 @@ configuration:
   # --- N2 Interfaces ---
   AMFSCTPAddresses: # the IP list of N2 interfaces (SCTP) on AMF when using NGAP
     - IP:
-        - <AMF_N2_IP>
-      Port: 38412
+        - <HOST_IP>
   NASTCPPort: 20000 # TCP port which the NAS listens on
 
   # --- Nwu Interfaces ---
@@ -39,7 +38,7 @@ configuration:
   XFRMInterfaceID: 1 # XFRM interface if_id for IPSec routing (Any value except to 0, default value is 7 if not defined)
 
   # --- N3 Interfaces ---
-  GTPBindAddress: <SBI_PREFIX>.33 # IP address of N3 interface (GTP) on this N3IWF
+  GTPBindAddress: <N3IWF_N3_IP> # IP address of N3 interface (GTP) on this N3IWF
 
   FQDN: n3iwf.free5gc.org # FQDN of this N3IWF
 
