@@ -2,7 +2,7 @@ info:
   version: 1.0.4
   description: N3IWF initial local configuration
 
-configuration:
+configuration: 
   N3IWFInformation:
     GlobalN3IWFID: # ID used to globally identify an N3IWF
       PLMNID: # Public Land Mobile Network ID, {PLMN ID} = {MCC}{MNC}
@@ -27,7 +27,7 @@ configuration:
   # --- N2 Interfaces ---
   AMFSCTPAddresses: # the IP list of N2 interfaces (SCTP) on AMF when using NGAP
     - IP:
-        - <HOST_IP>
+        - <AMF_N2_IP>
   NASTCPPort: 20000 # TCP port which the NAS listens on
 
   # --- Nwu Interfaces ---

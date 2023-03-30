@@ -1,7 +1,7 @@
 #!/bin/bash
 ACTION=${1}
 WORKING_DIR=${2-"/opt/free5gc/sandbox"}
-HOST_IP_FILE="${WORKING_DIR}/host"
+HOST_IP_FILE="${WORKING_DIR}/../host"
 FCLI_DIR=${WORKING_DIR}/../
 ENV_FILE=${WORKING_DIR}/../.adminrc
 

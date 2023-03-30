@@ -10,9 +10,13 @@ SANDBOX=${PWD}/sandbox
 COMPOSE_ENV_TEMPLATE=${SANDBOX}/dockerComposeEnv.template
 COMPOSE_ENV=${SANDBOX}/dockerComposeEnv
 
-if [ -f ${SANDBOX}/host ]; then
-    HOST_IP=$(cat ${SANDBOX}/host)
+if [ -f ./host ]; then
+    HOST_IP=$(cat ./host)
 fi
+
+N2_PARENT_DEV=""                # Set parent dev to empty, may sometimes face connection issue if set to real interface
+N2_NET_PREFIX="172.16.21"      
+echo $N2_NET_PREFIX > /work/n2net
 
 if [ ! -f config.sh ]; then
     ./prepare.sh
@@ -48,6 +52,7 @@ sed -i "s/<N9_NET1_PREFIX>/$N9_NET1_PREFIX/g" $ADMIN_RC_FILE
 sed -i "s/<IKE_NET_PREFIX>/$IKE_NET_PREFIX/g" $ADMIN_RC_FILE
 sed -i "s/<N3IWF_IKE_BIND_IP>/$N3IWF_IKE_BIND_IP/g" $ADMIN_RC_FILE
 sed -i "s/<N3IWF_N3_IP>/$N3IWF_N3_IP/g" $ADMIN_RC_FILE
+sed -i "s/<N2_NET_PREFIX>/$N2_NET_PREFIX/g" $ADMIN_RC_FILE
 
 ./config.sh -compose -o out
 mv out/*.yaml sandbox
@@ -58,6 +63,8 @@ cp ${COMPOSE_ENV_TEMPLATE} ${COMPOSE_ENV}
 sed -i "s/<HOST_IP>/$HOST_IP/g" ${COMPOSE_ENV}
 sed -i "s/<SBI_PREFIX>/$SBI_PREFIX/g" ${COMPOSE_ENV}
 
+sed -i "s/<N2_NET_PREFIX>/$N2_NET_PREFIX/g"   ${COMPOSE_ENV}
+sed -i "s/<N2_PARENT_DEV>/$N2_PARENT_DEV/g"   ${COMPOSE_ENV}
 sed -i "s/<N3_NET1_PREFIX>/$N3_NET1_PREFIX/g" ${COMPOSE_ENV}
 sed -i "s/<N3_NET2_PREFIX>/$N3_NET2_PREFIX/g" ${COMPOSE_ENV}
 sed -i "s/<N3_NET3_PREFIX>/$N3_NET3_PREFIX/g" ${COMPOSE_ENV}

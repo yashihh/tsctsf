@@ -265,7 +265,7 @@ services:
     command: ./amf
     expose:
       - "8000"
- #     - "38412/sctp"
+      - "38412/sctp"
     volumes:
       - ${SANDBOX_DIR}/amfcfg.yaml:/free5gc/config/amfcfg.yaml
     environment:
@@ -274,9 +274,11 @@ services:
       sbinet:
         aliases:
           - amf.free5gc.org
-        ipv4_address: ${AMF_IP}
-    ports:
-      - "38412:38412/sctp"
+        ipv4_address: ${AMF_SBI_IP}
+      n2net:
+        aliases:
+          - amf.n2.free5gc.org
+        ipv4_address: ${AMF_N2_IP}
     healthcheck:
       test: ["CMD", "netstat", "--sctp",  "|" , "grep 38412"]
       interval: 10s
@@ -502,6 +504,10 @@ services:
         aliases:
           - n3iwf.free5gc.org
         ipv4_address: ${N3IWF_IP}
+      n2net:
+        aliases:
+          - n3iwf.n2.free5gc.org
+        ipv4_address: ${N3IWF_N2_IP}
       nwucp_network:
         aliases:
           - n3iwf.nwucp.free5gc.org
@@ -587,6 +593,13 @@ networks:
       driver: default
       config:
         - subnet: ${IKE_NET_PREFIX}.0/24
+  n2net:
+    driver: ipvlan
+    driver_opts:
+      parent: ${N2_PARENT_DEV}
+    ipam:
+      config:
+        - subnet: ${N2_NET_PREFIX}.0/24
 
 volumes:
   dbdata:
