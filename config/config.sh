@@ -165,8 +165,10 @@ if [[ -n $PARA_FILE ]]; then
         TEMPLATE_FILES+=" upf2cfg.template.yaml"
         TEMPLATE_FILES+=" upf3cfg.template.yaml"
         TEMPLATE_FILES+=" upf4cfg.template.yaml"
+        TEMPLATE_FILES+=" upf5cfg.template.yaml"
         TEMPLATE_FILES+=" smf1cfg.template.yaml"
         TEMPLATE_FILES+=" smf2cfg.template.yaml"
+        TEMPLATE_FILES+=" smf3cfg.template.yaml"
         TEMPLATE_FILES+=" smfcfg.compose_template.yaml"
         echo "COMPOSE end"
     fi
