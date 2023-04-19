@@ -185,7 +185,7 @@ services:
   #   DNN: "Internet", UPF5
   upf5:
     container_name: upf5
-    image: ${REPO}/saviah-upf:${TAG}
+    image: ${REPO}/free5gc-upf:${TAG}
     command: >
       sh -c " iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1400 &&
       iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE &&
@@ -419,7 +419,7 @@ services:
 
   smf3:
     container_name: smf3
-    image: ${REPO}/saviah-smf:${TAG}
+    image: ${REPO}/free5gc-smf:${TAG}
     command: ./smf
     expose:
       - "8000"
