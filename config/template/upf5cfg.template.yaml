@@ -1,17 +1,5 @@
-version: 1.0.4
+version: 1.0.3
 description: UPF initial local configuration
-
-sbi: # Service-based interface information
-  scheme: http # The protocol for sbi (http or https)
-  registerIPv4: <UPF5_SBI_IP> # IP used to register to NRF
-  bindingIPv4: <UPF5_SBI_IP> # IP used to bind the service
-  port: 8000 # port used to bind the service
-  tls: # the local path of TLS key
-    pem: config/TLS/upf.pem # UPF TLS Certificate
-    key: config/TLS/upf.key # UPF TLS Private key
-serviceList: # the SBI services provided by this UPF
-  - serviceName: nupf-oam # OAM Service
-<NRF_CMT>nrfUri: http://<NRF_IP>:8000 # A valid URI of NRF
 
 # The listen IP and nodeID of the N4 interface on this UPF (Can't set to 0.0.0.0)
 pfcp:
@@ -19,7 +7,6 @@ pfcp:
   nodeID: <UPF5_N4_IP> # External IP or FQDN can be reached
   retransTimeout: 1s # retransmission timeout
   maxRetrans: 3 # the max number of retransmission
-  # cpNodeID: <SMF_N4_IP> # CP node External IP or FQDN can be reached
 
 gtpu:
   forwarder: gtp5g
@@ -30,6 +17,7 @@ gtpu:
       type: N3
       # name: upf.5gc.nctu.me
       # ifname: gtpif
+      # mtu: 1400
 
 # The DNN list supported by UPF
 dnnList:
