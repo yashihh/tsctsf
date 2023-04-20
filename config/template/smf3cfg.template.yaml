@@ -1,14 +1,13 @@
 info:
-  version: 1.0.7
+  version: 1.0.6
   description: SMF initial local configuration
 
 configuration:
-  sid: smf3 # CMI service ID
-  smfName: SMF3 # the name of this SMF
+  smfName: SMF # the name of this SMF
   sbi: # Service-based interface information
     scheme: http # the protocol for sbi (http or https)
-    registerIPv4: <SMF3_SBI_IP> # IP used to register to NRF
-    bindingIPv4: <SMF3_SBI_IP> # IP used to bind the service
+    registerIPv4: <SMF3_SBI_IP>  # IP used to register to NRF
+    bindingIPv4: <SMF3_SBI_IP>  # IP used to bind the service
     port: 8000 # Port used to bind the service
     tls: # the local path of TLS key
       key: config/TLS/smf.key # SMF TLS Certificate
@@ -57,7 +56,7 @@ configuration:
           - interfaceType: N3 # the type of the interface (N3 or N9)
             endpoints: # the IP address of this N3/N9 interface on this UPF
               - <UPF5_N3_IP>
-            networkInstances: [<DNN_1>] # Data Network Name (DNN)
+            networkInstances: [<MEC_DNN_LIST><DNN_1>] # Data Network Name (DNN)
     links: # the topology graph of userplane, A and B represent the two nodes of each link
       - A: gNB1
         B: upf5
@@ -71,14 +70,26 @@ configuration:
     enable: true     # true or false
     expireTime: 16s   # default is 6 seconds
     maxRetryTimes: 3 # the max number of retransmission
-  mtu: <MTU> # MTU size of 5GC (uinteger, range: 1~65535)
   nrfUri: http://<SBI_PREFIX>.10:8000 # a valid URI of NRF
-  #urrPeriod: 10
-  mqtt:
-    server: <MQTT_IP>
-    port: 1883
+  #urrPeriod: 10 # default usage report period in seconds
+  #urrThreshold: 1000 # default usage report threshold in bytes
 
-logger: # log output setting
-  enable: true # true or false
-  level: info # how detailed to output, value: trace, debug, info, warn, error, fatal, panic
-  reportCaller: false # enable the caller report or not, value: true or false
+# the kind of log output
+# debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
+# ReportCaller: enable the caller report or not, value: true or false
+logger:
+  SMF:
+    debugLevel: info
+    ReportCaller: false
+  NAS:
+    debugLevel: info
+    ReportCaller: false
+  NGAP:
+    debugLevel: info
+    ReportCaller: false
+  Aper:
+    debugLevel: info
+    ReportCaller: false
+  PFCP:
+    debugLevel: info
+    ReportCaller: false
