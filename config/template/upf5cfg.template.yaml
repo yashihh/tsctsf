@@ -23,7 +23,7 @@ gtpu:
 dnnList:
   - dnn: <DNN_1> # Data Network Name
     cidr: <IP_POOLS_5> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
-    # natifnamp: eth0
+    # natifname: eth0
 
 logger: # log output setting
   enable: true # true or false
