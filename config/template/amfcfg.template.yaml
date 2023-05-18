@@ -1,5 +1,5 @@
 info:
-  version: 1.0.8
+  version: 1.0.9
   description: AMF initial local configuration
 
 configuration:
@@ -13,8 +13,8 @@ configuration:
     bindingIPv4: <SBI_PREFIX>.18  # IP used to bind the service
     port: 8000 # port used to bind the service
     tls: # the local path of TLS key
-      pem: config/TLS/amf.pem # AMF TLS Certificate
-      key: config/TLS/amf.key # AMF TLS Private key
+      pem: cert/amf.pem # AMF TLS Certificate
+      key: cert/amf.key # AMF TLS Private key
   serviceNameList: # the SBI services provided by this AMF, refer to TS 29.518
     - namf-comm # Namf_Communication service
     - namf-evts # Namf_EventExposure service
@@ -110,22 +110,7 @@ configuration:
     maxInitTimeout: 2 # the maximum init timeout of each sctp connection
   defaultUECtxReq: false # the default value of UE Context Request to decide when triggering Initial Context Setup procedure
 
-# the kind of log output
-  # debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
-  # ReportCaller: enable the caller report or not, value: true or false
-logger:
-  AMF:
-    debugLevel: info
-    ReportCaller: false
-  NAS:
-    debugLevel: info
-    ReportCaller: false
-  FSM:
-    debugLevel: info
-    ReportCaller: false
-  NGAP:
-    debugLevel: info
-    ReportCaller: false
-  Aper:
-    debugLevel: info
-    ReportCaller: false
+logger: # log output setting
+  enable: true # true or false
+  level: info # how detailed to output, value: trace, debug, info, warn, error, fatal, panic
+  reportCaller: false # enable the caller report or not, value: true or false

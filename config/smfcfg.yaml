@@ -1,5 +1,5 @@
 info:
-  version: 1.0.6
+  version: 1.0.7
   description: SMF initial local configuration
 
 configuration:
@@ -10,8 +10,8 @@ configuration:
     bindingIPv4: 127.0.0.2 # IP used to bind the service
     port: 8000 # Port used to bind the service
     tls: # the local path of TLS key
-      key: config/TLS/smf.key # SMF TLS Certificate
-      pem: config/TLS/smf.pem # SMF TLS Private key
+      key: cert/smf.key # SMF TLS Certificate
+      pem: cert/smf.pem # SMF TLS Private key
   serviceNameList: # the SBI services provided by this SMF, refer to TS 29.502
     - nsmf-pdusession # Nsmf_PDUSession service
     - nsmf-event-exposure # Nsmf_EventExposure service
@@ -92,22 +92,7 @@ configuration:
   #urrPeriod: 10 # default usage report period in seconds
   #urrThreshold: 1000 # default usage report threshold in bytes
 
-# the kind of log output
-# debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
-# ReportCaller: enable the caller report or not, value: true or false
-logger:
-  SMF:
-    debugLevel: info
-    ReportCaller: false
-  NAS:
-    debugLevel: info
-    ReportCaller: false
-  NGAP:
-    debugLevel: info
-    ReportCaller: false
-  Aper:
-    debugLevel: info
-    ReportCaller: false
-  PFCP:
-    debugLevel: info
-    ReportCaller: false
+logger: # log output setting
+  enable: true # true or false
+  level: info # how detailed to output, value: trace, debug, info, warn, error, fatal, panic
+  reportCaller: false # enable the caller report or not, value: true or false
