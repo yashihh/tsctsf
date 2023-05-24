@@ -596,7 +596,7 @@ func smfConfig(testID string) error {
 func smfUeRoutingConfig() {
 	smf_factory.UERoutingConfig = &smf_factory.RoutingConfig{
 		Info: &smf_factory.Info{
-			Version:     "1.0.2",
+			Version:     "1.0.7",
 			Description: "SMF initial test routing information for UE",
 		},
 		UERoutingInfo: map[string]smf_factory.UERoutingInfo{
