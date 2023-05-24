@@ -1290,9 +1290,9 @@ func nssfConfig() error {
 }
 
 func ausfConfig() error {
-	ausf_factory.AusfConfig = ausf_factory.Config{
+	ausf_factory.AusfConfig = &ausf_factory.Config{
 		Info: &ausf_factory.Info{
-			Version:     "1.0.2",
+			Version:     "1.0.3",
 			Description: "AUSF initial test configuration",
 		},
 		Configuration: &ausf_factory.Configuration{
@@ -1302,8 +1302,8 @@ func ausfConfig() error {
 				BindingIPv4:  "127.0.0.9",
 				Port:         8000,
 				Tls: &ausf_factory.Tls{
-					Pem: "config/TLS/ausf.pem",
-					Key: "config/TLS/ausf.key",
+					Pem: "cert/ausf.pem",
+					Key: "cert/ausf.key",
 				},
 			},
 			ServiceNameList: []string{
@@ -1319,16 +1319,11 @@ func ausfConfig() error {
 			}},
 			GroupId: "ausfGroup001",
 		},
-		Logger: &logger_util.Logger{
-			AUSF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &ausf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := ausf_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := ausf_factory.AusfConfig.Validate(); err != nil {
