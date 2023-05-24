@@ -695,7 +695,7 @@ func udrConfig() error {
 }
 
 func pcfConfig() error {
-	pcf_factory.PcfConfig = pcf_factory.Config{
+	pcf_factory.PcfConfig = &pcf_factory.Config{
 		Info: &pcf_factory.Info{
 			Version:     "1.0.2",
 			Description: "PCF initial test configuration",
