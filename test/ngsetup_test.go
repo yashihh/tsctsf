@@ -583,10 +583,6 @@ func smfConfig(testID string) error {
 
 	smfUeRoutingConfig()
 
-	if err := smf_factory.CheckConfigVersion(); err != nil {
-		return err
-	}
-
 	if _, err := smf_factory.SmfConfig.Validate(); err != nil {
 		return err
 	}
@@ -599,9 +595,9 @@ func smfConfig(testID string) error {
 }
 
 func smfUeRoutingConfig() {
-	smf_factory.UERoutingConfig = smf_factory.RoutingConfig{
+	smf_factory.UERoutingConfig = &smf_factory.RoutingConfig{
 		Info: &smf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "SMF initial test routing information for UE",
 		},
 		UERoutingInfo: map[string]smf_factory.UERoutingInfo{
