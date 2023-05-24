@@ -77,34 +77,51 @@ func init() {
 		if err := nrfConfig(); err != nil {
 			fmt.Printf("NRF Config failed: %v\n", err)
 		}
+		NFs[0], _ = nrf_service.NewApp(nrf_factory.NrfConfig)
+		go NFs[0].Start("./log/nrfsslkey.log")
 
 		if err := amfConfig(testID); err != nil {
 			fmt.Printf("AMF Config failed: %v\n", err)
 		}
+		NFs[1], _ = amf_service.NewApp(amf_factory.AmfConfig)
+		go NFs[1].Start("./log/amfsslkey.log")
 
 		if err := smfConfig(testID); err != nil {
 			fmt.Printf("SMF Config failed: %v\n", err)
 		}
+		NFs[2], _ = smf_service.NewApp(smf_factory.SmfConfig)
+		go NFs[2].Start("./log/smfsslkey.log")
 
 		if err := udrConfig(); err != nil {
 			fmt.Printf("UDR Config failed: %v\n", err)
 		}
+		NFs[3], _ = udr_service.NewApp(udr_factory.UdrConfig)
+		go NFs[3].Start("./log/udrsslkey.log")
 
 		if err := pcfConfig(); err != nil {
 			fmt.Printf("PCF Config failed: %v\n", err)
 		}
+		NFs[4], _ = pcf_service.NewApp(pcf_factory.PcfConfig)
+		go NFs[4].Start("./log/pcfsslkey.log")
 
 		if err := udmConfig(); err != nil {
 			fmt.Printf("UDM Config failed: %v\n", err)
 		}
+		NFs[5], _ = udm_service.NewApp(udm_factory.UdmConfig)
+		go NFs[5].Start("./log/udmsslkey.log")
 
 		if err := nssfConfig(); err != nil {
 			fmt.Printf("NSSF Config failed: %v\n", err)
 		}
+		NFs[6], _ = nssf_service.NewApp(nssf_factory.NssfConfig)
+		go NFs[6].Start("./log/nssfsslkey.log")
 
 		if err := ausfConfig(); err != nil {
 			fmt.Printf("AUSF Config failed: %v\n", err)
 		}
+		NFs[7], _ = ausf_service.NewApp(ausf_factory.AusfConfig)
+		go NFs[7].Start("./log/ausfsslkey.log")
+
 		/*
 			for _, service := range NFs {
 				service.SetLogLevel()
