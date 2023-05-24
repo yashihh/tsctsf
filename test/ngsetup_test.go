@@ -34,7 +34,6 @@ import (
 	"bitbucket.org/free5gc-team/udm/pkg/suci"
 	udr_factory "bitbucket.org/free5gc-team/udr/pkg/factory"
 	udr_service "bitbucket.org/free5gc-team/udr/pkg/service"
-	logger_util "bitbucket.org/free5gc-team/util/logger"
 	"bitbucket.org/free5gc-team/util/mongoapi"
 )
 
