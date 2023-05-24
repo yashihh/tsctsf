@@ -40,14 +40,14 @@ import (
 
 var initFlag bool = true
 var NFs = []app.NetworkFunction{
-	&nrf_service.NRF{},
-	&amf_service.AMF{},
-	&smf_service.SMF{},
-	&udr_service.UDR{},
-	&pcf_service.PCF{},
-	&udm_service.UDM{},
-	&nssf_service.NSSF{},
-	&ausf_service.AUSF{},
+	&nrf_service.NrfApp{},
+	&amf_service.AmfApp{},
+	&smf_service.SmfApp{},
+	&udr_service.UdrApp{},
+	&pcf_service.PcfApp{},
+	&udm_service.UdmApp{},
+	&nssf_service.NssfApp{},
+	&ausf_service.AusfApp{},
 	//&n3iwf_service.N3IWF{},
 }
 
@@ -106,12 +106,13 @@ func init() {
 		if err := ausfConfig(); err != nil {
 			fmt.Printf("AUSF Config failed: %v\n", err)
 		}
-
-		for _, service := range NFs {
-			service.SetLogLevel()
-			go service.Start()
-			time.Sleep(200 * time.Millisecond)
-		}
+		/*
+			for _, service := range NFs {
+				service.SetLogLevel()
+				go service.Start()
+				time.Sleep(200 * time.Millisecond)
+			}
+		*/
 	} else {
 		if err := mongoapi.SetMongoDB("free5gc", "mongodb://127.0.0.1:27017"); err != nil {
 			fmt.Printf("SetMongoDB failed: %v\n", err)
@@ -217,9 +218,9 @@ func beforeClose(ue *test.RanUeContext) {
 }
 
 func nrfConfig() error {
-	nrf_factory.NrfConfig = nrf_factory.Config{
+	nrf_factory.NrfConfig = &nrf_factory.Config{
 		Info: &nrf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "NRF initial test configuration",
 		},
 		Configuration: &nrf_factory.Configuration{
@@ -230,9 +231,9 @@ func nrfConfig() error {
 				RegisterIPv4: "127.0.0.10",
 				BindingIPv4:  "127.0.0.10",
 				Port:         8000,
-				Tls: &nrf_factory.Tls{
-					Pem: "config/TLS/nrf.pem",
-					Key: "config/TLS/nrf.key",
+				Cert: &nrf_factory.Cert{
+					Pem: "cert/nrf.pem",
+					Key: "cert/nrf.key",
 				},
 			},
 			DefaultPlmnId: models.PlmnId{
@@ -244,16 +245,11 @@ func nrfConfig() error {
 				"nnrf-disc",
 			},
 		},
-		Logger: &logger_util.Logger{
-			NRF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &nrf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := nrf_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := nrf_factory.NrfConfig.Validate(); err != nil {
@@ -517,7 +513,7 @@ func smfConfig(testID string) error {
 								Sd:  "010203",
 							},
 							DnnUpfInfoList: []*smf_factory.DnnUpfInfoItem{{
-								Dnn: "internet",
+								Dnn:      "internet",
 								DnaiList: dnaiList,
 								Pools: []*smf_factory.UEIPPool{{
 									Cidr: "10.60.0.0/16",
