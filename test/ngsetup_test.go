@@ -272,9 +272,9 @@ func amfConfig(testID string) error {
 		cipheringOrder = []string{"NEA0"}
 	}
 
-	amf_factory.AmfConfig = amf_factory.Config{
+	amf_factory.AmfConfig = &amf_factory.Config{
 		Info: &amf_factory.Info{
-			Version:     "1.0.8",
+			Version:     "1.0.9",
 			Description: "AMF initial test configuration",
 		},
 		Configuration: &amf_factory.Configuration{
@@ -286,8 +286,8 @@ func amfConfig(testID string) error {
 				BindingIPv4:  "127.0.0.18",
 				Port:         8000,
 				Tls: &amf_factory.Tls{
-					Pem: "config/TLS/amf.pem",
-					Key: "config/TLS/amf.key",
+					Pem: "cert/amf.pem",
+					Key: "cert/amf.key",
 				},
 			},
 			ServiceNameList: []string{
@@ -394,32 +394,11 @@ func amfConfig(testID string) error {
 				MaxRetryTimes: 4,
 			},
 		},
-		Logger: &logger_util.Logger{
-			AMF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			NAS: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			FSM: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			NGAP: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			Aper: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &amf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := amf_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := amf_factory.AmfConfig.Validate(); err != nil {
