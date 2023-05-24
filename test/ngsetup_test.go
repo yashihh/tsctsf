@@ -658,9 +658,9 @@ func smfUeRoutingConfig() {
 }
 
 func udrConfig() error {
-	udr_factory.UdrConfig = udr_factory.Config{
+	udr_factory.UdrConfig = &udr_factory.Config{
 		Info: &udr_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "UDR initial test configuration",
 		},
 		Configuration: &udr_factory.Configuration{
@@ -670,8 +670,8 @@ func udrConfig() error {
 				BindingIPv4:  "127.0.0.4",
 				Port:         8000,
 				Tls: &udr_factory.Tls{
-					Pem: "config/TLS/udr.pem",
-					Key: "config/TLS/udr.key",
+					Pem: "cert/udr.pem",
+					Key: "cert/udr.key",
 				},
 			},
 			Mongodb: &udr_factory.Mongodb{
@@ -680,16 +680,11 @@ func udrConfig() error {
 			},
 			NrfUri: "http://127.0.0.10:8000",
 		},
-		Logger: &logger_util.Logger{
-			UDR: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &udr_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := udr_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := udr_factory.UdrConfig.Validate(); err != nil {
@@ -702,7 +697,7 @@ func udrConfig() error {
 func pcfConfig() error {
 	pcf_factory.PcfConfig = pcf_factory.Config{
 		Info: &pcf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "PCF initial test configuration",
 		},
 		Configuration: &pcf_factory.Configuration{
@@ -713,8 +708,8 @@ func pcfConfig() error {
 				BindingIPv4:  "127.0.0.7",
 				Port:         8000,
 				Tls: &pcf_factory.Tls{
-					Pem: "config/TLS/pcf.pem",
-					Key: "config/TLS/pcf.key",
+					Pem: "cert/pcf.pem",
+					Key: "cert/pcf.key",
 				},
 			},
 			TimeFormat:      "2019-01-02 15:04:05",
@@ -740,11 +735,10 @@ func pcfConfig() error {
 				Url:  "mongodb://localhost:27017",
 			},
 		},
-		Logger: &logger_util.Logger{
-			PCF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &pcf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
 	}
 
