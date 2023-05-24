@@ -742,10 +742,6 @@ func pcfConfig() error {
 		},
 	}
 
-	if err := pcf_factory.CheckConfigVersion(); err != nil {
-		return err
-	}
-
 	if _, err := pcf_factory.PcfConfig.Validate(); err != nil {
 		return err
 	}
@@ -754,9 +750,9 @@ func pcfConfig() error {
 }
 
 func udmConfig() error {
-	udm_factory.UdmConfig = udm_factory.Config{
+	udm_factory.UdmConfig = &udm_factory.Config{
 		Info: &udm_factory.Info{
-			Version:     "1.0.2",
+			Version:     "1.0.3",
 			Description: "UDM initial test configuration",
 		},
 		Configuration: &udm_factory.Configuration{
@@ -773,8 +769,8 @@ func udmConfig() error {
 				BindingIPv4:  "127.0.0.3",
 				Port:         8000,
 				Tls: &udm_factory.Tls{
-					Pem: "free5gc/support/TLS/udm.pem",
-					Key: "free5gc/support/TLS/udm.key",
+					Pem: "cert/udm.pem",
+					Key: "cert/udm.key",
 				},
 			},
 			NrfUri: "http://127.0.0.10:8000",
@@ -791,16 +787,11 @@ func udmConfig() error {
 				},
 			},
 		},
-		Logger: &logger_util.Logger{
-			UDM: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &udm_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := udm_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := udm_factory.UdmConfig.Validate(); err != nil {
@@ -813,9 +804,9 @@ func udmConfig() error {
 func nssfConfig() error {
 	var accessType3GPP models.AccessType = models.AccessType__3_GPP_ACCESS
 
-	nssf_factory.NssfConfig = nssf_factory.Config{
+	nssf_factory.NssfConfig = &nssf_factory.Config{
 		Info: &nssf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "NSSF initial test configuration",
 		},
 		Configuration: &nssf_factory.Configuration{
@@ -826,8 +817,8 @@ func nssfConfig() error {
 				BindingIPv4:  "127.0.0.31",
 				Port:         8000,
 				Tls: &nssf_factory.Tls{
-					Pem: "config/TLS/nssf.pem",
-					Key: "config/TLS/nssf.key",
+					Pem: "cert/nssf.pem",
+					Key: "cert/nssf.key",
 				},
 			},
 			ServiceNameList: []models.ServiceName{
@@ -1288,19 +1279,12 @@ func nssfConfig() error {
 				}},
 			}},
 		},
-		Logger: &logger_util.Logger{
-			NSSF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &nssf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
 	}
-
-	if err := nssf_factory.CheckConfigVersion(); err != nil {
-		return err
-	}
-
-	nssf_factory.Configured = true
 
 	return nil
 }
