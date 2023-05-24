@@ -415,9 +415,9 @@ func smfConfig(testID string) error {
 		dnaiList = []string{"edge"}
 	}
 
-	smf_factory.SmfConfig = smf_factory.Config{
+	smf_factory.SmfConfig = &smf_factory.Config{
 		Info: &smf_factory.Info{
-			Version:     "1.0.6",
+			Version:     "1.0.7",
 			Description: "SMF initial single test configuration",
 		},
 		Configuration: &smf_factory.Configuration{
@@ -428,8 +428,8 @@ func smfConfig(testID string) error {
 				BindingIPv4:  "127.0.0.2",
 				Port:         8000,
 				Tls: &smf_factory.Tls{
-					Pem: "config/TLS/smf.pem",
-					Key: "config/TLS/smf.key",
+					Pem: "cert/smf.pem",
+					Key: "cert/smf.key",
 				},
 			},
 			ServiceNameList: []string{
@@ -538,27 +538,10 @@ func smfConfig(testID string) error {
 			},
 			NrfUri: "http://127.0.0.10:8000",
 		},
-		Logger: &logger_util.Logger{
-			SMF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			NAS: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			NGAP: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			Aper: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			PFCP: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &smf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
 	}
 
