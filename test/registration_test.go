@@ -688,7 +688,7 @@ func TestServiceRequest(t *testing.T) {
 
 	// send NAS Service Request
 	pdu = nasTestpacket.GetServiceRequest(nasMessage.ServiceTypeData)
-	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
+	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtected, true, false)
 	assert.Nil(t, err)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, pdu, "fe0000000001")
 	assert.Nil(t, err)
@@ -698,8 +698,12 @@ func TestServiceRequest(t *testing.T) {
 	// receive Initial Context Setup Request
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
+	ngapMsg, err = ngap.Decoder(recvMsg[:n])
 	assert.Nil(t, err)
+
+	// update AMF UE NGAP ID
+	ue.AmfUeNgapId = ngapMsg.InitiatingMessage.
+		Value.InitialContextSetupRequest.ProtocolIEs.List[0].Value.AMFUENGAPID.Value
 
 	// Send Initial Context Setup Response
 	sendMsg, err = test.GetInitialContextSetupResponseForServiceRequest(ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
@@ -940,6 +944,11 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeIdentityRequest,
 		"Received wrong GMM message. Expected Identity Request.")
 
+	// update AMF UE NGAP ID
+	ue.AmfUeNgapId = ngapMsg.InitiatingMessage.
+		Value.DownlinkNASTransport.
+		ProtocolIEs.List[0].Value.AMFUENGAPID.Value
+
 	// send NAS Identity Response
 	mobileIdentity := nasType.MobileIdentity{
 		Len:    SUCI5GS.Len,
@@ -947,11 +956,6 @@ func TestGUTIRegistration(t *testing.T) {
 	}
 	pdu = nasTestpacket.GetIdentityResponse(mobileIdentity)
 	require.Nil(t, err)
-
-	// update AMF UE NGAP ID
-	ue.AmfUeNgapId = ngapMsg.InitiatingMessage.
-		Value.DownlinkNASTransport.
-		ProtocolIEs.List[0].Value.AMFUENGAPID.Value
 
 	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
 	require.Nil(t, err)
@@ -1926,7 +1930,7 @@ func TestPaging(t *testing.T) {
 
 	// send NAS Service Request
 	pdu = nasTestpacket.GetServiceRequest(nasMessage.ServiceTypeMobileTerminatedServices)
-	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
+	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtected, true, false)
 	assert.Nil(t, err)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, pdu, "fe0000000001")
 	assert.Nil(t, err)
@@ -1936,8 +1940,12 @@ func TestPaging(t *testing.T) {
 	// receive Initial Context Setup Request
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
+	ngapMsg, err = ngap.Decoder(recvMsg[:n])
 	assert.Nil(t, err)
+
+	// update AMF UE NGAP ID
+	ue.AmfUeNgapId = ngapMsg.InitiatingMessage.
+		Value.InitialContextSetupRequest.ProtocolIEs.List[0].Value.AMFUENGAPID.Value
 
 	//send Initial Context Setup Response
 	sendMsg, err = test.GetInitialContextSetupResponseForServiceRequest(ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
