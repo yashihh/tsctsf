@@ -117,13 +117,13 @@ NF_LIST="nrf amf smf udr pcf udm nssf ausf nef"
 export GIN_MODE=release
 
 for NF in ${NF_LIST}; do
-    ./bin/${NF} -c ./config/${NF}cfg.yaml -l ${LOG_PATH}${NF}.log -lc ${LOG_PATH}${LOG_NAME} &
+    ./bin/${NF} -c ./config/${NF}cfg.yaml -l ${LOG_PATH}${LOG_NAME} &
     PID_LIST+=($!)
     sleep 0.1
 done
 
 if [ $N3IWF_ENABLE -ne 0 ]; then
-    sudo ./bin/n3iwf -c ./config/n3iwfcfg.yaml -l ${LOG_PATH}n3iwf.log -lc ${LOG_PATH}${LOG_NAME} &
+    sudo ./bin/n3iwf -c ./config/n3iwfcfg.yaml -l ${LOG_PATH}${LOG_NAME} &
     SUDO_N3IWF_PID=$!
     sleep 1
     N3IWF_PID=$(pgrep -P $SUDO_N3IWF_PID)

@@ -294,7 +294,7 @@ func TestDeregistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -499,7 +499,7 @@ func TestServiceRequest(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -688,7 +688,7 @@ func TestServiceRequest(t *testing.T) {
 
 	// send NAS Service Request
 	pdu = nasTestpacket.GetServiceRequest(nasMessage.ServiceTypeData)
-	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
+	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtected, true, false)
 	assert.Nil(t, err)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, pdu, "fe0000000001")
 	assert.Nil(t, err)
@@ -698,8 +698,12 @@ func TestServiceRequest(t *testing.T) {
 	// receive Initial Context Setup Request
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
+	ngapMsg, err = ngap.Decoder(recvMsg[:n])
 	assert.Nil(t, err)
+
+	// update AMF UE NGAP ID
+	ue.AmfUeNgapId = ngapMsg.InitiatingMessage.
+		Value.InitialContextSetupRequest.ProtocolIEs.List[0].Value.AMFUENGAPID.Value
 
 	// Send Initial Context Setup Response
 	sendMsg, err = test.GetInitialContextSetupResponseForServiceRequest(ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
@@ -728,7 +732,7 @@ func TestGUTIRegistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	require.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -940,6 +944,11 @@ func TestGUTIRegistration(t *testing.T) {
 	require.Equal(t, nasPdu.GmmHeader.GetMessageType(), nas.MsgTypeIdentityRequest,
 		"Received wrong GMM message. Expected Identity Request.")
 
+	// update AMF UE NGAP ID
+	ue.AmfUeNgapId = ngapMsg.InitiatingMessage.
+		Value.DownlinkNASTransport.
+		ProtocolIEs.List[0].Value.AMFUENGAPID.Value
+
 	// send NAS Identity Response
 	mobileIdentity := nasType.MobileIdentity{
 		Len:    SUCI5GS.Len,
@@ -947,6 +956,7 @@ func TestGUTIRegistration(t *testing.T) {
 	}
 	pdu = nasTestpacket.GetIdentityResponse(mobileIdentity)
 	require.Nil(t, err)
+
 	sendMsg, err = test.GetUplinkNASTransport(ue.AmfUeNgapId, ue.RanUeNgapId, pdu)
 	require.Nil(t, err)
 	_, err = conn.Write(sendMsg)
@@ -1045,7 +1055,7 @@ func TestPDUSessionReleaseRequest(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1258,7 +1268,7 @@ func TestPDUSessionReleaseAbnormal(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1492,7 +1502,7 @@ func TestXnHandover(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1509,7 +1519,7 @@ func TestXnHandover(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	conn2, err1 := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
+	conn2, err1 := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9488)
 	assert.Nil(t, err1)
 
 	// send Second NGSetupRequest Msg
@@ -1708,7 +1718,7 @@ func TestPaging(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMFcd
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -1920,7 +1930,7 @@ func TestPaging(t *testing.T) {
 
 	// send NAS Service Request
 	pdu = nasTestpacket.GetServiceRequest(nasMessage.ServiceTypeMobileTerminatedServices)
-	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)
+	pdu, err = test.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtected, true, false)
 	assert.Nil(t, err)
 	sendMsg, err = test.GetInitialUEMessage(ue.RanUeNgapId, pdu, "fe0000000001")
 	assert.Nil(t, err)
@@ -1930,8 +1940,12 @@ func TestPaging(t *testing.T) {
 	// receive Initial Context Setup Request
 	n, err = conn.Read(recvMsg)
 	assert.Nil(t, err)
-	_, err = ngap.Decoder(recvMsg[:n])
+	ngapMsg, err = ngap.Decoder(recvMsg[:n])
 	assert.Nil(t, err)
+
+	// update AMF UE NGAP ID
+	ue.AmfUeNgapId = ngapMsg.InitiatingMessage.
+		Value.InitialContextSetupRequest.ProtocolIEs.List[0].Value.AMFUENGAPID.Value
 
 	//send Initial Context Setup Response
 	sendMsg, err = test.GetInitialContextSetupResponseForServiceRequest(ue.AmfUeNgapId, ue.RanUeNgapId, ranN3Ipv4Addr)
@@ -1959,7 +1973,7 @@ func TestN2Handover(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN1 connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN1 connect to UPF
@@ -1981,7 +1995,7 @@ func TestN2Handover(t *testing.T) {
 	time.Sleep(10 * time.Millisecond)
 
 	// RAN2 connect to AMF
-	conn2, err1 := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9488)
+	conn2, err1 := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9488)
 	assert.Nil(t, err1)
 
 	// RAN2 connect to UPF
@@ -2316,7 +2330,7 @@ func TestDuplicateRegistration(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
@@ -2591,7 +2605,7 @@ func TestAFInfluenceOnTrafficRouting(t *testing.T) {
 	}()
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// send NGSetupRequest Msg
@@ -2788,7 +2802,7 @@ func TestReSynchronisation(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF
@@ -3105,7 +3119,7 @@ func TestRequestTwoPDUSessions(t *testing.T) {
 	var recvMsg = make([]byte, 2048)
 
 	// RAN connect to AMF
-	conn, err := test.ConnectToAmf("127.0.0.1", "127.0.0.1", 38412, 9487)
+	conn, err := test.ConnectToAmf(amfN2Ipv4Addr, ranN2Ipv4Addr, 38412, 9487)
 	assert.Nil(t, err)
 
 	// RAN connect to UPF

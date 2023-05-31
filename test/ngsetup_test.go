@@ -34,22 +34,11 @@ import (
 	"bitbucket.org/free5gc-team/udm/pkg/suci"
 	udr_factory "bitbucket.org/free5gc-team/udr/pkg/factory"
 	udr_service "bitbucket.org/free5gc-team/udr/pkg/service"
-	logger_util "bitbucket.org/free5gc-team/util/logger"
 	"bitbucket.org/free5gc-team/util/mongoapi"
 )
 
 var initFlag bool = true
-var NFs = []app.NetworkFunction{
-	&nrf_service.NRF{},
-	&amf_service.AMF{},
-	&smf_service.SMF{},
-	&udr_service.UDR{},
-	&pcf_service.PCF{},
-	&udm_service.UDM{},
-	&nssf_service.NSSF{},
-	&ausf_service.AUSF{},
-	//&n3iwf_service.N3IWF{},
-}
+var NFs = []app.NetworkFunction{}
 
 func init() {
 	var testID string = ""
@@ -78,38 +67,53 @@ func init() {
 		if err := nrfConfig(); err != nil {
 			fmt.Printf("NRF Config failed: %v\n", err)
 		}
+		nrfApp, _ := nrf_service.NewApp(nrf_factory.NrfConfig)
+		NFs = append(NFs, nrfApp)
 
 		if err := amfConfig(testID); err != nil {
 			fmt.Printf("AMF Config failed: %v\n", err)
 		}
+		amfApp, _ := amf_service.NewApp(amf_factory.AmfConfig)
+		NFs = append(NFs, amfApp)
 
 		if err := smfConfig(testID); err != nil {
 			fmt.Printf("SMF Config failed: %v\n", err)
 		}
+		smfApp, _ := smf_service.NewApp(smf_factory.SmfConfig)
+		NFs = append(NFs, smfApp)
 
 		if err := udrConfig(); err != nil {
 			fmt.Printf("UDR Config failed: %v\n", err)
 		}
+		udrApp, _ := udr_service.NewApp(udr_factory.UdrConfig)
+		NFs = append(NFs, udrApp)
 
 		if err := pcfConfig(); err != nil {
 			fmt.Printf("PCF Config failed: %v\n", err)
 		}
+		pcfApp, _ := pcf_service.NewApp(pcf_factory.PcfConfig)
+		NFs = append(NFs, pcfApp)
 
 		if err := udmConfig(); err != nil {
 			fmt.Printf("UDM Config failed: %v\n", err)
 		}
+		udmApp, _ := udm_service.NewApp(udm_factory.UdmConfig)
+		NFs = append(NFs, udmApp)
 
 		if err := nssfConfig(); err != nil {
 			fmt.Printf("NSSF Config failed: %v\n", err)
 		}
+		nssfApp, _ := nssf_service.NewApp(nssf_factory.NssfConfig)
+		NFs = append(NFs, nssfApp)
 
 		if err := ausfConfig(); err != nil {
 			fmt.Printf("AUSF Config failed: %v\n", err)
 		}
+		ausfApp, _ := ausf_service.NewApp(ausf_factory.AusfConfig)
+		NFs = append(NFs, ausfApp)
 
-		for _, service := range NFs {
-			service.SetLogLevel()
-			go service.Start()
+		for _, app := range NFs {
+			go app.Start("")
 			time.Sleep(200 * time.Millisecond)
 		}
 	} else {
@@ -217,9 +221,9 @@ func beforeClose(ue *test.RanUeContext) {
 }
 
 func nrfConfig() error {
-	nrf_factory.NrfConfig = nrf_factory.Config{
+	nrf_factory.NrfConfig = &nrf_factory.Config{
 		Info: &nrf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "NRF initial test configuration",
 		},
 		Configuration: &nrf_factory.Configuration{
@@ -230,9 +234,9 @@ func nrfConfig() error {
 				RegisterIPv4: "127.0.0.10",
 				BindingIPv4:  "127.0.0.10",
 				Port:         8000,
-				Tls: &nrf_factory.Tls{
-					Pem: "config/TLS/nrf.pem",
-					Key: "config/TLS/nrf.key",
+				Cert: &nrf_factory.Cert{
+					Pem: "cert/nrf.pem",
+					Key: "cert/nrf.key",
 				},
 			},
 			DefaultPlmnId: models.PlmnId{
@@ -244,16 +248,11 @@ func nrfConfig() error {
 				"nnrf-disc",
 			},
 		},
-		Logger: &logger_util.Logger{
-			NRF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &nrf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := nrf_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := nrf_factory.NrfConfig.Validate(); err != nil {
@@ -276,9 +275,9 @@ func amfConfig(testID string) error {
 		cipheringOrder = []string{"NEA0"}
 	}
 
-	amf_factory.AmfConfig = amf_factory.Config{
+	amf_factory.AmfConfig = &amf_factory.Config{
 		Info: &amf_factory.Info{
-			Version:     "1.0.8",
+			Version:     "1.0.9",
 			Description: "AMF initial test configuration",
 		},
 		Configuration: &amf_factory.Configuration{
@@ -290,8 +289,8 @@ func amfConfig(testID string) error {
 				BindingIPv4:  "127.0.0.18",
 				Port:         8000,
 				Tls: &amf_factory.Tls{
-					Pem: "config/TLS/amf.pem",
-					Key: "config/TLS/amf.key",
+					Pem: "cert/amf.pem",
+					Key: "cert/amf.key",
 				},
 			},
 			ServiceNameList: []string{
@@ -398,32 +397,11 @@ func amfConfig(testID string) error {
 				MaxRetryTimes: 4,
 			},
 		},
-		Logger: &logger_util.Logger{
-			AMF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			NAS: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			FSM: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			NGAP: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			Aper: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &amf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := amf_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := amf_factory.AmfConfig.Validate(); err != nil {
@@ -440,9 +418,9 @@ func smfConfig(testID string) error {
 		dnaiList = []string{"edge"}
 	}
 
-	smf_factory.SmfConfig = smf_factory.Config{
+	smf_factory.SmfConfig = &smf_factory.Config{
 		Info: &smf_factory.Info{
-			Version:     "1.0.6",
+			Version:     "1.0.7",
 			Description: "SMF initial single test configuration",
 		},
 		Configuration: &smf_factory.Configuration{
@@ -453,8 +431,8 @@ func smfConfig(testID string) error {
 				BindingIPv4:  "127.0.0.2",
 				Port:         8000,
 				Tls: &smf_factory.Tls{
-					Pem: "config/TLS/smf.pem",
-					Key: "config/TLS/smf.key",
+					Pem: "cert/smf.pem",
+					Key: "cert/smf.key",
 				},
 			},
 			ServiceNameList: []string{
@@ -517,7 +495,7 @@ func smfConfig(testID string) error {
 								Sd:  "010203",
 							},
 							DnnUpfInfoList: []*smf_factory.DnnUpfInfoItem{{
-								Dnn: "internet",
+								Dnn:      "internet",
 								DnaiList: dnaiList,
 								Pools: []*smf_factory.UEIPPool{{
 									Cidr: "10.60.0.0/16",
@@ -563,27 +541,10 @@ func smfConfig(testID string) error {
 			},
 			NrfUri: "http://127.0.0.10:8000",
 		},
-		Logger: &logger_util.Logger{
-			SMF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			NAS: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			NGAP: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			Aper: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
-			PFCP: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &smf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
 	}
 
@@ -625,10 +586,6 @@ func smfConfig(testID string) error {
 
 	smfUeRoutingConfig()
 
-	if err := smf_factory.CheckConfigVersion(); err != nil {
-		return err
-	}
-
 	if _, err := smf_factory.SmfConfig.Validate(); err != nil {
 		return err
 	}
@@ -641,9 +598,9 @@ func smfConfig(testID string) error {
 }
 
 func smfUeRoutingConfig() {
-	smf_factory.UERoutingConfig = smf_factory.RoutingConfig{
+	smf_factory.UERoutingConfig = &smf_factory.RoutingConfig{
 		Info: &smf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.7",
 			Description: "SMF initial test routing information for UE",
 		},
 		UERoutingInfo: map[string]smf_factory.UERoutingInfo{
@@ -704,9 +661,9 @@ func smfUeRoutingConfig() {
 }
 
 func udrConfig() error {
-	udr_factory.UdrConfig = udr_factory.Config{
+	udr_factory.UdrConfig = &udr_factory.Config{
 		Info: &udr_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "UDR initial test configuration",
 		},
 		Configuration: &udr_factory.Configuration{
@@ -716,8 +673,8 @@ func udrConfig() error {
 				BindingIPv4:  "127.0.0.4",
 				Port:         8000,
 				Tls: &udr_factory.Tls{
-					Pem: "config/TLS/udr.pem",
-					Key: "config/TLS/udr.key",
+					Pem: "cert/udr.pem",
+					Key: "cert/udr.key",
 				},
 			},
 			Mongodb: &udr_factory.Mongodb{
@@ -726,16 +683,11 @@ func udrConfig() error {
 			},
 			NrfUri: "http://127.0.0.10:8000",
 		},
-		Logger: &logger_util.Logger{
-			UDR: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &udr_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := udr_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := udr_factory.UdrConfig.Validate(); err != nil {
@@ -746,9 +698,9 @@ func udrConfig() error {
 }
 
 func pcfConfig() error {
-	pcf_factory.PcfConfig = pcf_factory.Config{
+	pcf_factory.PcfConfig = &pcf_factory.Config{
 		Info: &pcf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "PCF initial test configuration",
 		},
 		Configuration: &pcf_factory.Configuration{
@@ -759,8 +711,8 @@ func pcfConfig() error {
 				BindingIPv4:  "127.0.0.7",
 				Port:         8000,
 				Tls: &pcf_factory.Tls{
-					Pem: "config/TLS/pcf.pem",
-					Key: "config/TLS/pcf.key",
+					Pem: "cert/pcf.pem",
+					Key: "cert/pcf.key",
 				},
 			},
 			TimeFormat:      "2019-01-02 15:04:05",
@@ -786,16 +738,11 @@ func pcfConfig() error {
 				Url:  "mongodb://localhost:27017",
 			},
 		},
-		Logger: &logger_util.Logger{
-			PCF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &pcf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := pcf_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := pcf_factory.PcfConfig.Validate(); err != nil {
@@ -806,9 +753,9 @@ func pcfConfig() error {
 }
 
 func udmConfig() error {
-	udm_factory.UdmConfig = udm_factory.Config{
+	udm_factory.UdmConfig = &udm_factory.Config{
 		Info: &udm_factory.Info{
-			Version:     "1.0.2",
+			Version:     "1.0.3",
 			Description: "UDM initial test configuration",
 		},
 		Configuration: &udm_factory.Configuration{
@@ -825,8 +772,8 @@ func udmConfig() error {
 				BindingIPv4:  "127.0.0.3",
 				Port:         8000,
 				Tls: &udm_factory.Tls{
-					Pem: "free5gc/support/TLS/udm.pem",
-					Key: "free5gc/support/TLS/udm.key",
+					Pem: "cert/udm.pem",
+					Key: "cert/udm.key",
 				},
 			},
 			NrfUri: "http://127.0.0.10:8000",
@@ -843,16 +790,11 @@ func udmConfig() error {
 				},
 			},
 		},
-		Logger: &logger_util.Logger{
-			UDM: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &udm_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := udm_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := udm_factory.UdmConfig.Validate(); err != nil {
@@ -865,9 +807,9 @@ func udmConfig() error {
 func nssfConfig() error {
 	var accessType3GPP models.AccessType = models.AccessType__3_GPP_ACCESS
 
-	nssf_factory.NssfConfig = nssf_factory.Config{
+	nssf_factory.NssfConfig = &nssf_factory.Config{
 		Info: &nssf_factory.Info{
-			Version:     "1.0.1",
+			Version:     "1.0.2",
 			Description: "NSSF initial test configuration",
 		},
 		Configuration: &nssf_factory.Configuration{
@@ -878,8 +820,8 @@ func nssfConfig() error {
 				BindingIPv4:  "127.0.0.31",
 				Port:         8000,
 				Tls: &nssf_factory.Tls{
-					Pem: "config/TLS/nssf.pem",
-					Key: "config/TLS/nssf.key",
+					Pem: "cert/nssf.pem",
+					Key: "cert/nssf.key",
 				},
 			},
 			ServiceNameList: []models.ServiceName{
@@ -1340,27 +1282,20 @@ func nssfConfig() error {
 				}},
 			}},
 		},
-		Logger: &logger_util.Logger{
-			NSSF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &nssf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
 	}
-
-	if err := nssf_factory.CheckConfigVersion(); err != nil {
-		return err
-	}
-
-	nssf_factory.Configured = true
 
 	return nil
 }
 
 func ausfConfig() error {
-	ausf_factory.AusfConfig = ausf_factory.Config{
+	ausf_factory.AusfConfig = &ausf_factory.Config{
 		Info: &ausf_factory.Info{
-			Version:     "1.0.2",
+			Version:     "1.0.3",
 			Description: "AUSF initial test configuration",
 		},
 		Configuration: &ausf_factory.Configuration{
@@ -1370,8 +1305,8 @@ func ausfConfig() error {
 				BindingIPv4:  "127.0.0.9",
 				Port:         8000,
 				Tls: &ausf_factory.Tls{
-					Pem: "config/TLS/ausf.pem",
-					Key: "config/TLS/ausf.key",
+					Pem: "cert/ausf.pem",
+					Key: "cert/ausf.key",
 				},
 			},
 			ServiceNameList: []string{
@@ -1387,16 +1322,11 @@ func ausfConfig() error {
 			}},
 			GroupId: "ausfGroup001",
 		},
-		Logger: &logger_util.Logger{
-			AUSF: &logger_util.LogSetting{
-				DebugLevel:   "info",
-				ReportCaller: false,
-			},
+		Logger: &ausf_factory.Logger{
+			Enable:       true,
+			Level:        "info",
+			ReportCaller: false,
 		},
-	}
-
-	if err := ausf_factory.CheckConfigVersion(); err != nil {
-		return err
 	}
 
 	if _, err := ausf_factory.AusfConfig.Validate(); err != nil {

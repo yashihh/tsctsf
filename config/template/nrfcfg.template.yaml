@@ -1,5 +1,5 @@
 info:
-  version: 1.0.1
+  version: 1.0.2
   description: NRF initial local configuration
 
 configuration:
@@ -20,10 +20,7 @@ configuration:
     - nnrf-nfm # Nnrf_NFManagement service
     - nnrf-disc # Nnrf_NFDiscovery service
 
-# the kind of log output
-  # debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
-  # ReportCaller: enable the caller report or not, value: true or false
-logger:
-  NRF:
-    debugLevel: info
-    ReportCaller: false
+logger: # log output setting
+  enable: true # true or false
+  level: info # how detailed to output, value: trace, debug, info, warn, error, fatal, panic
+  reportCaller: false # enable the caller report or not, value: true or false
