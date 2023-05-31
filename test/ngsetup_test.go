@@ -38,17 +38,7 @@ import (
 )
 
 var initFlag bool = true
-var NFs = []app.NetworkFunction{
-	&nrf_service.NrfApp{},
-	&amf_service.AmfApp{},
-	&smf_service.SmfApp{},
-	&udr_service.UdrApp{},
-	&pcf_service.PcfApp{},
-	&udm_service.UdmApp{},
-	&nssf_service.NssfApp{},
-	&ausf_service.AusfApp{},
-	//&n3iwf_service.N3IWF{},
-}
+var NFs = []app.NetworkFunction{}
 
 func init() {
 	var testID string = ""
@@ -77,59 +67,55 @@ func init() {
 		if err := nrfConfig(); err != nil {
 			fmt.Printf("NRF Config failed: %v\n", err)
 		}
-		NFs[0], _ = nrf_service.NewApp(nrf_factory.NrfConfig)
-		go NFs[0].Start("./log/nrfsslkey.log")
-		time.Sleep(200 * time.Millisecond)
+		nrfApp, _ := nrf_service.NewApp(nrf_factory.NrfConfig)
+		NFs = append(NFs, nrfApp)
 
 		if err := amfConfig(testID); err != nil {
 			fmt.Printf("AMF Config failed: %v\n", err)
 		}
-		NFs[1], _ = amf_service.NewApp(amf_factory.AmfConfig)
-		go NFs[1].Start("./log/amfsslkey.log")
-		time.Sleep(200 * time.Millisecond)
+		amfApp, _ := amf_service.NewApp(amf_factory.AmfConfig)
+		NFs = append(NFs, amfApp)
 
 		if err := smfConfig(testID); err != nil {
 			fmt.Printf("SMF Config failed: %v\n", err)
 		}
-		NFs[2], _ = smf_service.NewApp(smf_factory.SmfConfig)
-		go NFs[2].Start("./log/smfsslkey.log")
-		time.Sleep(200 * time.Millisecond)
+		smfApp, _ := smf_service.NewApp(smf_factory.SmfConfig)
+		NFs = append(NFs, smfApp)
 
 		if err := udrConfig(); err != nil {
 			fmt.Printf("UDR Config failed: %v\n", err)
 		}
-		NFs[3], _ = udr_service.NewApp(udr_factory.UdrConfig)
-		go NFs[3].Start("./log/udrsslkey.log")
-		time.Sleep(200 * time.Millisecond)
+		udrApp, _ := udr_service.NewApp(udr_factory.UdrConfig)
+		NFs = append(NFs, udrApp)
 
 		if err := pcfConfig(); err != nil {
 			fmt.Printf("PCF Config failed: %v\n", err)
 		}
-		NFs[4], _ = pcf_service.NewApp(pcf_factory.PcfConfig)
-		go NFs[4].Start("./log/pcfsslkey.log")
-		time.Sleep(200 * time.Millisecond)
+		pcfApp, _ := pcf_service.NewApp(pcf_factory.PcfConfig)
+		NFs = append(NFs, pcfApp)
 
 		if err := udmConfig(); err != nil {
 			fmt.Printf("UDM Config failed: %v\n", err)
 		}
-		NFs[5], _ = udm_service.NewApp(udm_factory.UdmConfig)
-		go NFs[5].Start("./log/udmsslkey.log")
-		time.Sleep(200 * time.Millisecond)
+		udmApp, _ := udm_service.NewApp(udm_factory.UdmConfig)
+		NFs = append(NFs, udmApp)
 
 		if err := nssfConfig(); err != nil {
 			fmt.Printf("NSSF Config failed: %v\n", err)
 		}
-		NFs[6], _ = nssf_service.NewApp(nssf_factory.NssfConfig)
-		go NFs[6].Start("./log/nssfsslkey.log")
-		time.Sleep(200 * time.Millisecond)
+		nssfApp, _ := nssf_service.NewApp(nssf_factory.NssfConfig)
+		NFs = append(NFs, nssfApp)
 
 		if err := ausfConfig(); err != nil {
 			fmt.Printf("AUSF Config failed: %v\n", err)
 		}
-		NFs[7], _ = ausf_service.NewApp(ausf_factory.AusfConfig)
-		go NFs[7].Start("./log/ausfsslkey.log")
-		time.Sleep(200 * time.Millisecond)
+		ausfApp, _ := ausf_service.NewApp(ausf_factory.AusfConfig)
+		NFs = append(NFs, ausfApp)
 
+		for _, app := range NFs {
+			go app.Start("")
+			time.Sleep(200 * time.Millisecond)
+		}
 	} else {
 		if err := mongoapi.SetMongoDB("free5gc", "mongodb://127.0.0.1:27017"); err != nil {
 			fmt.Printf("SetMongoDB failed: %v\n", err)
