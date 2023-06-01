@@ -241,6 +241,8 @@ services:
       - "8000"
     volumes:
       - ${SANDBOX_DIR}/nrfcfg.yaml:/free5gc/config/nrfcfg.yaml
+      - ${SANDBOX_DIR}/cert/nrf.key:/free5gc/cert/nrf.key
+      - ${SANDBOX_DIR}/cert/nrf.pem:/free5gc/cert/nrf.pem
     environment:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: release
@@ -268,6 +270,8 @@ services:
       - "38412/sctp"
     volumes:
       - ${SANDBOX_DIR}/amfcfg.yaml:/free5gc/config/amfcfg.yaml
+      - ${SANDBOX_DIR}/cert/amf.key:/free5gc/cert/amf.key
+      - ${SANDBOX_DIR}/cert/amf.pem:/free5gc/cert/amf.pem
     environment:
       GIN_MODE: release
     networks:
@@ -297,6 +301,8 @@ services:
       - "8000"
     volumes:
       - ${SANDBOX_DIR}/ausfcfg.yaml:/free5gc/config/ausfcfg.yaml
+      - ${SANDBOX_DIR}/cert/ausf.key:/free5gc/cert/ausf.key
+      - ${SANDBOX_DIR}/cert/ausf.pem:/free5gc/cert/ausf.pem
     environment:
       GIN_MODE: release
     networks:
@@ -316,6 +322,8 @@ services:
       - "8000"
     volumes:
       - ${SANDBOX_DIR}/nssfcfg.yaml:/free5gc/config/nssfcfg.yaml
+      - ${SANDBOX_DIR}/cert/nssf.key:/free5gc/cert/nssf.key
+      - ${SANDBOX_DIR}/cert/nssf.pem:/free5gc/cert/nssf.pem
     environment:
       GIN_MODE: release
     networks:
@@ -335,6 +343,8 @@ services:
       - "8000"
     volumes:
       - ${SANDBOX_DIR}/pcfcfg.yaml:/free5gc/config/pcfcfg.yaml
+      - ${SANDBOX_DIR}/cert/pcf.key:/free5gc/cert/pcf.key
+      - ${SANDBOX_DIR}/cert/pcf.pem:/free5gc/cert/pcf.pem
     environment:
       GIN_MODE: release
     networks:
@@ -354,6 +364,8 @@ services:
       - "8000"
     volumes:
       - ${SANDBOX_DIR}/nefcfg.yaml:/free5gc/config/nefcfg.yaml
+      - ${SANDBOX_DIR}/cert/nef.key:/free5gc/cert/nef.key
+      - ${SANDBOX_DIR}/cert/nef.pem:/free5gc/cert/nef.pem
     environment:
       GIN_MODE: release
     networks:
@@ -374,6 +386,8 @@ services:
     volumes:
       - ${SANDBOX_DIR}/smf1cfg.yaml:/free5gc/config/smfcfg.yaml
       - ${SANDBOX_DIR}/uerouting.yaml:/free5gc/config/uerouting.yaml
+      - ${SANDBOX_DIR}/cert/smf.key:/free5gc/cert/smf.key
+      - ${SANDBOX_DIR}/cert/smf.pem:/free5gc/cert/smf.pem
     environment:
       GIN_MODE: release
     networks:
@@ -400,6 +414,8 @@ services:
     volumes:
       - ${SANDBOX_DIR}/smf2cfg.yaml:/free5gc/config/smfcfg.yaml
       - ${SANDBOX_DIR}/uerouting.yaml:/free5gc/config/uerouting.yaml
+      - ${SANDBOX_DIR}/cert/smf.key:/free5gc/cert/smf.key
+      - ${SANDBOX_DIR}/cert/smf.pem:/free5gc/cert/smf.pem
     environment:
       GIN_MODE: release
     networks:
@@ -426,6 +442,8 @@ services:
     volumes:
       - ${SANDBOX_DIR}/smf3cfg.yaml:/free5gc/config/smfcfg.yaml
       - ${SANDBOX_DIR}/uerouting.yaml:/free5gc/config/uerouting.yaml
+      - ${SANDBOX_DIR}/cert/smf.key:/free5gc/cert/smf.key
+      - ${SANDBOX_DIR}/cert/smf.pem:/free5gc/cert/smf.pem
     environment:
       GIN_MODE: release
     networks:
@@ -449,6 +467,8 @@ services:
       - "8000"
     volumes:
       - ${SANDBOX_DIR}/udmcfg.yaml:/free5gc/config/udmcfg.yaml
+      - ${SANDBOX_DIR}/cert/udm.key:/free5gc/cert/udm.key
+      - ${SANDBOX_DIR}/cert/udm.pem:/free5gc/cert/udm.pem
     environment:
       GIN_MODE: release
     networks:
@@ -470,6 +490,8 @@ services:
       - "8000"
     volumes:
       - ${SANDBOX_DIR}/udrcfg.yaml:/free5gc/config/udrcfg.yaml
+      - ${SANDBOX_DIR}/cert/udr.key:/free5gc/cert/udr.key
+      - ${SANDBOX_DIR}/cert/udr.pem:/free5gc/cert/udr.pem
     environment:
       DB_URI: mongodb://db/free5gc
       GIN_MODE: release
@@ -493,8 +515,8 @@ services:
       - "8000"
     volumes:
       - ${SANDBOX_DIR}/n3iwfcfg.yaml:/free5gc/config/n3iwfcfg.yaml
-      - ${SANDBOX_DIR}/TLS/n3iwf.key:/free5gc/config/TLS/n3iwf.key
-      - ${SANDBOX_DIR}/TLS/n3iwf.pem:/free5gc/config/TLS/n3iwf.pem
+      - ${SANDBOX_DIR}/cert/n3iwf.key:/free5gc/cert/n3iwf.key
+      - ${SANDBOX_DIR}/cert/n3iwf.pem:/free5gc/cert/n3iwf.pem
     environment:
       GIN_MODE: release
     cap_add:
