@@ -77,10 +77,8 @@ function terminate()
         removeN3iwfInterfaces
         sudo ip link del veth2
         sudo killall n3iwf
-        killall test.test
+        ps aux | grep test.test | awk '{print $2}' | xargs sudo kill -SIGUSR1
     fi
-
-    sleep 5
 }
 
 function removeN3iwfInterfaces()
