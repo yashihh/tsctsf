@@ -25,6 +25,62 @@ configuration:
           dns: # the IP address of DNS
             ipv4: 8.8.8.8
             ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_3> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_4> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_5> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_6> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_7> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_8> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_9> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_10> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_11> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_12> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_13> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_14> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_15> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
+        - dnn: <DNN_16> # Data Network Name
+          dns: # the IP address of DNS
+            ipv4: 8.8.8.8
+            ipv6: 2001:4860:4860::8888
     - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
         sst: <S_NSSAI_SST_2> # Slice/Service Type (uinteger, range: 0~255)
         sd: <S_NSSAI_SD_2> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
@@ -33,6 +89,7 @@ configuration:
           dns: # the IP address of DNS
             ipv4: 8.8.8.8
             ipv6: 2001:4860:4860::8888
+
   plmnList: # the list of PLMN IDs that this SMF belongs to (optional, remove this key when unnecessary)
     - mcc: <MCC> # Mobile Country Code (3 digits string, digit: 0~9)
       mnc: <MNC> # Mobile Network Code (2 or 3 digits string, digit: 0~9)
@@ -69,12 +126,140 @@ configuration:
                   - cidr: <IP_POOLS_2>
                 staticPools:
                   - cidr: <STATIC_IP_POOLS_2>
+
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_3> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_3> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_3>
+                pools:
+                  - cidr: <IP_POOLS_3>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_3>
+
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_4> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_4> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_4>
+                pools:
+                  - cidr: <IP_POOLS_4>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_4>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_5> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_5> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_5>
+                pools:
+                  - cidr: <IP_POOLS_5>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_5>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_6> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_6> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_6>
+                pools:
+                  - cidr: <IP_POOLS_6>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_6>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_7> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_7> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_7>
+                pools:
+                  - cidr: <IP_POOLS_7>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_7>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_8> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_8> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_8>
+                pools:
+                  - cidr: <IP_POOLS_8>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_8>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_9> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_9> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_9>
+                pools:
+                  - cidr: <IP_POOLS_9>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_9>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_10> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_10> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_10>
+                pools:
+                  - cidr: <IP_POOLS_10>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_10>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_11> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_11> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_11>
+                pools:
+                  - cidr: <IP_POOLS_11>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_11>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_12> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_12> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_12>
+                pools:
+                  - cidr: <IP_POOLS_12>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_12>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_13> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_13> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_13>
+                pools:
+                  - cidr: <IP_POOLS_13>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_13>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_14> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_14> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_14>
+                pools:
+                  - cidr: <IP_POOLS_14>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_14>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_15> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_15> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_15>
+                pools:
+                  - cidr: <IP_POOLS_15>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_15>
+          - sNssai: # S-NSSAI (Single Network Slice Selection Assistance Information)
+              sst: <S_NSSAI_SST_16> # Slice/Service Type (uinteger, range: 0~255)
+              sd: <S_NSSAI_SD_16> # Slice Differentiator (3 bytes hex string, range: 000000~FFFFFF)
+            dnnUpfInfoList: # DNN information list for this S-NSSAI
+              - dnn: <DNN_16>
+                pools:
+                  - cidr: <IP_POOLS_16>
+                staticPools:
+                  - cidr: <STATIC_IP_POOLS_16>
+
         interfaces: # Interface list for this UPF
           - interfaceType: N3 # the type of the interface (N3 or N9)
             endpoints: # the IP address of this N3/N9 interface on this UPF
               - <UPF_N3_IP>
-            networkInstances: # Data Network Name (DNN)
-              - <DNN_LIST>
+            networkInstances: [<DNN_LIST>] # Data Network Name (DNN)
     links: # the topology graph of userplane, A and B represent the two nodes of each link
       - A: gNB1
         B: UPF

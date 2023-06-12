@@ -198,12 +198,37 @@ echo "Parameter file: $ADMIN_RC_TMP (from $ADMIN_RC)"
 echo "Output directory: $DEST_DIR"
 echo "Mode: $MODE."
 
-handle_DNN_lists() {
-    if [ $DNN_1 = $DNN_2 ]; then
-        DNN_LIST=$DNN_1
+check_string_exist() {
+    local list="$1"
+    local str="$2"
+
+    if echo "$list" | grep -qw "$str"; then
+        return 0  # dnn found
     else
-        DNN_LIST="${DNN_1},${DNN_2}"
+        return 1  # dnn not found
     fi
+}
+
+add_string_to_list() {
+    local list="$1"
+    local str="$2"
+
+    if ! check_string_exist "$list" "$str"; then
+        list="$list,$str"
+    fi
+
+    echo "$list"  # Return the updated list
+}
+
+handle_DNN_lists() {
+    DNN_LIST="$DNN_1"
+    for ((X=1; X<=16; X++))
+    do
+        dnn_X="DNN_$X"
+        if [[ -v $dnn_X ]]; then
+            DNN_LIST=$(add_string_to_list "$DNN_LIST" "${!dnn_X}")
+        fi
+    done
     echo -e "\nDNN_LIST=$DNN_LIST" >> $ADMIN_RC_TMP
 
     if [ "x$MEC_DNN_1" != "x" ]; then
@@ -222,6 +247,17 @@ handle_DNN_lists() {
     echo "MEC_DNN_LIST=$MEC_DNN_LIST" >> $ADMIN_RC_TMP
 }
 
+handle_IP_POOL_lists() {
+    IP_POOL_LIST="$IP_POOLS_1"
+    for ((X=1; X<=16; X++))
+    do
+        ip_pool_X="IP_POOLS_$X"
+        if [[ -v $ip_pool_X ]]; then
+            IP_POOL_LIST=$(add_string_to_list "$IP_POOL_LIST" "${!ip_pool_X}")
+        fi
+    done
+    echo -e "\nIP_POOL_LIST=$IP_POOL_LIST" >> $ADMIN_RC_TMP
+}
 
 collect_cfg_template_files() {
     mkdir -p $DEST_DIR
@@ -269,6 +305,7 @@ replace_template_variables() {
 }
 
 handle_DNN_lists
+handle_IP_POOL_lists
 collect_cfg_template_files
 replace_template_variables
 echo Done

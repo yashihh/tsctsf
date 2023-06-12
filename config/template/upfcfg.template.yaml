@@ -26,6 +26,35 @@ dnnList:
     # natifname: eth0
   - dnn: <DNN_2> # Data Network Name
     cidr: <IP_POOLS_2> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_3> # Data Network Name
+    cidr: <IP_POOLS_3> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_4> # Data Network Name
+    cidr: <IP_POOLS_4> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_5> # Data Network Name
+    cidr: <IP_POOLS_5> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_6> # Data Network Name
+    cidr: <IP_POOLS_6> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_7> # Data Network Name
+    cidr: <IP_POOLS_7> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_8> # Data Network Name
+    cidr: <IP_POOLS_8> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_9> # Data Network Name
+    cidr: <IP_POOLS_9> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_10> # Data Network Name
+    cidr: <IP_POOLS_10> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_11> # Data Network Name
+    cidr: <IP_POOLS_11> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_12> # Data Network Name
+    cidr: <IP_POOLS_12> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_13> # Data Network Name
+    cidr: <IP_POOLS_13> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_14> # Data Network Name
+    cidr: <IP_POOLS_14> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_15> # Data Network Name
+    cidr: <IP_POOLS_15> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+  - dnn: <DNN_16> # Data Network Name
+    cidr: <IP_POOLS_16> # Classless Inter-Domain Routing for assigned IPv4 pool of UE
+
 
 logger: # log output setting
   enable: true # true or false
