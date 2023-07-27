@@ -34,3 +34,4 @@
 [submodule "webconsole"]
 	path = webconsole
 	url = https://bitbucket.org/free5gc-team/webconsole.git
+
