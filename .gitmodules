@@ -18,7 +18,7 @@
 	url = https://bitbucket.org/free5gc-team/pcf.git
 [submodule "smf"]
 	path = NFs/smf
-	url = https://bitbucket.org/free5gc-team/smf.git
+	url = https://github.com/yashihh/smf.git
 [submodule "udm"]
 	path = NFs/udm
 	url = https://bitbucket.org/free5gc-team/udm.git
