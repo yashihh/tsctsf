@@ -29,3 +29,8 @@ logger: # log output setting
   enable: true # true or false
   level: info # how detailed to output, value: trace, debug, info, warn, error, fatal, panic
   reportCaller: false # enable the caller report or not, value: true or false
+
+nwtt:
+  # macaddress: 02:00:5e:10:00:00:00:01 # Mac Address of bridge
+  nwttports: 2,3 # port number of nwtt to TSN domain -> UL, split with ,
+  dsttports: 4 # port number of nwtt to dstt side -> DL
