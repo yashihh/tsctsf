@@ -5,9 +5,8 @@ import (
 	"io/ioutil"
 
 	"github.com/asaskevich/govalidator"
+	"github.com/yashihh/tsctsf/internal/logger"
 	yaml "gopkg.in/yaml.v2"
-
-	"github/yashihh/tsctsf/internal/logger"
 )
 
 var TsctsfConfig *Config
