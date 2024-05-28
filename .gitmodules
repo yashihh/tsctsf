@@ -34,3 +34,6 @@
 [submodule "webconsole"]
 	path = webconsole
 	url = https://bitbucket.org/free5gc-team/webconsole.git
+[submodule "NFs/tsctsf"]
+	path = NFs/tsctsf
+	url = git@github.com:yashihh/tsctsf.git
