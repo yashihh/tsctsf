@@ -15,5 +15,5 @@ func NewApp(cfg *factory.Config) (*TsctsfApp, error) {
 
 	// pcf_context.Init()
 	// pcf.pcfCtx = pcf_context.GetSelf()
-	return pcf, nil
+	return tsctsf, nil
 }

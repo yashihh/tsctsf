@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/asaskevich/govalidator"
-
 	"github.com/yashihh/tsctsf/internal/logger"
 )
 
