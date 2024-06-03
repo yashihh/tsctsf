@@ -1,7 +1,9 @@
 package factory
 
 import (
+	"errors"
 	"fmt"
+	"strconv"
 	"sync"
 
 	"github.com/asaskevich/govalidator"
@@ -38,15 +40,15 @@ func (c *Config) Validate() (bool, error) {
 }
 
 type Info struct {
-	Version     string `yaml:"version,omitempty" valid:"required,in(1.0.7)"`
+	Version     string `yaml:"version,omitempty" valid:"required,in(1.0.1)"`
 	Description string `yaml:"description,omitempty" valid:"type(string)"`
 }
 
 type Configuration struct {
-	TsctsfName string `yaml:"tsctsfName,omitempty" valid:"required, type(string)"`
-	Sbi        *Sbi   `yaml:"sbi,omitempty" valid:"required"`
-	NrfUri     string `yaml:"nrfUri,omitempty" valid:"required, url"`
-	// ServiceList     []Service `yaml:"serviceList,omitempty" valid:"required"`
+	TsctsfName      string   `yaml:"tsctsfName,omitempty" valid:"required, type(string)"`
+	Sbi             *Sbi     `yaml:"sbi,omitempty" valid:"required"`
+	NrfUri          string   `yaml:"nrfUri,omitempty" valid:"required, url"`
+	ServiceNameList []string `yaml:"serviceNameList,omitempty" valid:"required"`
 }
 
 type Logger struct {
@@ -62,21 +64,19 @@ func (c *Configuration) validate() (bool, error) {
 		}
 	}
 
+	for index, serviceName := range c.ServiceNameList {
+		switch {
+		case serviceName == "ntsctsf_timesynchronization":
+		default:
+			err := errors.New("Invalid serviceNameList[" + strconv.Itoa(index) + "]: " +
+				serviceName + ", should be ntsctsf_timesynchronization.")
+			return false, err
+		}
+	}
+
 	// if result := govalidator.IsTime(c.TimeFormat, PcfTimeFormatLayout); !result {
 	// 	err := fmt.Errorf("Invalid TimeFormat: %s, should be in 2019-01-02 15:04:05 format.", c.TimeFormat)
 	// 	return false, err
-	// }
-
-	// if c.ServiceList != nil {
-	// 	var errs govalidator.Errors
-	// 	for _, v := range c.ServiceList {
-	// 		if _, err := v.validate(); err != nil {
-	// 			errs = append(errs, err)
-	// 		}
-	// 	}
-	// 	if len(errs) > 0 {
-	// 		return false, error(errs)
-	// 	}
 	// }
 
 	// if c.Mongodb != nil {
@@ -132,16 +132,6 @@ func (s *Sbi) validate() (bool, error) {
 
 	return true, nil
 }
-
-// type Tls struct {
-// 	Pem string `yaml:"pem,omitempty" valid:"type(string),minstringlength(1),required"`
-// 	Key string `yaml:"key,omitempty" valid:"type(string),minstringlength(1),required"`
-// }
-
-// func (t *Tls) validate() (bool, error) {
-// 	result, err := govalidator.ValidateStruct(t)
-// 	return result, err
-// }
 
 func appendInvalid(err error) error {
 	var errs govalidator.Errors

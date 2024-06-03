@@ -7,8 +7,9 @@ import (
 	"runtime/debug"
 	"time"
 
+	"bitbucket.org/free5gc-team/util/version"
 	logger_util "github.com/free5gc/util/logger"
-	"github.com/free5gc/util/version"
+
 	"github.com/urfave/cli"
 	"github.com/yashihh/tsctsf/internal/logger"
 	"github.com/yashihh/tsctsf/pkg/factory"
@@ -52,7 +53,6 @@ func action(cliCtx *cli.Context) error {
 		return err
 	}
 
-	logger.MainLog.Infoln(cliCtx.App.Name)
 	logger.MainLog.Infoln("TSCTSF version: ", version.GetVersion())
 
 	cfg, err := factory.ReadConfig(cliCtx.String("config"))
