@@ -96,6 +96,15 @@ type Service struct {
 	ServiceName string `yaml:"serviceName" valid:"required, service"`
 	SuppFeat    string `yaml:"suppFeat,omitempty" valid:"-"`
 }
+type Tls struct {
+	Pem string `yaml:"pem,omitempty" valid:"type(string),minstringlength(1),required"`
+	Key string `yaml:"key,omitempty" valid:"type(string),minstringlength(1),required"`
+}
+
+func (t *Tls) validate() (bool, error) {
+	result, err := govalidator.ValidateStruct(t)
+	return result, err
+}
 
 type Sbi struct {
 	Scheme       string `yaml:"scheme" valid:"required,scheme"`

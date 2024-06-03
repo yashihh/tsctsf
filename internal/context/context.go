@@ -6,13 +6,9 @@ import (
 
 var tsnContext *TSCTSFContext
 
-func init() {
+func Init() {
 	tsnContext = new(TSCTSFContext)
 	tsnContext.NwttIndex = make(map[int]int)
-}
-
-func TSCTSF_Self() *TSCTSFContext {
-	return tsnContext
 }
 
 type TSCTSFContext struct {
@@ -57,4 +53,9 @@ type Nwtt_port_info struct {
 	// Nwtt_traffic_class_num   int
 	Nwtt_txPropagationDelay uint32
 	Ingress                 bool
+}
+
+// Create new TSN context
+func GetSelf() *TSCTSFContext {
+	return tsnContext
 }
