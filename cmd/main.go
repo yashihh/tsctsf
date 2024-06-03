@@ -15,7 +15,7 @@ import (
 	"github.com/yashihh/tsctsf/pkg/service"
 )
 
-var TSCTSF = *service.TsctsfApp
+var TSCTSF *service.TsctsfApp
 
 func main() {
 	defer func() {
