@@ -4,12 +4,16 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/signal"
+	"runtime/debug"
+	"syscall"
 
 	logger_util "bitbucket.org/free5gc-team/util/logger"
 	"github.com/free5gc/util/httpwrapper"
 	"github.com/gin-contrib/cors"
 	"github.com/sirupsen/logrus"
 	tsctsf_context "github.com/yashihh/tsctsf/internal/context"
+	"github.com/yashihh/tsctsf/internal/sbi/consumer"
 
 	"github.com/yashihh/tsctsf/internal/logger"
 	"github.com/yashihh/tsctsf/pkg/factory"
@@ -100,6 +104,33 @@ func (a *TsctsfApp) Start(tlsKeyLogPath string) {
 		MaxAge:           86400,
 	}))
 
+	self := a.tsctsfCtx
+	// Register to NRF
+	profile, err := consumer.BuildNFInstance(self)
+	if err != nil {
+		logger.InitLog.Error("Build TSCTSF Profile Error")
+	}
+	_, self.NfId, err = consumer.SendRegisterNFInstance(self.NrfUri, self.NfId, profile)
+	if err != nil {
+		logger.InitLog.Errorf("TSCTSF register to NRF Error[%s]", err.Error())
+	}
+
+	// Handle terminal process
+	signalChannel := make(chan os.Signal, 1)
+	signal.Notify(signalChannel, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		defer func() {
+			if p := recover(); p != nil {
+				// Print stack for panic to log. Fatalf() will let program exit.
+				logger.InitLog.Fatalf("panic: %v\n%s", p, string(debug.Stack()))
+			}
+		}()
+
+		<-signalChannel
+		a.Terminate()
+		os.Exit(0)
+	}()
+
 	HTTPAddr := fmt.Sprintf("%s:%d", factory.TsctsfConfig.Configuration.Sbi.BindingIPv4, factory.TsctsfConfig.Configuration.Sbi.Port)
 	server, err := httpwrapper.NewHttp2Server(HTTPAddr, tlsKeyLogPath, router)
 	if server == nil {
@@ -120,4 +151,19 @@ func (a *TsctsfApp) Start(tlsKeyLogPath string) {
 	if err != nil {
 		logger.InitLog.Fatalf("HTTP server setup failed: %+v", err)
 	}
+}
+
+func (a *TsctsfApp) Terminate() {
+	logger.InitLog.Infof("Terminating TSCTSF...")
+	// deregister with NRF
+	problemDetails, err := consumer.SendDeregisterNFInstance()
+	if problemDetails != nil {
+		logger.InitLog.Errorf("Deregister NF instance Failed Problem[%+v]", problemDetails)
+	} else if err != nil {
+		logger.InitLog.Errorf("Deregister NF instance Error[%+v]", err)
+	} else {
+		logger.InitLog.Infof("Deregister from NRF successfully")
+	}
+
+	logger.InitLog.Infof("TSCTSF terminated")
 }
