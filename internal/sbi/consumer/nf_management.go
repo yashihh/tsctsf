@@ -17,7 +17,7 @@ import (
 
 func BuildNFInstance(tsctsfContext *tsctsf_context.TSCTSFContext) (profile models.NfProfile, err error) {
 	profile.NfInstanceId = tsctsfContext.NfId
-	profile.NfType = models.NfType_AUSF
+	profile.NfType = models.NfType_TSCTSF
 	profile.NfStatus = models.NfStatus_REGISTERED
 	profile.Ipv4Addresses = append(profile.Ipv4Addresses, tsctsfContext.RegisterIPv4)
 	services := []models.NfService{}
