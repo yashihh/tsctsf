@@ -3,7 +3,7 @@ info:
   description: TSCTSF initial local configuration
 
 configuration:
-  pcfName: TSCTSF # the name of this TSCTSF
+  tsctsfName: TSCTSF # the name of this TSCTSF
   sbi: # Service-based interface information
     scheme: http # the protocol for sbi (http or https)
     registerIPv4: 127.0.0.50 # IP used to register to NRF
@@ -13,8 +13,8 @@ configuration:
       # pem: cert/pcf.pem # PCF TLS Certificate
       # key: cert/pcf.key # PCF TLS Private key
   nrfUri: http://127.0.0.10:8000  # a valid URI of NRF
-  serviceList:   # the SBI services provided by this PCF, refer to TS 29.507
-    - serviceName: ntsctsf_timesynchronization # Ntsctsf_TimeSynchronization
+  serviceNameList:   # the SBI services provided by this PCF, refer to TS 29.507
+    - ntsctsf_timesynchronization # Ntsctsf_TimeSynchronization
 logger: # log output setting
   enable: true # true or false
   level: info # how detailed to output, value: trace, debug, info, warn, error, fatal, panic
