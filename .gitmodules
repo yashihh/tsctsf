@@ -19,6 +19,7 @@
 [submodule "smf"]
 	path = NFs/smf
 	url = https://github.com/yashihh/smf.git
+	branch = E2EDL
 [submodule "udm"]
 	path = NFs/udm
 	url = https://bitbucket.org/free5gc-team/udm.git
@@ -28,12 +29,14 @@
 [submodule "upf"]
 	path = NFs/upf
 	url = https://github.com/yashihh/upf.git
+	branch = nwtt
 [submodule "nef"]
 	path = NFs/nef
 	url = https://bitbucket.org/free5gc-team/nef.git
 [submodule "webconsole"]
 	path = webconsole
 	url = https://bitbucket.org/free5gc-team/webconsole.git
-[submodule "NFs/tsctsf"]
+[submodule "tsctsf"]
+	branch = main
 	path = NFs/tsctsf
-	url = git@github.com:yashihh/tsctsf.git
+	url = https://github.com/yashihh/tsctsf.git
