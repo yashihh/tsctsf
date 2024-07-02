@@ -12,4 +12,5 @@ use (
     ./NFs/udm
     ./NFs/udr
     ./NFs/upf
+    ./NFs/tsctsf
 )
