@@ -3,18 +3,20 @@ module github.com/yashihh/tsctsf
 go 1.18
 
 require (
+	bitbucket.org/free5gc-team/openapi v0.0.0-20240606090129-947c5f7a5bb1
 	bitbucket.org/free5gc-team/util v0.0.0-20230511075254-e9f72181c776
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/free5gc/util v1.0.6
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.9.1
+	github.com/google/uuid v1.6.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli v1.22.15
 	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
-	bitbucket.org/free5gc-team/openapi v0.0.0-20240606090129-947c5f7a5bb1 // indirect
+	github.com/antihax/optional v1.0.0 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
@@ -49,7 +51,6 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210810183815-faf39c7919d5 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.34.0 // indirect
 	gopkg.in/h2non/gock.v1 v1.1.2 // indirect
