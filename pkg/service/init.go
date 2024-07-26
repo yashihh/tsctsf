@@ -13,9 +13,9 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/sirupsen/logrus"
 	tsctsf_context "github.com/yashihh/tsctsf/internal/context"
-	"github.com/yashihh/tsctsf/internal/sbi/consumer"
-
 	"github.com/yashihh/tsctsf/internal/logger"
+	"github.com/yashihh/tsctsf/internal/sbi/consumer"
+	policyauthorization "github.com/yashihh/tsctsf/internal/sbi/policyauthorization"
 	"github.com/yashihh/tsctsf/pkg/factory"
 )
 
@@ -89,7 +89,7 @@ func (a *TsctsfApp) Start(tlsKeyLogPath string) {
 	}
 	router := logger_util.NewGinWithLogrus(logger.GinLog)
 
-	// policyauthorization.AddService(router)
+	policyauthorization.AddService(router)
 	// bridgeinfomangement.AddService(router)
 
 	router.Use(cors.New(cors.Config{
