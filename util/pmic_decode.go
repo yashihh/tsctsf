@@ -3,7 +3,10 @@ package util
 import (
 	"bytes"
 	"encoding/binary"
+	"math"
 	"strconv"
+
+	tsctsf_context "github.com/yashihh/tsctsf/internal/context"
 
 	"bitbucket.org/free5gc-team/openapi/models"
 	"github.com/yashihh/tsctsf/internal/logger"
@@ -53,7 +56,7 @@ func PMICDecodeCapabilityInfo(pmic models.PortManagementContainer) models.PortMa
 	return pmic
 }
 
-func TTPortResponse(pmic models.PortManagementContainer) {
+func TTPortResponse(pmic models.PortManagementContainer) uint64 {
 	logger.UtilLog.Info("PMIC Decode ready")
 	if pmic.PortManCont[0] == 2 {
 		logger.UtilLog.Info("Deal with MANAGE PORT COMPLETE Message")
@@ -65,7 +68,7 @@ func TTPortResponse(pmic models.PortManagementContainer) {
 		status := bytes.IndexByte(pmic.PortManCont, byte(0x71))
 		if status != -1 {
 			logger.UtilLog.Info("Handle port status")
-			DecodePortStatus(pmic, status)
+			return DecodePortStatus(pmic, status)
 		}
 		update_result := bytes.IndexByte(pmic.PortManCont, byte(0x72))
 		if update_result != -1 {
@@ -76,10 +79,23 @@ func TTPortResponse(pmic models.PortManagementContainer) {
 	} else if pmic.PortManCont[0] == 5 {
 		logger.UtilLog.Info("Deal with PORT MANAGEMENT NOTIFY COMPLETE Message")
 	}
+	return ^uint64(0)
 }
 
-// TODO: parameter type
-func DecodePortStatus(pmic models.PortManagementContainer, index int) {
+// TODO: parameter detailed
+func DecodePortStatus(pmic models.PortManagementContainer, index int) uint64 {
+	var txPropagationDelay uint32
+	var traffic_class_num int
+	var traffic_class_table []uint8
+	var supportedPTPInstanceTypes []uint8
+	var supportedTransportTypes []uint8
+	var supportedDelayMechanisms []uint8
+	var ptpGrandmasterCapable bool
+	var gptpGrandmasterCapable bool
+	var supportedPTPProfiles []uint8
+	var numberOfSupportedPTPInstances uint32
+	var ptpInstanceList []uint8
+
 	//portstatus_len := int(pmic.PortManCont[index+1])<<8 + int(pmic.PortManCont[index+2]) + 3
 	success_read_num := int(pmic.PortManCont[index+3])
 	i := index + 4
@@ -89,59 +105,74 @@ func DecodePortStatus(pmic models.PortManagementContainer, index int) {
 		switch parameter_name {
 		case 1: //0001H
 			i = i + 4
-			txPropagationDelay := BytesTo32Uint(pmic.PortManCont[i : i+parameter_len])
-			logger.UtilLog.Traceln("txPropagationDelay = ", txPropagationDelay)
+			data := binary.BigEndian.Uint64(pmic.PortManCont[i : i+parameter_len])
+			txPropagationDelay = uint32(data / uint64(math.Pow(2, 16)))
+			logger.UtilLog.Trace("txPropagationDelay = ", txPropagationDelay)
 			i = i + parameter_len
 		case 2: //0002H
 			i = i + 4
-			traffic_class_table := pmic.PortManCont[i : i+parameter_len]
-			logger.UtilLog.Traceln("traffic_class_table = ", traffic_class_table)
+			traffic_class_num = int(pmic.PortManCont[i+2])
+			traffic_class_table = pmic.PortManCont[i : i+parameter_len]
+			logger.UtilLog.Trace("traffic_class_table = ", traffic_class_table)
 			i = i + parameter_len
 		case 226: //0x00E2
 			i = i + 4
-			supportedPTPInstanceTypes := BytesTo32Uint(pmic.PortManCont[i : i+parameter_len])
+			supportedPTPInstanceTypes = pmic.PortManCont[i : i+parameter_len]
 			logger.UtilLog.Traceln("Supported PTP instance types = ", supportedPTPInstanceTypes)
 			i = i + parameter_len
 
 		case 227: //0x00E3
 			i = i + 4
-			supportedTransportTypes := BytesTo32Uint(pmic.PortManCont[i : i+parameter_len])
+			supportedTransportTypes = pmic.PortManCont[i : i+parameter_len]
 			logger.UtilLog.Traceln("Supported transport types = ", supportedTransportTypes)
 			i = i + parameter_len
 
 		case 228: //0x00E4
 			i = i + 4
-			supportedDelayMechanisms := BytesTo32Uint(pmic.PortManCont[i : i+parameter_len])
+			supportedDelayMechanisms = pmic.PortManCont[i : i+parameter_len]
 			logger.UtilLog.Traceln("Supported delay mechanisms = ", supportedDelayMechanisms)
 			i = i + parameter_len
 
 		case 229: //0x00E5
 			i = i + 4
-			ptpGrandmasterCapable := BytesTo32Uint(pmic.PortManCont[i : i+parameter_len])
+			data := int(pmic.PortManCont[i])
+			if data == 0 {
+				ptpGrandmasterCapable = false
+			} else {
+				ptpGrandmasterCapable = true
+
+			}
 			logger.UtilLog.Traceln("PTP grandmaster capable = ", ptpGrandmasterCapable)
 			i = i + parameter_len
 
 		case 230: //0x00E6
 			i = i + 4
-			gptpGrandmasterCapable := BytesTo32Uint(pmic.PortManCont[i : i+parameter_len])
+			data := int(pmic.PortManCont[i])
+			if data == 0 {
+				gptpGrandmasterCapable = false
+			} else {
+				gptpGrandmasterCapable = true
+
+			}
 			logger.UtilLog.Traceln("gPTP grandmaster capable = ", gptpGrandmasterCapable)
 			i = i + parameter_len
 
 		case 231: //0x00E7
 			i = i + 4
-			supportedPTPProfiles := BytesTo32Uint(pmic.PortManCont[i : i+parameter_len])
+			supportedPTPProfiles = pmic.PortManCont[i : i+parameter_len]
 			logger.UtilLog.Traceln("Supported PTP profiles = ", supportedPTPProfiles)
 			i = i + parameter_len
 
 		case 232: //0x00E8
 			i = i + 4
-			numberOfSupportedPTPInstances := BytesTo32Uint(pmic.PortManCont[i : i+parameter_len])
+			data := binary.BigEndian.Uint64(pmic.PortManCont[i : i+parameter_len])
+			numberOfSupportedPTPInstances = uint32(data / uint64(math.Pow(2, 16)))
 			logger.UtilLog.Traceln("Number of supported PTP instances = ", numberOfSupportedPTPInstances)
 			i = i + parameter_len
 
 		case 233: //0x00E9
 			i = i + 4
-			ptpInstanceList := BytesTo32Uint(pmic.PortManCont[i : i+parameter_len])
+			ptpInstanceList = pmic.PortManCont[i : i+parameter_len]
 			logger.UtilLog.Traceln("PTP instance list = ", ptpInstanceList)
 			i = i + parameter_len
 		default:
@@ -149,20 +180,83 @@ func DecodePortStatus(pmic models.PortManagementContainer, index int) {
 			i = i + 4 + parameter_len
 		}
 	}
-	// tsctsf_self := tsctsf_context.GetSelf()
-	// val, exist := tsctsf_self.NwttIndex[int(pmic.PortNum)]
-	// if exist {
-	// 	tsctsf_self.Bridges[val].Nwtt_txPropagationDelay = txPropagationDelay
-	// 	tsctsf_self.Bridges[val].Nwtt_traffic_class_table = traffic_class_table
-	// }
-	// for i := 0; i < len(tsctsf_self.Bridges); i += 1 {
-	// 	val1, exist1 := tsctsf_self.Bridges[i].Dstts[int(pmic.PortNum)]
-	// 	if exist1 {
-	// 		val1.Dstt_txPropagationDelay = txPropagationDelay
-	// 		val1.Dstt_traffic_class_table = traffic_class_table
-	// 		tsctsf_self.Bridges[i].Dstts[int(pmic.PortNum)] = val1
-	// 	}
-	// }
+	tsctsf_self := tsctsf_context.GetSelf()
+	for bridge_id, Bridge_info := range tsctsf_self.Bridges {
+		nwtt_port_info, exist := Bridge_info.Nwtt_ports[pmic.PortNum]
+		if exist {
+			if txPropagationDelay != 0 && nwtt_port_info.TxPropagationDelay != txPropagationDelay {
+				nwtt_port_info.TxPropagationDelay = txPropagationDelay
+			}
+			if traffic_class_num != 0 && nwtt_port_info.Traffic_class_num != traffic_class_num {
+				nwtt_port_info.Traffic_class_table = traffic_class_table
+				nwtt_port_info.Traffic_class_num = traffic_class_num
+			}
+			if supportedPTPInstanceTypes != nil {
+				nwtt_port_info.SupportedPTPInstanceTypes = supportedPTPInstanceTypes
+			}
+			if supportedTransportTypes != nil {
+				nwtt_port_info.SupportedTransportTypes = supportedTransportTypes
+			}
+			if supportedDelayMechanisms != nil {
+				nwtt_port_info.SupportedDelayMechanisms = supportedDelayMechanisms
+			}
+			nwtt_port_info.PTPGrandmasterCapable = ptpGrandmasterCapable
+			nwtt_port_info.GPTPGrandmasterCapable = gptpGrandmasterCapable
+
+			if supportedPTPProfiles != nil {
+				nwtt_port_info.SupportedPTPProfiles = supportedPTPProfiles
+			}
+			if numberOfSupportedPTPInstances != 0 {
+				nwtt_port_info.NumberOfSupportedPTPInstances = numberOfSupportedPTPInstances
+			}
+			if ptpInstanceList != nil {
+				nwtt_port_info.PTPInstanceList = ptpInstanceList
+			}
+			nwtt_port_info.Update = true
+			Bridge_info.Nwtt_ports[pmic.PortNum] = nwtt_port_info
+			tsctsf_self.Bridges[bridge_id] = Bridge_info
+			return bridge_id
+		}
+	}
+
+	for bridge_id, Bridge_info := range tsctsf_self.Bridges {
+		dstt_port_info, exist := Bridge_info.Dstt_ports[pmic.PortNum]
+		if exist {
+			if txPropagationDelay != 0 && dstt_port_info.TxPropagationDelay != txPropagationDelay {
+				dstt_port_info.TxPropagationDelay = txPropagationDelay
+			}
+			if traffic_class_num != 0 && dstt_port_info.Traffic_class_num != traffic_class_num {
+				dstt_port_info.Traffic_class_table = traffic_class_table
+				dstt_port_info.Traffic_class_num = traffic_class_num
+			}
+			if supportedPTPInstanceTypes != nil {
+				dstt_port_info.SupportedPTPInstanceTypes = supportedPTPInstanceTypes
+			}
+			if supportedTransportTypes != nil {
+				dstt_port_info.SupportedTransportTypes = supportedTransportTypes
+			}
+			if supportedDelayMechanisms != nil {
+				dstt_port_info.SupportedDelayMechanisms = supportedDelayMechanisms
+			}
+			dstt_port_info.PTPGrandmasterCapable = ptpGrandmasterCapable
+			dstt_port_info.GPTPGrandmasterCapable = gptpGrandmasterCapable
+
+			if supportedPTPProfiles != nil {
+				dstt_port_info.SupportedPTPProfiles = supportedPTPProfiles
+			}
+			if numberOfSupportedPTPInstances != 0 {
+				dstt_port_info.NumberOfSupportedPTPInstances = numberOfSupportedPTPInstances
+			}
+			if ptpInstanceList != nil {
+				dstt_port_info.PTPInstanceList = ptpInstanceList
+			}
+			dstt_port_info.Update = true
+			Bridge_info.Dstt_ports[pmic.PortNum] = dstt_port_info
+			tsctsf_self.Bridges[bridge_id] = Bridge_info
+			return bridge_id
+		}
+	}
+	return ^uint64(0)
 }
 
 // TS24.519 5.2.1 Network-requested Port management procedure PMIC creation on TSCTSF
