@@ -114,7 +114,8 @@ type Bridge_info struct {
 	Nwtt_port_num  uint32
 
 	Port_list  []uint32
-	Dstt_ports map[uint32]Dstts_port_info //key is dstt port number
+	Nwtt_ports map[uint32]Nwtt_port_info //key is nwtt port number
+	Dstt_ports map[uint32]Dstt_port_info //key is dstt port number
 	// Bridge_delay             uint32
 	// Tsn_traffic_class        uint8
 	Ingress_port_num uint8
@@ -122,16 +123,42 @@ type Bridge_info struct {
 	Register         bool
 }
 
-type Dstts_port_info struct {
+type Dstt_port_info struct {
 	// Register                 bool
-	// Dstt_update              bool
-	// Nwtt_port_num uint32
-	Dstt_addr string
-	// Dstt_txPropagationDelay  uint32
-	// Dstt_traffic_class_table []uint8
-	// Dstt_traffic_class_num   int
+	Update bool
 	// Ingress                  bool
+	// Nwtt_port_num uint32
+
+	Dstt_addr              string
 	Ue_dstt_residence_time [8]uint8
+
+	TxPropagationDelay            uint32
+	Traffic_class_table           []uint8
+	Traffic_class_num             int
+	SupportedPTPInstanceTypes     []uint8
+	SupportedTransportTypes       []uint8
+	SupportedDelayMechanisms      []uint8
+	PTPGrandmasterCapable         bool
+	GPTPGrandmasterCapable        bool
+	SupportedPTPProfiles          []uint8
+	NumberOfSupportedPTPInstances uint32
+	PTPInstanceList               []uint8
+}
+
+type Nwtt_port_info struct {
+	Update bool
+
+	TxPropagationDelay            uint32
+	Traffic_class_table           []uint8
+	Traffic_class_num             int
+	SupportedPTPInstanceTypes     []uint8
+	SupportedTransportTypes       []uint8
+	SupportedDelayMechanisms      []uint8
+	PTPGrandmasterCapable         bool
+	GPTPGrandmasterCapable        bool
+	SupportedPTPProfiles          []uint8
+	NumberOfSupportedPTPInstances uint32
+	PTPInstanceList               []uint8
 }
 
 // Create new TSN context
