@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"sync"
 
+	"bitbucket.org/free5gc-team/openapi/models"
 	"github.com/asaskevich/govalidator"
 	"github.com/yashihh/tsctsf/internal/logger"
 )
@@ -24,6 +25,7 @@ const (
 type Config struct {
 	Info          *Info          `yaml:"info" valid:"required"`
 	Configuration *Configuration `yaml:"configuration" valid:"required"`
+	Subscriptions []Subscription `yaml:"subscriptions,omitempty"`
 	Logger        *Logger        `yaml:"logger" valid:"required"`
 	sync.RWMutex
 }
@@ -49,6 +51,11 @@ type Configuration struct {
 	Sbi             *Sbi     `yaml:"sbi,omitempty" valid:"required"`
 	NrfUri          string   `yaml:"nrfUri,omitempty" valid:"required, url"`
 	ServiceNameList []string `yaml:"serviceNameList,omitempty" valid:"required"`
+}
+
+type Subscription struct {
+	SubscriptionId   string                                           `yaml:"subscriptionId"`
+	SubscriptionData *models.TimeSynchronizationExposureSubscriptions `yaml:"subscriptionData"`
 }
 
 type Logger struct {

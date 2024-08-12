@@ -7,16 +7,17 @@ import (
 )
 
 var (
-	Log           *logrus.Logger
-	NfLog         *logrus.Entry
-	MainLog       *logrus.Entry
-	InitLog       *logrus.Entry
-	CfgLog        *logrus.Entry
-	CtxLog        *logrus.Entry
-	GinLog        *logrus.Entry
-	ConsumerLog   *logrus.Entry
-	PolicyAuthLog *logrus.Entry
-	UtilLog       *logrus.Entry
+	Log            *logrus.Logger
+	NfLog          *logrus.Entry
+	MainLog        *logrus.Entry
+	InitLog        *logrus.Entry
+	CfgLog         *logrus.Entry
+	CtxLog         *logrus.Entry
+	GinLog         *logrus.Entry
+	ConsumerLog    *logrus.Entry
+	PolicyAuthLog  *logrus.Entry
+	UtilLog        *logrus.Entry
+	TimeSyncSubLog *logrus.Entry
 )
 
 func init() {
@@ -34,6 +35,7 @@ func init() {
 	GinLog = NfLog.WithField(logger_util.FieldCategory, "GIN")
 	ConsumerLog = NfLog.WithField(logger_util.FieldCategory, "Consumer")
 	PolicyAuthLog = NfLog.WithField(logger_util.FieldCategory, "PolicyAuth")
-	UtilLog = NfLog.WithField(logger_util.FieldCategory, "UtilLog")
+	UtilLog = NfLog.WithField(logger_util.FieldCategory, "Util")
+	TimeSyncSubLog = NfLog.WithField(logger_util.FieldCategory, "TimeSyncSub")
 
 }
