@@ -12,6 +12,7 @@
 build/
 log/
 vendor/
+config/
 
 # emacs/vim
 GPATH
