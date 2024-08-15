@@ -92,6 +92,8 @@ func Update5GSBridgeInfo(evNotfy models.EventsNotification) *models.ProblemDetai
 			Id = util.TTPortResponse(evNotfy.TsnPortManContNwtts[i])
 		}
 	}
+	logger.PolicyAuthLog.Infof("Update Bridge ID :[%d] ", Id)
+
 	// tsctsf_self := tsctsf_context.GetSelf()
 	// TODO: store nwtt PMIC in TSCTSF
 

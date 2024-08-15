@@ -103,6 +103,7 @@ func HandleAppSessionCreate(new_bridge models.PduSessionTsnBridge) {
 	appSessID = util.Split_appSessionId(Loc)
 	tsctsf_self := tsctsf_context.GetSelf()
 	dnnSnssai := new_bridge.Dnn + string(new_bridge.Snssai.Sst) + new_bridge.Snssai.Sd
+	logger.PolicyAuthLog.Infof("store the appSession ID :[%d] with DNN/S-NSSAI :[%s]", appSessID, dnnSnssai)
 	tsctsf_self.AppSessionIdPool.Store(dnnSnssai, appSessID)
 
 	//test bridge management api

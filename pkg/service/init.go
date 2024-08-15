@@ -16,6 +16,7 @@ import (
 	"github.com/yashihh/tsctsf/internal/logger"
 	"github.com/yashihh/tsctsf/internal/sbi/consumer"
 	policyauthorization "github.com/yashihh/tsctsf/internal/sbi/policyauthorization"
+	timesynchronization "github.com/yashihh/tsctsf/internal/sbi/timesynchronization"
 	"github.com/yashihh/tsctsf/pkg/factory"
 )
 
@@ -90,6 +91,7 @@ func (a *TsctsfApp) Start(tlsKeyLogPath string) {
 	router := logger_util.NewGinWithLogrus(logger.GinLog)
 
 	policyauthorization.AddService(router)
+	timesynchronization.AddService(router)
 	// bridgeinfomangement.AddService(router)
 
 	router.Use(cors.New(cors.Config{

@@ -60,7 +60,7 @@ func Init() {
 	tsnContext.NfService = make(map[models.ServiceName]models.NfService)
 	tsnContext.InitNFService(serviceNameList, config.Info.Version)
 	tsnContext.Bridges = make(map[uint64]Bridge_info)
-
+	tsnContext.SubscripSession = make(map[string]string)
 	// tsnContext.NwttIndex = make(map[int]int)
 
 }
@@ -104,8 +104,8 @@ type TSCTSFContext struct {
 	NfService        map[models.ServiceName]models.NfService
 	AppSessionIdPool sync.Map
 	Bridges          map[uint64]Bridge_info // key is Bridge_ID
+	SubscripSession  map[string]string      // key is Session_ID
 	// NwttIndex        map[int]int
-
 }
 
 type Bridge_info struct {
