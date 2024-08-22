@@ -103,8 +103,13 @@ func HandleAppSessionCreate(new_bridge models.PduSessionTsnBridge) {
 	appSessID = util.Split_appSessionId(Loc)
 	tsctsf_self := tsctsf_context.GetSelf()
 	dnnSnssai := new_bridge.Dnn + string(new_bridge.Snssai.Sst) + new_bridge.Snssai.Sd
-	logger.PolicyAuthLog.Infof("store the appSession ID :[%d] with DNN/S-NSSAI :[%s]", appSessID, dnnSnssai)
-	tsctsf_self.AppSessionIdPool.Store(dnnSnssai, appSessID)
+	// TODO : the conditions to match for notifying the event within the "eventFilters" attribute;
+	_, exist := tsctsf_self.AppSessionIdPool.Load(dnnSnssai)
+	if !exist {
+		logger.PolicyAuthLog.Infof("Store New AF-session ID :[%d] with DNN/S-NSSAI :[%s]", appSessID, dnnSnssai)
+		tsctsf_self.AppSessionIdPool.Store(dnnSnssai, appSessID)
+
+	}
 
 	//test bridge management api
 	//configuration := test_api(new_bridge.TsnPortManContDstt)
