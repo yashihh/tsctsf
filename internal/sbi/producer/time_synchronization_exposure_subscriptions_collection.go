@@ -30,7 +30,7 @@ func HandleTimeSynchronizationExposureSubscriptions(request *httpwrapper.Request
 	header := http.Header{
 		"Location": {url},
 	}
-	return httpwrapper.NewResponse(http.StatusCreated, header, nil)
+	return httpwrapper.NewResponse(http.StatusCreated, header, timeSyncExpoSubscData)
 
 }
 
