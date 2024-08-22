@@ -77,7 +77,11 @@ func TimeSyncExpoSubscPostProcedure(new_subsc models.TimeSyncExposureSubsc) (str
 	appSessID, exist := tsctsf_self.AppSessionIdPool.Load(dnnSnssai)
 	if !exist {
 		logger.TimeSyncSubLog.Errorln("No session found for the given DNN and S-NSSAI.")
-		return "", nil
+		problemDetails := &models.ProblemDetails{
+			Status: http.StatusNotFound,
+			Cause:  "CONTEXT_NOT_FOUND",
+		}
+		return "", problemDetails
 	}
 	ID, exist := tsctsf_self.SubscripSession[appSessID.(string)]
 	if exist {
@@ -141,10 +145,9 @@ func HandleDeleteIndividualTimeSynchronizationExposureSubscription(subscriptionI
 	} else {
 		logger.TimeSyncSubLog.Warnf("No Subscription[%s] with Appsession[%s]", subscriptionID, appSessionID)
 		problemDetails := &models.ProblemDetails{
-			Status: http.StatusTemporaryRedirect,
-			Cause:  "Temporary Redirect",
+			Status: http.StatusNotFound,
+			Cause:  "CONTEXT_NOT_FOUND",
 		}
-		// TODO : (optional) add location for 307 Response Code
 		return httpwrapper.NewResponse(int(problemDetails.Status), nil, problemDetails)
 	}
 	return httpwrapper.NewResponse(http.StatusNoContent, nil, nil)
@@ -157,16 +160,14 @@ func HandleGetIndividualTimeSynchronizationExposureSubscription(subscriptionID s
 		if subscription.SubscriptionId == subscriptionID {
 			logger.TimeSyncSubLog.Debugf("SubscriptionData: %+v", subscription.SubscriptionData)
 
-			// TODO : (optional) add location for 307 Response Code
 			return httpwrapper.NewResponse(http.StatusOK, nil, subscription.SubscriptionData)
 		}
 	}
 	logger.TimeSyncSubLog.Warnf("No Subscription ID[%s]", subscriptionID)
 	problemDetails := &models.ProblemDetails{
-		Status: http.StatusTemporaryRedirect,
-		Cause:  "Temporary Redirect",
+		Status: http.StatusNotFound,
+		Cause:  "CONTEXT_NOT_FOUND",
 	}
-	// TODO : (optional) add location for 307 Response Code
 	return httpwrapper.NewResponse(int(problemDetails.Status), nil, problemDetails)
 
 }
@@ -189,15 +190,14 @@ func TimeSyncExpoSubscModifyProcedure(timeSyncExpoSubscData models.TimeSyncExpos
 	for i, currentSubscription := range factory.TsctsfConfig.Subscriptions {
 		if currentSubscription.SubscriptionId == subscriptionID {
 			factory.TsctsfConfig.Subscriptions[i].SubscriptionData = &timeSyncExpoSubscData
-			// TODO : (optional) add location for 307 Response Code
 			return currentSubscription.SubscriptionData, nil
 		}
 	}
 	logger.TimeSyncSubLog.Warnf("Update Subscription data of Subscription ID[%s] fail.", subscriptionID)
 
 	problemDetails := &models.ProblemDetails{
-		Status: http.StatusTemporaryRedirect,
-		Cause:  "Temporary Redirect",
+		Status: http.StatusNotFound,
+		Cause:  "CONTEXT_NOT_FOUND",
 	}
 
 	return nil, problemDetails
