@@ -54,8 +54,9 @@ type Configuration struct {
 }
 
 type Subscription struct {
-	SubscriptionId   string                        `yaml:"subscriptionId"`
-	SubscriptionData *models.TimeSyncExposureSubsc `yaml:"subscriptionData"`
+	SubscriptionId   string                         `yaml:"subscriptionId"`
+	SubscriptionData *models.TimeSyncExposureSubsc  `yaml:"subscriptionData"`
+	SubscriptionCfg  *models.TimeSyncExposureConfig `yaml:"subscriptionCfg"`
 }
 
 type Logger struct {
