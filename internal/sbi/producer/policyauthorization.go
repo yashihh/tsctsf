@@ -35,16 +35,19 @@ func HandleNotification5GSBridgeInfoRequest(request *httpwrapper.Request) *httpw
 func Notification5GSBridgeInfo(new_bridge models.PduSessionTsnBridge) *models.ProblemDetails {
 	tsctsf_self := tsctsf_context.GetSelf()
 	_, exist := tsctsf_self.Bridges[new_bridge.TsnBridgeInfo.BridgeId]
+	// TODO: store dstt PMIC in TSCTSF
 	if !exist {
 		var bridge tsctsf_context.Bridge_info
 		bridge.Bridge_Id = new_bridge.TsnBridgeInfo.BridgeId
 		bridge.Dstt_ports = make(map[uint32]tsctsf_context.Dstt_port_info)
 		var dstt_info tsctsf_context.Dstt_port_info
 		// dstt_info.Dstt_addr = new_bridge.TsnBridgeInfo.DsttAddr
+		// dstt_info.Update = false
 		dstt_info.Ue_dstt_residence_time = new_bridge.TsnBridgeInfo.DsttResidTime
 
 		bridge.Dstt_ports[new_bridge.TsnBridgeInfo.DsttPortNum] = dstt_info
 		bridge.Port_list = append(bridge.Port_list, new_bridge.TsnBridgeInfo.DsttPortNum)
+		bridge.Nwtt_port_num = 0 //init
 		bridge.Total_port_num = 1
 
 		tsctsf_self.Bridges[new_bridge.TsnBridgeInfo.BridgeId] = bridge
@@ -52,7 +55,6 @@ func Notification5GSBridgeInfo(new_bridge models.PduSessionTsnBridge) *models.Pr
 
 	logger.PolicyAuthLog.Info("Bridge ID : ", new_bridge.TsnBridgeInfo.BridgeId)
 	logger.PolicyAuthLog.Info("DS-TT port number : ", new_bridge.TsnBridgeInfo.DsttPortNum)
-	// logger.PolicyAuthLog.Info("NW-TT Ethernet port number : ", new_bridge.TsnBridgeInfo.NwttPortNums)
 	logger.PolicyAuthLog.Info("UE-DS-TT residence time	: ", new_bridge.TsnBridgeInfo.DsttResidTime)
 	logger.PolicyAuthLog.Info("DS-TT MAC address : ", new_bridge.TsnBridgeInfo.DsttAddr)
 	logger.PolicyAuthLog.Info("DS-TT PMIC : ", new_bridge.TsnPortManContDstt)
@@ -94,8 +96,27 @@ func Update5GSBridgeInfo(evNotfy models.EventsNotification) *models.ProblemDetai
 	}
 	logger.PolicyAuthLog.Infof("Update Bridge ID :[%d] ", Id)
 
-	// tsctsf_self := tsctsf_context.GetSelf()
-	// TODO: store nwtt PMIC in TSCTSF
+	tsctsf_self := tsctsf_context.GetSelf()
+	if evNotfy.TsnPortManContNwtts != nil {
+
+		for i := 0; i < len(evNotfy.TsnPortManContNwtts); i += 1 {
+			_, exist := tsctsf_self.Bridges[Id].Nwtt_ports[evNotfy.TsnPortManContNwtts[i].PortNum]
+			if !exist {
+				bridge := tsctsf_self.Bridges[Id]
+				bridge.Nwtt_ports = make(map[uint32]tsctsf_context.Nwtt_port_info)
+				var nwtt_info tsctsf_context.Nwtt_port_info
+				// nwtt_info.Update = false
+				bridge.Nwtt_ports[evNotfy.TsnPortManContNwtts[i].PortNum] = nwtt_info
+				bridge.Port_list = append(bridge.Port_list, evNotfy.TsnPortManContNwtts[i].PortNum)
+				bridge.Total_port_num++
+				bridge.Nwtt_port_num++
+
+				logger.PolicyAuthLog.Debugln("Store NW-TT port number : ", evNotfy.TsnPortManContNwtts[i].PortNum)
+				logger.PolicyAuthLog.Debugln("Store NW-TT PMIC : ", evNotfy.TsnPortManContNwtts[i].PortManCont)
+				// TODO : HandleAppSessionUpdate , decode nwtt pmic
+			}
+		}
+	}
 
 	return nil
 }
