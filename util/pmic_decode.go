@@ -29,8 +29,8 @@ var (
 	}
 )
 
-func PMICDecodeCapabilityInfo(pmic models.PortManagementContainer) models.PortManagementContainer {
-	logger.UtilLog.Tracef("PMIC Decode ready")
+func DSTTPMICDecodeCapabilityInfo(pmic models.PortManagementContainer) models.PortManagementContainer {
+	logger.UtilLog.Tracef("DS-TT PMIC Decode ready")
 
 	// DS-TT/NW-TT shows capability to TSCTSF
 	logger.UtilLog.Info("Deal with Port management capability information")
@@ -57,7 +57,7 @@ func PMICDecodeCapabilityInfo(pmic models.PortManagementContainer) models.PortMa
 }
 
 func TTPortResponse(pmic models.PortManagementContainer) uint64 {
-	logger.UtilLog.Info("PMIC Decode ready")
+	logger.UtilLog.Infof("PMIC Decode ready :[%X]", pmic.PortManCont)
 	if pmic.PortManCont[0] == 2 {
 		logger.UtilLog.Info("Deal with MANAGE PORT COMPLETE Message")
 

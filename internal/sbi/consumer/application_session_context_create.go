@@ -15,12 +15,12 @@ import (
 func HandleAppSessionCreate(new_bridge models.PduSessionTsnBridge) {
 	logger.PolicyAuthLog.Infoln("Handle App Session context Creation")
 
-	TsnPortManContDstt := util.PMICDecodeCapabilityInfo(*new_bridge.TsnPortManContDstt)
+	TsnPortManContDstt := util.DSTTPMICDecodeCapabilityInfo(*new_bridge.TsnPortManContDstt)
 	new_bridge.TsnPortManContDstt = &TsnPortManContDstt
-	for i := 0; i < len(new_bridge.TsnPortManContNwtts); i += 1 {
-		new_bridge.TsnPortManContNwtts[i].PortManCont = TsnPortManContDstt.PortManCont
-	}
-	logger.PolicyAuthLog.Info(new_bridge.TsnPortManContDstt)
+	// for i := 0; i < len(new_bridge.TsnPortManContNwtts); i += 1 {
+	// 	new_bridge.TsnPortManContNwtts[i].PortManCont = TsnPortManContDstt.PortManCont
+	// }
+	logger.PolicyAuthLog.Debugf("create PMIC for dstt to read : [%x]", new_bridge.TsnPortManContDstt)
 
 	// 4.2.2.31 Subscription to TSN related events
 	af := models.AfEventSubscription{
