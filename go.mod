@@ -3,7 +3,7 @@ module github.com/yashihh/tsctsf
 go 1.18
 
 require (
-	bitbucket.org/free5gc-team/openapi v0.0.0-20240722055927-a44ef050aa10
+	bitbucket.org/free5gc-team/openapi v0.0.0-20240908090447-6e70a482e68f
 	bitbucket.org/free5gc-team/util v0.0.0-20230511075254-e9f72181c776
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/free5gc/openapi v1.0.8
