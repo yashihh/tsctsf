@@ -18,6 +18,7 @@ var (
 	PolicyAuthLog  *logrus.Entry
 	UtilLog        *logrus.Entry
 	TimeSyncSubLog *logrus.Entry
+	TimeSyncCfgLog *logrus.Entry
 )
 
 func init() {
@@ -37,5 +38,6 @@ func init() {
 	PolicyAuthLog = NfLog.WithField(logger_util.FieldCategory, "PolicyAuth")
 	UtilLog = NfLog.WithField(logger_util.FieldCategory, "Util")
 	TimeSyncSubLog = NfLog.WithField(logger_util.FieldCategory, "TimeSyncSub")
+	TimeSyncCfgLog = NfLog.WithField(logger_util.FieldCategory, "TimeSyncCfg")
 
 }

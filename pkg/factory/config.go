@@ -56,6 +56,7 @@ type Configuration struct {
 type Subscription struct {
 	SubscriptionId   string                         `yaml:"subscriptionId"`
 	SubscriptionData *models.TimeSyncExposureSubsc  `yaml:"subscriptionData"`
+	ConfigurationId  string                         `yaml:"configurationId"`
 	SubscriptionCfg  *models.TimeSyncExposureConfig `yaml:"subscriptionCfg"`
 }
 

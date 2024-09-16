@@ -1,6 +1,7 @@
 package context
 
 import (
+	"net"
 	"os"
 	"strconv"
 	"strings"
@@ -112,10 +113,10 @@ type Bridge_info struct {
 	Bridge_Id      uint64
 	Total_port_num int
 	Nwtt_port_num  uint32
-
-	Port_list  []uint32
-	Nwtt_ports map[uint32]Nwtt_port_info //key is nwtt port number
-	Dstt_ports map[uint32]Dstt_port_info //key is dstt port number
+	UpNode_info    UpNode_info
+	Port_list      []uint32
+	Nwtt_ports     map[uint32]Nwtt_port_info //key is nwtt port number
+	Dstt_ports     map[uint32]Dstt_port_info //key is dstt port number
 	// Bridge_delay             uint32
 	// Tsn_traffic_class        uint8
 	Ingress_port_num uint8
@@ -145,6 +146,21 @@ type Dstt_port_info struct {
 	PTPInstanceList               []uint8
 }
 
+type UpNode_info struct {
+	Update                        bool
+	UpNodeAddr                    net.HardwareAddr
+	UpNodeID                      uint64
+	SupportedPTPInstanceTypes     []uint8
+	SupportedTransportTypes       []uint8
+	SupportedDelayMechanisms      []uint8
+	PTPGrandmasterCapable         bool
+	GPTPGrandmasterCapable        bool
+	SupportedPTPProfiles          []uint8
+	NumberOfSupportedPTPInstances uint32
+	PTPInstanceList               []uint8
+}
+
+// TODO: should be port etc data....
 type Nwtt_port_info struct {
 	Update bool
 

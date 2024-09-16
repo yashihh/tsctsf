@@ -32,7 +32,7 @@ func CreateIndividualTimeSynchronizationExposureConfiguration(c *gin.Context) {
 			Detail: err.Error(),
 			Cause:  "SYSTEM_FAILURE",
 		}
-		logger.TimeSyncSubLog.Errorf("Get Request Body error: %+v", err)
+		logger.TimeSyncCfgLog.Errorf("Get Request Body error: %+v", err)
 		c.JSON(http.StatusInternalServerError, problemDetail)
 		return
 	}
@@ -46,7 +46,7 @@ func CreateIndividualTimeSynchronizationExposureConfiguration(c *gin.Context) {
 			Status: http.StatusBadRequest,
 			Detail: problemDetail,
 		}
-		logger.TimeSyncSubLog.Errorln(problemDetail)
+		logger.TimeSyncCfgLog.Errorln(problemDetail)
 		c.JSON(http.StatusBadRequest, rsp)
 		return
 	}
@@ -63,7 +63,7 @@ func CreateIndividualTimeSynchronizationExposureConfiguration(c *gin.Context) {
 	}
 	responseBody, err := openapi.Serialize(rsp.Body, "application/json")
 	if err != nil {
-		logger.TimeSyncSubLog.Errorln(err)
+		logger.TimeSyncCfgLog.Errorln(err)
 		problemDetails := models.ProblemDetails{
 			Status: http.StatusInternalServerError,
 			Cause:  "SYSTEM_FAILURE",

@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	capability = map[string]string{
+	dstt_capability = map[string]string{
 		// "1":   "txPropagationDelay",                //0001H
 		// "2":   "traffic class table",               //0002H
 		// "224": "Stream filter instance table",      //00E0H
@@ -27,19 +27,61 @@ var (
 		"232": "Number of supported PTP instances", //0x00E8
 		"233": "PTP instance list",                 //0x00E9
 	}
+
+	nwtt_capability = map[string]string{
+		"17": "PortDS_PortIdentity",            // 0x0011
+		"18": "PortDS_PortState",               // 0x0012
+		"19": "PortDS_LogMinDelayReqInterval",  // 0x0013
+		"20": "PortDS_LogAnnounceInterval",     // 0x0014
+		"21": "PortDS_AnnounceReceiptTimeout",  // 0x0015
+		"22": "PortDS_LogSyncInterval",         // 0x0016
+		"23": "PortDS_DelayMechanism",          // 0x0017
+		"24": "PortDS_LogMinPdelayReqInterval", // 0x0018
+		"25": "PortDS_VersionNumber",           // 0x0019
+		"26": "PortDS_MinorVersionNumber",      // 0x001A
+		"27": "PortDS_DelayAsymmetry",          // 0x001B
+		"28": "PortDS_PortEnable",              // 0x001C
+	}
 )
 
-func DSTTPMICDecodeCapabilityInfo(pmic models.PortManagementContainer) models.PortManagementContainer {
-	logger.UtilLog.Tracef("DS-TT PMIC Decode ready")
+func NWTTPMICDecodeCapabilityInfo(pmic models.PortManagementContainer) models.PortManagementContainer {
+	logger.UtilLog.Tracef("NW-TT PMIC Decode ready")
 
-	// DS-TT/NW-TT shows capability to TSCTSF
+	// NW-TT shows capability to TSCTSF
 	logger.UtilLog.Info("Deal with Port management capability information")
 
 	container_len := int(pmic.PortManCont[1])<<8 + int(pmic.PortManCont[2]) + 3
 	var capability_list []uint16
 	for i := 3; i < container_len; i = i + 2 {
 		key := uint16(pmic.PortManCont[i])<<8 + uint16(pmic.PortManCont[i+1])
-		value, exist := capability[strconv.FormatUint(uint64(key), 10)]
+		value, exist := nwtt_capability[strconv.FormatUint(uint64(key), 10)]
+
+		// if find in capability represent TSCTSF wants it
+		if exist {
+			logger.UtilLog.Infof("TSCTSF wants [%s] capability", value)
+			capability_list = append(capability_list, key)
+		} else {
+			logger.UtilLog.Info("TSCTSF do not want this capability")
+		}
+	}
+
+	if len(capability_list) != 0 {
+		pmic.PortManCont = PMICCreation(capability_list)
+	}
+	return pmic
+}
+
+func DSTTPMICDecodeCapabilityInfo(pmic models.PortManagementContainer) models.PortManagementContainer {
+	logger.UtilLog.Tracef("DS-TT PMIC Decode ready")
+
+	// DS-TT shows capability to TSCTSF
+	logger.UtilLog.Info("Deal with Port management capability information")
+
+	container_len := int(pmic.PortManCont[1])<<8 + int(pmic.PortManCont[2]) + 3
+	var capability_list []uint16
+	for i := 3; i < container_len; i = i + 2 {
+		key := uint16(pmic.PortManCont[i])<<8 + uint16(pmic.PortManCont[i+1])
+		value, exist := dstt_capability[strconv.FormatUint(uint64(key), 10)]
 
 		// if find in capability represent TSCTSF wants it
 		if exist {
