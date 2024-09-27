@@ -1,5 +1,9 @@
 bitbucket.org/free5gc-team/openapi v0.0.0-20240908090447-6e70a482e68f h1:A6a6N57SNW+xnqXbPumxXpht1/n0puQdkBO9ShzLg3M=
 bitbucket.org/free5gc-team/openapi v0.0.0-20240908090447-6e70a482e68f/go.mod h1:ccgobwwP00dqzm0MkNFuS+37jIwtOExeBpaL5hja9Ik=
+bitbucket.org/free5gc-team/openapi v0.0.0-20240920072935-09e12dd7bf7a h1:Fn6VM+Cpg4KpM6dTGtbiehg8P7iSrMRtY2mthQVNCtk=
+bitbucket.org/free5gc-team/openapi v0.0.0-20240920072935-09e12dd7bf7a/go.mod h1:ccgobwwP00dqzm0MkNFuS+37jIwtOExeBpaL5hja9Ik=
+bitbucket.org/free5gc-team/openapi v0.0.0-20240920073207-f5f8afe35d8c h1:ifjr6KONFxeuOTxF4Bf8IWinkfHSrXul3m+9rlMZsE0=
+bitbucket.org/free5gc-team/openapi v0.0.0-20240920073207-f5f8afe35d8c/go.mod h1:ccgobwwP00dqzm0MkNFuS+37jIwtOExeBpaL5hja9Ik=
 bitbucket.org/free5gc-team/util v0.0.0-20230511075254-e9f72181c776 h1:kNVFGc1DmQyKbJ5tLkQxKq9cmW45x510jLjOApuoKJw=
 bitbucket.org/free5gc-team/util v0.0.0-20230511075254-e9f72181c776/go.mod h1:qGwI8G88t2ixXea/uibkko8WNyL8q84lKWtoVz8AshM=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=

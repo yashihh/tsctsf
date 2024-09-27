@@ -8,8 +8,16 @@ import (
 
 	"bitbucket.org/free5gc-team/openapi/models"
 	"bitbucket.org/free5gc-team/util/httpwrapper"
+	tsctsf_context "github.com/yashihh/tsctsf/internal/context"
 	"github.com/yashihh/tsctsf/internal/logger"
+	"github.com/yashihh/tsctsf/internal/sbi/consumer"
 	"github.com/yashihh/tsctsf/pkg/factory"
+	"github.com/yashihh/tsctsf/util"
+)
+
+const (
+	DSTT bool = false
+	NWTT bool = true
 )
 
 // Creates a new configuration resource to activate time synchronization service.
@@ -30,6 +38,14 @@ func HandleCreateIndividualTimeSynchronizationExposureConfiguration(request *htt
 }
 
 func TimeSyncExpoCfgCreateProcedure(timeSyncExpoCfg models.TimeSyncExposureConfig, subscriptionID string) (string, *models.ProblemDetails) {
+	logger.TimeSyncCfgLog.Infof("PTP instance type : %v", timeSyncExpoCfg.ReqPtpIns.InstanceType)
+	logger.TimeSyncCfgLog.Infof("Transport protocol : %v", timeSyncExpoCfg.ReqPtpIns.Protocol)
+	logger.TimeSyncCfgLog.Infof("PTP Profile : %v", timeSyncExpoCfg.ReqPtpIns.PtpProfile)
+	logger.TimeSyncCfgLog.Infof("Grandmaster enabled : %v", timeSyncExpoCfg.GmEnable)
+	// logger.TimeSyncCfgLog.Infof("Grandmaster priority :")
+	logger.TimeSyncCfgLog.Infof("Time Domain : %v", timeSyncExpoCfg.TimeDom)
+	logger.TimeSyncCfgLog.Infof("UE identity (for a DS-TT port) : %v", timeSyncExpoCfg.ReqPtpIns.PortConfigs[0].Supi)
+
 	for i, subscription := range factory.TsctsfConfig.Subscriptions {
 		if subscription.SubscriptionId == subscriptionID {
 			// create a new configuration
@@ -48,8 +64,23 @@ func TimeSyncExpoCfgCreateProcedure(timeSyncExpoCfg models.TimeSyncExposureConfi
 				factory.TsctsfConfig.Subscriptions[i].ConfigurationId = newConfigID
 				factory.TsctsfConfig.Subscriptions[i].SubscriptionCfg = &timeSyncExpoCfg
 			}
+			appsessID, exist := getAppSessIDBySubscID(subscriptionID)
+			if !exist {
+				//  TODO : problem msg
+				problemDetails := &models.ProblemDetails{
+					Status: http.StatusBadRequest,
+					Cause:  "No App Session exist",
+				}
+				return "", problemDetails
+			}
+			ptpInstanceID := AssigedPTPInstanceID(timeSyncExpoCfg.UpNodeId)
+			// umic := util.CreatePTPInstanceListForUMIC(timeSyncExpoCfg, ptpInstanceID)
+			pmic := util.CreatePTPInstanceListForPMIC(timeSyncExpoCfg, ptpInstanceID, DSTT)
 
-			logger.TimeSyncCfgLog.Debugf("ConfigID[%s] with SubscriptionCfg: %+v", factory.TsctsfConfig.Subscriptions[i].ConfigurationId, factory.TsctsfConfig.Subscriptions[i].SubscriptionCfg)
+			consumer.AppSessionUpdate_PMIC(pmic, appsessID, DSTT) // DSTT
+			// consumer.AppSessionUpdate_UMIC(umic, appsessID)
+
+			// logger.TimeSyncCfgLog.Debugf("ConfigID[%s] with SubscriptionCfg: %+v", factory.TsctsfConfig.Subscriptions[i].ConfigurationId, factory.TsctsfConfig.Subscriptions[i].SubscriptionCfg)
 			resourceUri := fmt.Sprintf("ntsctsf-time-sync/v1/subscriptions/%s/configuration/%s", subscriptionID, newConfigID)
 			return resourceUri, nil
 		}
@@ -89,4 +120,37 @@ func getUnusedConfigID() (string, error) {
 		}
 	}
 	return "", fmt.Errorf("No available Config ID")
+}
+
+func getAppSessIDBySubscID(subscID string) (string, bool) {
+	tsctsf_self := tsctsf_context.GetSelf()
+
+	for appSessID, id := range tsctsf_self.SubscripSession {
+		if id == subscID {
+			return appSessID, true
+		}
+	}
+	return "", false
+}
+
+/*
+Assigning a new PTP Instance ID and indicating it to the NW-TT in "PTP instance specification" in UMIC and PMIC(s) for each NW
+TT port that is part of the PTP instance.
+*/
+func AssigedPTPInstanceID(upNodeId uint64) uint16 {
+	tsctsf_self := tsctsf_context.GetSelf()
+	// [TODO]: gen PTP instance ID
+	ptpID := uint16(12345)
+
+	updateBridge := tsctsf_self.Bridges[upNodeId]
+
+	for port := range updateBridge.Nwtt_ports {
+		port_info := updateBridge.Nwtt_ports[port]
+		port_info.PTPInstanceId = ptpID
+		tsctsf_self.Bridges[upNodeId].Nwtt_ports[port] = port_info
+	}
+	updateBridge.UpNode_info.PTPInstanceId = ptpID
+	tsctsf_self.Bridges[upNodeId] = updateBridge
+	logger.TimeSyncCfgLog.Infoln("Assigning a new PTP Instance ID :", ptpID)
+	return ptpID
 }

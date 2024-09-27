@@ -88,11 +88,19 @@ func Update5GSBridgeInfo(evNotfy models.EventsNotification) *models.ProblemDetai
 		Id = util.TTPortResponse(*evNotfy.TsnPortManContDstt)
 	}
 
-	if evNotfy.TsnPortManContNwtts != nil {
-		//logger.PolicyAuthLog.Info("PMIC from NW-TT = ", evNotfy.TsnPortManContNwtts)
-		for i := 0; i < len(evNotfy.TsnPortManContNwtts); i += 1 {
-			Id = util.TTPortResponse(evNotfy.TsnPortManContNwtts[i])
-		}
+	if evNotfy.TsnBridgeManCont != nil {
+		Id = util.UpNodeResponse(*evNotfy.TsnBridgeManCont)
+	}
+
+	// if evNotfy.TsnPortManContNwtts != nil {
+	// 	//logger.PolicyAuthLog.Info("PMIC from NW-TT = ", evNotfy.TsnPortManContNwtts)
+	// 	for i := 0; i < len(evNotfy.TsnPortManContNwtts); i += 1 {
+	// 		Id = util.TTPortResponse(evNotfy.TsnPortManContNwtts[i])
+	// 	}
+	// }
+	if Id == ^uint64(0) {
+		logger.PolicyAuthLog.Warnln("No Bridge to be update")
+		return nil
 	}
 	logger.PolicyAuthLog.Infof("Update Bridge ID :[%d] ", Id)
 
@@ -113,8 +121,23 @@ func Update5GSBridgeInfo(evNotfy models.EventsNotification) *models.ProblemDetai
 
 				logger.PolicyAuthLog.Debugln("Store NW-TT port number : ", evNotfy.TsnPortManContNwtts[i].PortNum)
 				logger.PolicyAuthLog.Debugln("Store NW-TT PMIC : ", evNotfy.TsnPortManContNwtts[i].PortManCont)
-				// TODO : HandleAppSessionUpdate , decode nwtt pmic
+				logger.PolicyAuthLog.Warn("TODO: HandleAppSessionUpdate, decode nwtt pmic")
+			} else {
+				logger.PolicyAuthLog.Debugln("TODO: update PMIC.")
 			}
+		}
+	}
+	if evNotfy.TsnBridgeManCont != nil {
+		logger.PolicyAuthLog.Debugln("Store NW-TT UMIC : ", evNotfy.TsnBridgeManCont.BridgeManCont)
+		logger.PolicyAuthLog.Warn("TODO: HandleAppSessionUpdate, decode nwtt pmic")
+
+	}
+	if evNotfy.TsnPortManContDstt != nil {
+		updateDSTTInfo, exist := tsctsf_self.Bridges[Id].Dstt_ports[evNotfy.TsnPortManContDstt.PortNum]
+		if !exist {
+			// init
+		} else {
+			logger.PolicyAuthLog.Warn("TODO: HandleAppSessionUpdate, decode nwtt dstt\n DSTT Info :[%v]", updateDSTTInfo)
 		}
 	}
 

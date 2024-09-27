@@ -129,7 +129,7 @@ type Dstt_port_info struct {
 	Update bool
 	// Ingress                  bool
 	// Nwtt_port_num uint32
-
+	PTPInstanceId          uint16
 	Dstt_addr              string
 	Ue_dstt_residence_time [8]uint8
 
@@ -142,28 +142,29 @@ type Dstt_port_info struct {
 	PTPGrandmasterCapable         bool
 	GPTPGrandmasterCapable        bool
 	SupportedPTPProfiles          []uint8
-	NumberOfSupportedPTPInstances uint32
+	NumberOfSupportedPTPInstances uint16
 	PTPInstanceList               []uint8
 }
 
 type UpNode_info struct {
+	PTPInstanceId                 uint16
 	Update                        bool
 	UpNodeAddr                    net.HardwareAddr
-	UpNodeID                      uint64
+	UpNodeID                      uint64 //same as bridge_id
 	SupportedPTPInstanceTypes     []uint8
 	SupportedTransportTypes       []uint8
 	SupportedDelayMechanisms      []uint8
 	PTPGrandmasterCapable         bool
 	GPTPGrandmasterCapable        bool
 	SupportedPTPProfiles          []uint8
-	NumberOfSupportedPTPInstances uint32
+	NumberOfSupportedPTPInstances uint16
 	PTPInstanceList               []uint8
 }
 
 // TODO: should be port etc data....
 type Nwtt_port_info struct {
-	Update bool
-
+	Update                        bool
+	PTPInstanceId                 uint16
 	TxPropagationDelay            uint32
 	Traffic_class_table           []uint8
 	Traffic_class_num             int
@@ -173,7 +174,7 @@ type Nwtt_port_info struct {
 	PTPGrandmasterCapable         bool
 	GPTPGrandmasterCapable        bool
 	SupportedPTPProfiles          []uint8
-	NumberOfSupportedPTPInstances uint32
+	NumberOfSupportedPTPInstances uint16
 	PTPInstanceList               []uint8
 }
 

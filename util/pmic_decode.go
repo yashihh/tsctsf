@@ -115,6 +115,8 @@ func TTPortResponse(pmic models.PortManagementContainer) uint64 {
 		update_result := bytes.IndexByte(pmic.PortManCont, byte(0x72))
 		if update_result != -1 {
 			logger.UtilLog.Info("Handle port update result")
+			return DecodePortUpdatedStatus(pmic, update_result)
+
 		}
 	} else if pmic.PortManCont[0] == 3 {
 		logger.UtilLog.Info("Deal with PORT MANAGEMENT NOTIFY Message")
@@ -135,7 +137,7 @@ func DecodePortStatus(pmic models.PortManagementContainer, index int) uint64 {
 	var ptpGrandmasterCapable bool
 	var gptpGrandmasterCapable bool
 	var supportedPTPProfiles []uint8
-	var numberOfSupportedPTPInstances uint32
+	var numberOfSupportedPTPInstances uint16
 	var ptpInstanceList []uint8
 
 	//portstatus_len := int(pmic.PortManCont[index+1])<<8 + int(pmic.PortManCont[index+2]) + 3
@@ -207,8 +209,7 @@ func DecodePortStatus(pmic models.PortManagementContainer, index int) uint64 {
 
 		case 232: //0x00E8
 			i = i + 4
-			data := binary.BigEndian.Uint64(pmic.PortManCont[i : i+parameter_len])
-			numberOfSupportedPTPInstances = uint32(data / uint64(math.Pow(2, 16)))
+			numberOfSupportedPTPInstances = binary.BigEndian.Uint16(pmic.PortManCont[i : i+parameter_len])
 			logger.UtilLog.Traceln("Number of supported PTP instances = ", numberOfSupportedPTPInstances)
 			i = i + parameter_len
 
@@ -289,6 +290,57 @@ func DecodePortStatus(pmic models.PortManagementContainer, index int) uint64 {
 			if numberOfSupportedPTPInstances != 0 {
 				dstt_port_info.NumberOfSupportedPTPInstances = numberOfSupportedPTPInstances
 			}
+			if ptpInstanceList != nil {
+				dstt_port_info.PTPInstanceList = ptpInstanceList
+			}
+			dstt_port_info.Update = true
+			Bridge_info.Dstt_ports[pmic.PortNum] = dstt_port_info
+			tsctsf_self.Bridges[bridge_id] = Bridge_info
+			return bridge_id
+		}
+	}
+	return ^uint64(0)
+}
+
+// TODO: other parameter
+func DecodePortUpdatedStatus(pmic models.PortManagementContainer, index int) uint64 {
+	var ptpInstanceList []uint8
+
+	success_set_num := int(pmic.PortManCont[index+3])
+	i := index + 4
+	for num := 0; num < success_set_num; num += 1 {
+		parameter_name := uint16(pmic.PortManCont[i])<<8 + uint16(pmic.PortManCont[i+1])
+		parameter_len := int(pmic.PortManCont[i+2])<<8 + int(pmic.PortManCont[i+3])
+		switch parameter_name {
+		case 233: //ptp instance list
+			i = i + 4
+			ptpInstanceList = pmic.PortManCont[i : i+parameter_len]
+			logger.UtilLog.Traceln("PTP instance list = ", ptpInstanceList)
+			i = i + parameter_len
+
+		default:
+			logger.UtilLog.Info("Skip, do not need it temporarily")
+			i = i + 4 + parameter_len
+		}
+	}
+	tsctsf_self := tsctsf_context.GetSelf()
+
+	for bridge_id, Bridge_info := range tsctsf_self.Bridges {
+		nwtt_port_info, exist := Bridge_info.Nwtt_ports[pmic.PortNum]
+		if exist {
+			if ptpInstanceList != nil {
+				nwtt_port_info.PTPInstanceList = ptpInstanceList
+			}
+			nwtt_port_info.Update = true
+			Bridge_info.Nwtt_ports[pmic.PortNum] = nwtt_port_info
+			tsctsf_self.Bridges[bridge_id] = Bridge_info
+			return bridge_id
+		}
+	}
+
+	for bridge_id, Bridge_info := range tsctsf_self.Bridges {
+		dstt_port_info, exist := Bridge_info.Dstt_ports[pmic.PortNum]
+		if exist {
 			if ptpInstanceList != nil {
 				dstt_port_info.PTPInstanceList = ptpInstanceList
 			}
