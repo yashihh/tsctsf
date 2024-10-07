@@ -417,6 +417,8 @@ func CreatePTPInstanceListForUMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 		binary.BigEndian.PutUint16(valueLength, 1)
 		buffer = append(buffer, valueLength...)
 		buffer = append(buffer, 00000000) //false
+
+		dsttPortTSinfoList = nil
 	}
 
 	/* defaultDS.instanceType */
@@ -473,10 +475,12 @@ func CreatePTPInstanceListForUMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 
 	// 9.2 port management list
 	// iei (nothing)
-
-	len := len(ptpInstanceList) + 1 + len(dsttPortTSinfoList) + 1
-	Len := IntToBytes(len)
-	umicByte = append(umicByte, Len[0], Len[1])
+	lenUmic := len(ptpInstanceList) + 1
+	if dsttPortTSinfoList != nil {
+		lenUmic += len(dsttPortTSinfoList) + 1
+	}
+	LenUmic := IntToBytes(lenUmic)
+	umicByte = append(umicByte, LenUmic[0], LenUmic[1])
 
 	umicByte = append(umicByte, SetParameter)
 	// 9.15 ptp intance list
@@ -503,17 +507,16 @@ func CreateDSTTPortTimeSynhronizationInfoList(dsttPortNum uint32, ptpInstanceID 
 	valueLength := make([]byte, 2)
 
 	tsctsf_self := tsctsf_context.GetSelf()
-	var nwttInfo tsctsf_context.Nwtt_port_info
+	var upNodeInfo tsctsf_context.UpNode_info
 	for _, bridge := range tsctsf_self.Bridges {
-		for _, info := range bridge.Nwtt_ports {
-			if info.PTPInstanceId == ptpInstanceID {
-				nwttInfo = info
-			}
+		if bridge.UpNode_info.PTPInstanceId == ptpInstanceID {
+			upNodeInfo = bridge.UpNode_info
 		}
 	}
 	/* Grandmaster on behalf of DSTT enabled */
 	/* Grandmaster candidate enabled */
-	if nwttInfo.PTPGrandmasterCapable {
+	upNodeInfo.PTPGrandmasterCapable = true
+	if upNodeInfo.PTPGrandmasterCapable {
 		binary.BigEndian.PutUint16(parameterName, Grandmaster_on_behalf_of_DSTT_enabled)
 		/* PTP instance parameter  */
 		buffer = append(buffer, parameterName...)
