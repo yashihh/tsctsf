@@ -68,13 +68,15 @@ const (
 	BoundaryClock       uint8 = 0x01
 	P2PTransparentClock uint8 = 0x02
 	E2ETransparentClock uint8 = 0x03
+	P2PRelayInstance    uint8 = 0x04
 )
 
 var ptpInstanceTypesMap = map[string]uint8{
-	"OrdinaryClock":   OrdinaryClock,
-	"BOUNDARY_CLOCK":  BoundaryClock,
-	"P2P_TRANS_CLOCK": P2PTransparentClock,
-	"E2E_TRANS_CLOCK": E2ETransparentClock,
+	"OrdinaryClock":      OrdinaryClock,
+	"BOUNDARY_CLOCK":     BoundaryClock,
+	"P2P_TRANS_CLOCK":    P2PTransparentClock,
+	"E2E_TRANS_CLOCK":    E2ETransparentClock,
+	"P2P_RELAY_INSTANCE": P2PRelayInstance,
 }
 
 // Supported transport types
@@ -216,9 +218,22 @@ func CreatePTPInstanceListForPMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 
 	/*  PTP instance parameters list */
 	if dstt_or_nwtt { //nwtt
-		//portDS
+		/* TODO: */
+		/* portDS.PortIdentity */
+		/* portDS.PortState */
+		/* portDS.LogMinDelayReqInterval */
+		/* portDS.LogAnnounceInterval */
+		/* portDS.AnnounceReceiptTimeout */
+		/* portDS.LogSyncInterval */
+		/* portDS.DelayMechanism */
+		/* portDS.LogMinPdelayReqInterval */
+		/* portDS.VersionNumber */
+		/* portDS.MinorVersionNumber */
+		/* portDS.DelayAsymmetry */
+		/* portDS.PortEnable */
 	} else { //dstt
 		len := make([]byte, 2)
+		/* PTP profile */
 		if val, ok := ptpProfileMap[ptpinfo.ReqPtpIns.PtpProfile]; ok {
 			binary.BigEndian.PutUint16(parameterName, PTP_profile)
 
@@ -228,6 +243,7 @@ func CreatePTPInstanceListForPMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 			buffer = append(buffer, len...)
 			buffer = append(buffer, val)
 		}
+		/* Transport type */
 		if val, ok := transportTypeMap[string(ptpinfo.ReqPtpIns.Protocol)]; ok {
 			binary.BigEndian.PutUint16(parameterName, Transport_type)
 
@@ -237,15 +253,47 @@ func CreatePTPInstanceListForPMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 			buffer = append(buffer, len...)
 			buffer = append(buffer, val)
 		}
-		if val, ok := gmEnbleMap[ptpinfo.GmEnable]; ok {
+		/* Grandmaster enable */
+		if ptpinfo.ReqPtpIns.InstanceType == "BOUNDARY_CLOCK" {
 			binary.BigEndian.PutUint16(parameterName, Grandmaster_enabled)
 
 			/* PTP instance parameter  */
 			buffer = append(buffer, parameterName...)
 			binary.BigEndian.PutUint16(len, 1)
 			buffer = append(buffer, len...)
-			buffer = append(buffer, val)
+			buffer = append(buffer, 00000001) //true
+		} else {
+			binary.BigEndian.PutUint16(parameterName, Grandmaster_enabled)
+
+			/* PTP instance parameter  */
+			buffer = append(buffer, parameterName...)
+			binary.BigEndian.PutUint16(len, 1)
+			buffer = append(buffer, len...)
+			buffer = append(buffer, 00000000) //false
 		}
+
+		/* TODO: */
+		/* defaultDS.clockIdentity */
+		/* defaultDS.clockQuality.clockClass */
+		/* defaultDS.clockQuality.clockAccurac */
+		/* defaultDS.clockQuality.offsetScaled */
+		/* defaultDS.priority1 */
+		/* defaultDS.priority2 */
+		/* defaultDS.domainNumber */
+		/* defaultDS.sdoId */
+		/* defaultDS.instanceEnable */
+		/* defaultDS.instanceType */
+		/* portDS.PortIdentity */
+		/* portDS.PortState */
+		/* portDS.LogMinDelayReqInterval */
+		/* portDS.LogAnnounceInterval */
+		/* portDS.LogSyncInterval */
+		/* portDS.DelayMechanism */
+		/* portDS.LogMinPdelayReqInterval */
+		/* portDS.VersionNumber */
+		/* portDS.MinorVersionNumber */
+		/* portDS.DelayAsymmetry */
+		/* portDS.PortEnable */
 	}
 
 	ptpID := make([]byte, 2)
@@ -316,6 +364,7 @@ func CreatePTPInstanceListForUMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 	buffer := []byte{}
 
 	valueLength := make([]byte, 2)
+	/* PTP profile */
 	if val, ok := ptpProfileMap[ptpinfo.ReqPtpIns.PtpProfile]; ok {
 		binary.BigEndian.PutUint16(parameterName, PTP_profile)
 
@@ -325,6 +374,7 @@ func CreatePTPInstanceListForUMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 		buffer = append(buffer, valueLength...)
 		buffer = append(buffer, val)
 	}
+	/* Transport type */
 	if val, ok := transportTypeMap[string(ptpinfo.ReqPtpIns.Protocol)]; ok {
 		binary.BigEndian.PutUint16(parameterName, Transport_type)
 
@@ -334,6 +384,65 @@ func CreatePTPInstanceListForUMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 		buffer = append(buffer, valueLength...)
 		buffer = append(buffer, val)
 	}
+	dsttPortTSinfoList := []byte{}
+
+	/* Grandmaster candidate enabled
+	k.2.2.4 Configuration for PTP grandmaster function
+	To enable either option a) or option b) for a PTP instance, the TSN AF or TSCTSF sets the element "Grandmaster candidate enabled" TRUE (per PTP instance) in UMIC
+	*/
+	if ptpinfo.ReqPtpIns.InstanceType == "BOUNDARY_CLOCK" {
+		binary.BigEndian.PutUint16(parameterName, Grandmaster_candidate_enabled)
+		/* PTP instance parameter  */
+		buffer = append(buffer, parameterName...)
+		binary.BigEndian.PutUint16(valueLength, 1)
+		buffer = append(buffer, valueLength...)
+		buffer = append(buffer, 00000001) //true
+
+		tsctsf_self := tsctsf_context.GetSelf()
+		var dsttPortNum uint32
+		for _, bridge := range tsctsf_self.Bridges {
+			for port, info := range bridge.Dstt_ports {
+				if info.PTPInstanceId == ptpInstanceID {
+					dsttPortNum = port
+					/* CREATE DS-TT port time synchronization information list */
+					dsttPortTSinfoList = CreateDSTTPortTimeSynhronizationInfoList(dsttPortNum, ptpInstanceID)
+				}
+			}
+		}
+
+	} else {
+		binary.BigEndian.PutUint16(parameterName, Grandmaster_candidate_enabled)
+		/* PTP instance parameter  */
+		buffer = append(buffer, parameterName...)
+		binary.BigEndian.PutUint16(valueLength, 1)
+		buffer = append(buffer, valueLength...)
+		buffer = append(buffer, 00000000) //false
+	}
+
+	/* defaultDS.instanceType */
+	if val, ok := ptpInstanceTypesMap[string(ptpinfo.ReqPtpIns.InstanceType)]; ok {
+		binary.BigEndian.PutUint16(parameterName, DefaultDS_instanceType)
+
+		/* PTP instance parameter  */
+		buffer = append(buffer, parameterName...)
+		binary.BigEndian.PutUint16(valueLength, 1)
+		buffer = append(buffer, valueLength...)
+		buffer = append(buffer, val)
+	}
+
+	/* TODO: */
+	/* defaultDS.clockIdentity */
+	/* defaultDS.clockQuality.clockClass */
+	/* defaultDS.clockQuality.clockAccurac */
+	/* defaultDS.clockQuality.offsetScaled */
+	/* defaultDS.priority1 */
+	/* defaultDS.priority2 */
+	/* defaultDS.domainNumber */
+	/* defaultDS.sdoId */
+	/* defaultDS.instanceEnable */
+	/* defaultDS.externalPortConfiguration */
+	/* defaultDS.instanceType */
+
 	length := make([]byte, 2)
 	binary.BigEndian.PutUint16(length, uint16(len(buffer)))
 
@@ -365,8 +474,7 @@ func CreatePTPInstanceListForUMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 	// 9.2 port management list
 	// iei (nothing)
 
-	list_len := len(ptpInstanceList)
-	len := list_len + 1
+	len := len(ptpInstanceList) + 1 + len(dsttPortTSinfoList) + 1
 	Len := IntToBytes(len)
 	umicByte = append(umicByte, Len[0], Len[1])
 
@@ -374,7 +482,108 @@ func CreatePTPInstanceListForUMIC(ptpinfo models.TimeSyncExposureConfig, ptpInst
 	// 9.15 ptp intance list
 	umicByte = append(umicByte, ptpInstanceList...)
 
+	// 9.16 DS-TT port time synchronization information list
+	if dsttPortTSinfoList != nil {
+		umicByte = append(umicByte, SetParameter)
+		umicByte = append(umicByte, dsttPortTSinfoList...)
+	}
 	var umic models.BridgeManagementContainer
 	umic.BridgeManCont = umicByte
 	return umic
+}
+
+func CreateDSTTPortTimeSynhronizationInfoList(dsttPortNum uint32, ptpInstanceID uint16) []byte {
+	ptpInstance := []byte{}
+	parameterName := make([]byte, 2)
+	ptpID := make([]byte, 2)
+	// TODO: support multiple ptpinstance
+	binary.BigEndian.PutUint16(ptpID, ptpInstanceID)
+	buffer := []byte{}
+	length := make([]byte, 2)
+	valueLength := make([]byte, 2)
+
+	tsctsf_self := tsctsf_context.GetSelf()
+	var nwttInfo tsctsf_context.Nwtt_port_info
+	for _, bridge := range tsctsf_self.Bridges {
+		for _, info := range bridge.Nwtt_ports {
+			if info.PTPInstanceId == ptpInstanceID {
+				nwttInfo = info
+			}
+		}
+	}
+	/* Grandmaster on behalf of DSTT enabled */
+	/* Grandmaster candidate enabled */
+	if nwttInfo.PTPGrandmasterCapable {
+		binary.BigEndian.PutUint16(parameterName, Grandmaster_on_behalf_of_DSTT_enabled)
+		/* PTP instance parameter  */
+		buffer = append(buffer, parameterName...)
+		binary.BigEndian.PutUint16(valueLength, 1)
+		buffer = append(buffer, valueLength...)
+		buffer = append(buffer, 00000001) //true
+
+		binary.BigEndian.PutUint16(parameterName, Grandmaster_candidate_enabled)
+		/* PTP instance parameter  */
+		buffer = append(buffer, parameterName...)
+		binary.BigEndian.PutUint16(valueLength, 1)
+		buffer = append(buffer, valueLength...)
+		buffer = append(buffer, 00000001) //true
+	} else {
+		binary.BigEndian.PutUint16(parameterName, Grandmaster_on_behalf_of_DSTT_enabled)
+		/* PTP instance parameter  */
+		buffer = append(buffer, parameterName...)
+		binary.BigEndian.PutUint16(valueLength, 1)
+		buffer = append(buffer, valueLength...)
+		buffer = append(buffer, 00000000) //false
+
+		binary.BigEndian.PutUint16(parameterName, Grandmaster_candidate_enabled)
+		/* PTP instance parameter  */
+		buffer = append(buffer, parameterName...)
+		binary.BigEndian.PutUint16(valueLength, 1)
+		buffer = append(buffer, valueLength...)
+		buffer = append(buffer, 00000000) //false
+	}
+
+	/* TODO: */
+	/* portDS.PortIdentity */
+	/* portDS.PortState */
+	/* portDS.LogMinDelayReqInterval */
+	/* portDS.LogAnnounceInterval */
+	/* portDS.AnnounceReceiptTimeout */
+	/* portDS.LogSyncInterval */
+	/* portDS.DelayMechanism */
+	/* portDS.LogMinPdelayReqInterval */
+	/* portDS.VersionNumber */
+	/* portDS.MinorVersionNumber */
+	/* portDS.DelayAsymmetry */
+	/* portDS.PortEnable */
+
+	binary.BigEndian.PutUint16(length, uint16(len(buffer)))
+	/* PTP instance list*/
+	ptpInstance = append(ptpInstance, length...)
+
+	ptpInstance = append(ptpInstance, ptpID...)
+
+	ptpInstance = append(ptpInstance, buffer...)
+
+	dsttPortTSInfoList := []byte{}
+	dsttPortTSInfoListIEI := make([]byte, 2)
+	binary.BigEndian.PutUint16(dsttPortTSInfoListIEI, DSTTPortTimeSynchronizationInfoList)
+
+	portnum := make([]byte, 2)
+	binary.BigEndian.PutUint16(portnum, uint16(dsttPortNum))
+
+	/* DS-TT port time synchronization information list IEI */
+	dsttPortTSInfoList = append(dsttPortTSInfoList, dsttPortTSInfoListIEI...)
+	/* Length of DS-TT port time synchronization information list contents */
+	binary.BigEndian.PutUint16(length, uint16(len(ptpInstance)+len(portnum)+2))
+	dsttPortTSInfoList = append(dsttPortTSInfoList, length...)
+	/* DS-TT port time synchronization information */
+	binary.BigEndian.PutUint16(length, uint16(len(ptpInstance)))
+	dsttPortTSInfoList = append(dsttPortTSInfoList, length...)
+
+	dsttPortTSInfoList = append(dsttPortTSInfoList, portnum...)
+
+	dsttPortTSInfoList = append(dsttPortTSInfoList, ptpInstance...)
+
+	return dsttPortTSInfoList
 }
