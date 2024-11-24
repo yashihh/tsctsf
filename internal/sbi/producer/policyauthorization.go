@@ -92,12 +92,15 @@ func Update5GSBridgeInfo(evNotfy models.EventsNotification) *models.ProblemDetai
 		Id = util.UpNodeResponse(*evNotfy.TsnBridgeManCont)
 	}
 
-	// if evNotfy.TsnPortManContNwtts != nil {
-	// 	//logger.PolicyAuthLog.Info("PMIC from NW-TT = ", evNotfy.TsnPortManContNwtts)
-	// 	for i := 0; i < len(evNotfy.TsnPortManContNwtts); i += 1 {
-	// 		Id = util.TTPortResponse(evNotfy.TsnPortManContNwtts[i])
-	// 	}
-	// }
+	if evNotfy.TsnPortManContNwtts != nil {
+		//logger.PolicyAuthLog.Info("PMIC from NW-TT = ", evNotfy.TsnPortManContNwtts)
+		for i := 0; i < len(evNotfy.TsnPortManContNwtts); i += 1 {
+			// Id = util.TTPortResponse(evNotfy.TsnPortManContNwtts[i])
+			logger.PolicyAuthLog.Warnln("TODO: handle evNotfy.TsnPortManContNwtts")
+
+		}
+		Id = ^uint64(0)
+	}
 	if Id == ^uint64(0) {
 		logger.PolicyAuthLog.Warnln("No Bridge to be update")
 		return nil

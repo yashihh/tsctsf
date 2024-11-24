@@ -74,11 +74,11 @@ func TimeSyncExpoCfgCreateProcedure(timeSyncExpoCfg models.TimeSyncExposureConfi
 				return "", problemDetails
 			}
 			ptpInstanceID := AssigedPTPInstanceID(timeSyncExpoCfg.UpNodeId)
-			// umic := util.CreatePTPInstanceListForUMIC(timeSyncExpoCfg, ptpInstanceID)
-			pmic := util.CreatePTPInstanceListForPMIC(timeSyncExpoCfg, ptpInstanceID, DSTT)
+			umic := util.CreatePTPInstanceListForUMIC(timeSyncExpoCfg, ptpInstanceID)
+			// pmic := util.CreatePTPInstanceListForPMIC(timeSyncExpoCfg, ptpInstanceID, DSTT)
 
-			consumer.AppSessionUpdate_PMIC(pmic, appsessID, DSTT) // DSTT
-			// consumer.AppSessionUpdate_UMIC(umic, appsessID)
+			// consumer.AppSessionUpdate_PMIC(pmic, appsessID, DSTT) // DSTT
+			consumer.AppSessionUpdate_UMIC(umic, appsessID)
 
 			// logger.TimeSyncCfgLog.Debugf("ConfigID[%s] with SubscriptionCfg: %+v", factory.TsctsfConfig.Subscriptions[i].ConfigurationId, factory.TsctsfConfig.Subscriptions[i].SubscriptionCfg)
 			resourceUri := fmt.Sprintf("ntsctsf-time-sync/v1/subscriptions/%s/configuration/%s", subscriptionID, newConfigID)
@@ -148,6 +148,11 @@ func AssigedPTPInstanceID(upNodeId uint64) uint16 {
 		port_info := updateBridge.Nwtt_ports[port]
 		port_info.PTPInstanceId = ptpID
 		tsctsf_self.Bridges[upNodeId].Nwtt_ports[port] = port_info
+	}
+	for port := range updateBridge.Dstt_ports {
+		port_info := updateBridge.Dstt_ports[port]
+		port_info.PTPInstanceId = ptpID
+		tsctsf_self.Bridges[upNodeId].Dstt_ports[port] = port_info
 	}
 	updateBridge.UpNode_info.PTPInstanceId = ptpID
 	tsctsf_self.Bridges[upNodeId] = updateBridge
